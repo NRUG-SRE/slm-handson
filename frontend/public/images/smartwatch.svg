@@ -1,0 +1,47 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  
+  <!-- Watch band (top) -->
+  <rect x="85" y="30" width="30" height="40" rx="15" fill="#1f2937"/>
+  <rect x="88" y="33" width="24" height="34" rx="12" fill="#374151"/>
+  
+  <!-- Watch band (bottom) -->
+  <rect x="85" y="130" width="30" height="40" rx="15" fill="#1f2937"/>
+  <rect x="88" y="133" width="24" height="34" rx="12" fill="#374151"/>
+  
+  <!-- Watch case -->
+  <rect x="70" y="70" width="60" height="60" rx="18" fill="#1f2937"/>
+  <rect x="73" y="73" width="54" height="54" rx="15" fill="#374151"/>
+  
+  <!-- Watch screen -->
+  <rect x="78" y="78" width="44" height="44" rx="10" fill="#000000"/>
+  <rect x="80" y="80" width="40" height="40" rx="8" fill="#1e293b"/>
+  
+  <!-- Digital display elements -->
+  <rect x="85" y="88" width="30" height="8" rx="2" fill="#00ff00" opacity="0.8"/>
+  <text x="100" y="97" text-anchor="middle" font-family="monospace" font-size="6" fill="#00ff00">14:25</text>
+  
+  <!-- Heart rate icon -->
+  <path d="M 88 105 L 92 110 L 96 105 L 100 110 L 104 105 L 108 110 L 112 105" 
+        fill="none" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Steps counter -->
+  <text x="100" y="118" text-anchor="middle" font-family="monospace" font-size="5" fill="#3b82f6">8,543</text>
+  
+  <!-- Crown/button -->
+  <rect x="130" y="95" width="8" height="10" rx="2" fill="#6b7280"/>
+  <rect x="132" y="97" width="4" height="6" rx="1" fill="#9ca3af"/>
+  
+  <!-- Side button -->
+  <rect x="130" y="110" width="6" height="8" rx="1" fill="#6b7280"/>
+  
+  <!-- Strap holes -->
+  <circle cx="100" cy="45" r="2" fill="#64748b"/>
+  <circle cx="100" cy="155" r="2" fill="#64748b"/>
+  
+  <!-- Text label -->
+  <text x="100" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">
+    スマートウォッチ
+  </text>
+</svg>

@@ -40,10 +40,10 @@ func Load() *Config {
 			AppName: getEnv("NEW_RELIC_APP_NAME", "slm-handson-api"),
 		},
 		Performance: PerformanceConfig{
-			ErrorRate:        getEnvFloat("ERROR_RATE", 0.1),
+			ErrorRate:        getEnvFloat("ERROR_RATE", 0.0),
 			ResponseTimeMin:  getEnvInt("RESPONSE_TIME_MIN", 50),
 			ResponseTimeMax:  getEnvInt("RESPONSE_TIME_MAX", 500),
-			SlowEndpointRate: getEnvFloat("SLOW_ENDPOINT_RATE", 0.2),
+			SlowEndpointRate: getEnvFloat("SLOW_ENDPOINT_RATE", 0.0),
 		},
 	}
 }

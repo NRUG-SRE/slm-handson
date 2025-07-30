@@ -23,7 +23,7 @@ type AddToCartRequest struct {
 }
 
 type UpdateCartItemRequest struct {
-	Quantity int `json:"quantity" binding:"required,min=0"`
+	Quantity int `json:"quantity"`
 }
 
 // DefaultCartIDはconstants.goで定義
@@ -107,6 +107,12 @@ func (h *CartHandler) UpdateCartItem(c *gin.Context) {
 	var req UpdateCartItemRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		presenter.BadRequestResponse(c, "Invalid request body")
+		return
+	}
+	
+	// 数量のバリデーション（負の値のみ拒否、0は削除として許可）
+	if req.Quantity < 0 {
+		presenter.BadRequestResponse(c, "Quantity cannot be negative")
 		return
 	}
 	

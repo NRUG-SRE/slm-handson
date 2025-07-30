@@ -109,3 +109,6 @@ export function useMonitoring() {
     setUserAttribute: monitoring.setUserAttribute.bind(monitoring),
   }
 }
+
+// Alias for consistency
+export const useNewRelicMonitoring = useMonitoring

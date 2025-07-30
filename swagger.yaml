@@ -260,6 +260,34 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 
   /api/orders:
+    get:
+      summary: 全注文一覧取得
+      description: |
+        システム内の全注文履歴を取得します。管理者用のエンドポイントです。
+        ハンズオンでは注文履歴の確認に使用できます。
+      tags:
+        - Orders
+      responses:
+        '200':
+          description: 注文一覧の取得に成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+        '500':
+          description: サーバー内部エラー
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       summary: 注文作成
       description: |

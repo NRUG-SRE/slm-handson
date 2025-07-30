@@ -134,7 +134,7 @@ paths:
                         name: "ワイヤレスヘッドホン"
                         description: "高音質なノイズキャンセリング機能付きワイヤレスヘッドホン"
                         price: 25000
-                        imageUrl: "/images/headphones.jpg"
+                        imageUrl: "/images/headphones.svg"
                         stock: 10
                         createdAt: "2025-07-30T04:20:19Z"
                         updatedAt: "2025-07-30T04:20:19Z"
@@ -142,7 +142,7 @@ paths:
                         name: "スマートウォッチ"
                         description: "フィットネストラッキング機能付きの最新スマートウォッチ"
                         price: 35000
-                        imageUrl: "/images/smartwatch.jpg"
+                        imageUrl: "/images/smartwatch.svg"
                         stock: 5
                         createdAt: "2025-07-30T04:20:19Z"
                         updatedAt: "2025-07-30T04:20:19Z"
@@ -230,7 +230,7 @@ paths:
                       name: "ワイヤレスヘッドホン"
                       description: "高音質なノイズキャンセリング機能付きワイヤレスヘッドホン"
                       price: 25000
-                      imageUrl: "/images/headphones.jpg"
+                      imageUrl: "/images/headphones.svg"
                       stock: 10
                       createdAt: "2025-07-30T04:20:19Z"
                       updatedAt: "2025-07-30T04:20:19Z"

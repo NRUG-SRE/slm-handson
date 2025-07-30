@@ -1,0 +1,73 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="90" fill="#f8fafc" stroke="#e2e8f0" stroke-width="2"/>
+  
+  <!-- Monitor/base -->
+  <rect x="60" y="140" width="80" height="30" rx="8" fill="#1f2937"/>
+  <rect x="63" y="143" width="74" height="24" rx="6" fill="#374151"/>
+  
+  <!-- Monitor stand -->
+  <rect x="95" y="130" width="10" height="15" fill="#6b7280"/>
+  <rect x="85" y="140" width="30" height="5" rx="2" fill="#6b7280"/>
+  
+  <!-- Camera body -->
+  <circle cx="100" cy="80" r="30" fill="#1f2937"/>
+  <circle cx="100" cy="80" r="27" fill="#374151"/>
+  
+  <!-- Main lens -->
+  <circle cx="100" cy="80" r="18" fill="#000000"/>
+  <circle cx="100" cy="80" r="15" fill="#1e293b"/>
+  <circle cx="100" cy="80" r="12" fill="#374151"/>
+  <circle cx="100" cy="80" r="8" fill="#6b7280"/>
+  
+  <!-- Lens reflection -->
+  <ellipse cx="95" cy="75" rx="4" ry="6" fill="#93c5fd" opacity="0.3"/>
+  <ellipse cx="92" cy="72" rx="2" ry="3" fill="#ffffff" opacity="0.6"/>
+  
+  <!-- Status LED -->
+  <circle cx="75" cy="65" r="3" fill="#ef4444"/>
+  <circle cx="75" cy="65" r="2" fill="#fca5a5" opacity="0.8"/>
+  
+  <!-- Microphone holes -->
+  <circle cx="85" cy="95" r="1" fill="#6b7280"/>
+  <circle cx="90" cy="98" r="1" fill="#6b7280"/>
+  <circle cx="95" cy="99" r="1" fill="#6b7280"/>
+  <circle cx="100" cy="98" r="1" fill="#6b7280"/>
+  <circle cx="105" cy="99" r="1" fill="#6b7280"/>
+  <circle cx="110" cy="98" r="1" fill="#6b7280"/>
+  <circle cx="115" cy="95" r="1" fill="#6b7280"/>
+  
+  <!-- Brand name area -->
+  <rect x="85" y="105" width="30" height="6" rx="2" fill="#6b7280" opacity="0.3"/>
+  <text x="100" y="109" text-anchor="middle" font-family="Arial, sans-serif" font-size="4" fill="#9ca3af">4K</text>
+  
+  <!-- USB connector -->
+  <rect x="130" y="75" width="15" height="6" rx="3" fill="#374151"/>
+  <rect x="132" y="77" width="11" height="2" rx="1" fill="#6b7280"/>
+  
+  <!-- USB cable -->
+  <path d="M 145 78 Q 155 75 165 80 Q 170 82 175 80" fill="none" stroke="#374151" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Focus ring -->
+  <circle cx="100" cy="80" r="20" fill="none" stroke="#6b7280" stroke-width="1" opacity="0.5"/>
+  <circle cx="100" cy="80" r="22" fill="none" stroke="#6b7280" stroke-width="0.5" opacity="0.3"/>
+  
+  <!-- Privacy shutter indicator -->
+  <rect x="120" y="60" width="8" height="4" rx="2" fill="#10b981"/>
+  <text x="124" y="63" text-anchor="middle" font-family="Arial, sans-serif" font-size="3" fill="#ffffff">●</text>
+  
+  <!-- Mount screw -->
+  <circle cx="100" cy="115" r="2" fill="#6b7280"/>
+  <line x1="98" y1="115" x2="102" y2="115" stroke="#9ca3af" stroke-width="0.5"/>
+  <line x1="100" y1="113" x2="100" y2="117" stroke="#9ca3af" stroke-width="0.5"/>
+  
+  <!-- Screen content (optional) -->
+  <rect x="68" y="150" width="64" height="16" rx="2" fill="#000000"/>
+  <rect x="70" y="152" width="60" height="12" rx="1" fill="#1e293b"/>
+  <text x="100" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" fill="#00ff00">● REC</text>
+  
+  <!-- Text label -->
+  <text x="100" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748b">
+    4K Webカメラ
+  </text>
+</svg>

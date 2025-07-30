@@ -13,10 +13,10 @@ services:
       NEW_RELIC_APP_NAME: ${NEW_RELIC_APP_NAME:-slm-handson-api}
 
       # パフォーマンス調整用環境変数（デフォルト値をSLMデモ用に設定）
-      ERROR_RATE: ${ERROR_RATE:-0.05}
+      ERROR_RATE: ${ERROR_RATE:-0.0}
       RESPONSE_TIME_MIN: ${RESPONSE_TIME_MIN:-50}
       RESPONSE_TIME_MAX: ${RESPONSE_TIME_MAX:-300}
-      SLOW_ENDPOINT_RATE: ${SLOW_ENDPOINT_RATE:-0.1}
+      SLOW_ENDPOINT_RATE: ${SLOW_ENDPOINT_RATE:-0.0}
 
       # アプリケーション設定
       PORT: 8080

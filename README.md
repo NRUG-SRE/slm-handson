@@ -37,10 +37,10 @@ cp .env.example .env
 # Backend (APM)
 NEW_RELIC_API_KEY=your-api-key-here
 NEW_RELIC_APP_NAME=slm-handson-api
-ERROR_RATE=0.1
+ERROR_RATE=0.0
 RESPONSE_TIME_MIN=50
 RESPONSE_TIME_MAX=500
-SLOW_ENDPOINT_RATE=0.2
+SLOW_ENDPOINT_RATE=0.0
 
 # Frontend (RUM)
 NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY=your-browser-key-here
@@ -93,7 +93,7 @@ docker-compose up -d
   - 商品管理、カート、注文処理のREST API
   - New Relic APMでサーバーサイドパフォーマンスを監視
 
-- **負荷生成スクリプト**
+- **負荷生成スクリプト** ⚠️未実装
   - 実際のユーザー行動をシミュレート
   - SLO違反シナリオの再現
 
@@ -120,9 +120,10 @@ docker-compose up -d
   - 適切な目標値の設定
 
 ### 3. SLO管理ハンズオン（30分）
-- 擬似ユーザーアクセスによる負荷生成
-- 環境変数によるService Level変化の体験
+- 手動またはブラウザでのユーザーアクセス体験
+- 環境変数によるService Level変化の体験（ERROR_RATE調整）
 - エラーバジェット枯渇時の対応シミュレーション
+- New Relic UIでのSLO違反確認とアラート設定
 
 ## 主要なAPIエンドポイント
 
@@ -136,8 +137,9 @@ docker-compose up -d
 - `PUT /api/cart/items/{id}` - カート内商品の数量変更・削除
 
 ### 注文・決済
+- `GET /api/orders` - 全注文一覧取得（管理者用・ハンズオン確認用）
 - `POST /api/orders` - 注文作成（決済処理含む）
-- `GET /api/orders/{id}` - 注文確認
+- `GET /api/orders/{id}` - 注文詳細取得
 
 ### SLMデモ用
 - `GET /api/v1/error` - エラー生成エンドポイント（ERROR_RATE環境変数で制御）
@@ -148,17 +150,35 @@ docker-compose up -d
 
 ## 負荷生成とテスト
 
-擬似ユーザーアクセスを生成してSLOの動作を確認：
+### パフォーマンス劣化シミュレーション
+
+環境変数を変更してSLOの動作を確認：
 
 ```bash
-# 通常の負荷テスト
-docker-compose run load-generator
-
-# パフォーマンス劣化シミュレーション
+# エラー率を30%に設定
 export ERROR_RATE=0.3
 export RESPONSE_TIME_MAX=2000
 docker-compose up -d api-server
+
+# 正常な状態に戻す
+export ERROR_RATE=0.0
+export SLOW_ENDPOINT_RATE=0.0
+docker-compose up -d api-server
 ```
+
+### 手動負荷テスト
+
+ブラウザまたはAPIクライアントを使用して手動でテスト：
+
+```bash
+# 商品一覧を取得
+curl http://localhost:8080/api/products
+
+# エラー生成エンドポイントでSLO違反をシミュレート
+curl http://localhost:8080/api/v1/error
+```
+
+**注意**: 自動負荷生成スクリプト（`scripts/`）は現在未実装です。
 
 ## 開発コマンド
 
@@ -183,13 +203,28 @@ docker-compose restart frontend
 
 ```
 slm-handson/
-├── backend/          # Go APIサーバー
-├── frontend/         # Next.jsフロントエンド  
-├── scripts/          # 負荷生成スクリプト
-├── docs/             # ドキュメント
-├── docker-compose.yml
-└── .env.example
+├── backend/          # Go APIサーバー ✅実装済み
+├── frontend/         # Next.jsフロントエンド ✅実装済み
+├── scripts/          # 負荷生成スクリプト ⚠️未実装
+├── docs/             # ドキュメント ⚠️未実装
+├── swagger.yaml      # OpenAPI 3.0.3仕様書 ✅実装済み
+├── docker-compose.yml # Docker構成 ✅実装済み
+├── .env.example      # 環境変数サンプル ✅実装済み
+└── README.md         # プロジェクト説明
 ```
+
+### 実装済み機能
+- **TOPページ**: 商品一覧表示、NRUG-SREブランディング
+- **商品詳細ページ**: 商品詳細表示、カート追加機能
+- **カートページ**: カート管理、数量変更・削除機能
+- **API**: 全エンドポイント実装（商品、カート、注文）
+- **Swagger UI**: API仕様書の閲覧（http://localhost:8080/api/docs）
+- **New Relic統合**: APM/RUM監視機能
+
+### 未実装機能
+- **決済ページ**: 注文確定フロー
+- **負荷生成スクリプト**: 自動負荷テスト
+- **ドキュメント**: 詳細なセットアップガイド
 
 ## トラブルシューティング
 
