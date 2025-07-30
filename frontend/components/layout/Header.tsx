@@ -1,0 +1,56 @@
+'use client'
+
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+
+export default function Header() {
+  const [cartItemCount, setCartItemCount] = useState(0)
+
+  useEffect(() => {
+    // TODO: カートのアイテム数を取得する処理
+    // 現在はモック値を設定
+    setCartItemCount(0)
+  }, [])
+
+  return (
+    <header className="bg-blue-600 text-white shadow-lg">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-2xl font-bold hover:text-blue-50 transition-colors">
+            SLM ECサイト
+          </Link>
+          
+          <nav className="flex items-center space-x-6">
+            <Link href="/" className="hover:text-blue-50 transition-colors">
+              商品一覧
+            </Link>
+            <Link 
+              href="/cart" 
+              className="flex items-center space-x-2 hover:text-blue-50 transition-colors"
+            >
+              <svg 
+                className="w-6 h-6" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" 
+                />
+              </svg>
+              <span>カート</span>
+              {cartItemCount > 0 && (
+                <span className="bg-blue-50 text-blue-700 rounded-full px-2 py-1 text-xs font-bold">
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
+          </nav>
+        </div>
+      </div>
+    </header>
+  )
+}

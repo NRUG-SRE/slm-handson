@@ -1,0 +1,80 @@
+services:
+  # APIサーバー (Go)
+  api-server:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: slm-api-server
+    ports:
+      - "8080:8080"
+    environment:
+      # New Relic APM設定
+      NEW_RELIC_API_KEY: ${NEW_RELIC_API_KEY}
+      NEW_RELIC_APP_NAME: ${NEW_RELIC_APP_NAME:-slm-handson-api}
+
+      # パフォーマンス調整用環境変数（デフォルト値をSLMデモ用に設定）
+      ERROR_RATE: ${ERROR_RATE:-0.05}
+      RESPONSE_TIME_MIN: ${RESPONSE_TIME_MIN:-50}
+      RESPONSE_TIME_MAX: ${RESPONSE_TIME_MAX:-300}
+      SLOW_ENDPOINT_RATE: ${SLOW_ENDPOINT_RATE:-0.1}
+
+      # アプリケーション設定
+      PORT: 8080
+      HOST: 0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - slm-network
+
+  # フロントエンドサーバー (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8080/api
+        NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY: ${NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY}
+        NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID: ${NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID}
+        NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID: ${NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID}
+    container_name: slm-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      # ブラウザからアクセス可能なAPIサーバーURL
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8080/api
+      NODE_ENV: production
+    depends_on:
+      api-server:
+        condition: service_healthy
+    networks:
+      - slm-network
+
+  # 擬似ユーザーアクセス生成スクリプト
+  # load-generator:
+  #   build:
+  #     context: ./scripts
+  #     dockerfile: Dockerfile
+  #   container_name: slm-load-generator
+  #   environment:
+  #     TARGET_URL: ${TARGET_URL:-http://frontend:3000}
+  #     USERS_COUNT: ${USERS_COUNT:-10}
+  #     SPAWN_RATE: ${SPAWN_RATE:-1}
+  #     DURATION: ${DURATION:-300}
+  #     SCENARIO: ${SCENARIO:-normal}
+  #   depends_on:
+  #     - frontend
+  #     - api-server
+  #   networks:
+  #     - slm-network
+  #   # profilesを使用して必要時のみ起動
+  #   # docker-compose --profile load-test up で起動
+  #   profiles:
+  #     - load-test
+
+networks:
+  slm-network:
+    driver: bridge

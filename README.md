@@ -57,9 +57,10 @@ docker-compose up -d
 ```
 
 起動後、以下のURLでアクセスできます：
-- フロントエンド: http://localhost:3000
-- バックエンドAPI: http://localhost:8080/api
-- ヘルスチェック: http://localhost:8080/health
+- **フロントエンド**: http://localhost:3000
+- **バックエンドAPI**: http://localhost:8080/api
+- **ヘルスチェック**: http://localhost:8080/health
+- **API仕様書 (Swagger UI)**: http://localhost:8080/api/docs
 
 ## アーキテクチャ
 
@@ -101,6 +102,8 @@ docker-compose up -d
 ### 1. 環境セットアップ（20分）
 - New Relic APIキーの払い出しと設定
 - デモアプリケーションの起動と動作確認
+- フロントエンド（http://localhost:3000）でECサイトの動作確認
+- Swagger UI（http://localhost:8080/api/docs）でAPI仕様の確認
 - APM / Real User Monitoringの計測確認
 
 ### 2. SLM設定ハンズオン（40分）
@@ -135,6 +138,13 @@ docker-compose up -d
 ### 注文・決済
 - `POST /api/orders` - 注文作成（決済処理含む）
 - `GET /api/orders/{id}` - 注文確認
+
+### SLMデモ用
+- `GET /api/v1/error` - エラー生成エンドポイント（ERROR_RATE環境変数で制御）
+
+### API仕様書
+- `GET /api/docs` - Swagger UI（ブラウザでAPIドキュメント閲覧）
+- `GET /api/docs/swagger.yaml` - OpenAPI 3.0.3仕様書（YAML形式）
 
 ## 負荷生成とテスト
 

@@ -1,0 +1,111 @@
+'use client'
+
+declare global {
+  interface Window {
+    newrelic?: {
+      addPageAction: (name: string, attributes?: Record<string, any>) => void
+      setCustomAttribute: (name: string, value: string | number | boolean) => void
+      noticeError: (error: Error) => void
+      finished: boolean
+    }
+  }
+}
+
+export class NewRelicMonitoring {
+  private static instance: NewRelicMonitoring
+  private isInitialized = false
+
+  private constructor() {}
+
+  public static getInstance(): NewRelicMonitoring {
+    if (!NewRelicMonitoring.instance) {
+      NewRelicMonitoring.instance = new NewRelicMonitoring()
+    }
+    return NewRelicMonitoring.instance
+  }
+
+  public init(): void {
+    if (this.isInitialized || typeof window === 'undefined') {
+      return
+    }
+
+    // New Relic Browser Agentの初期化
+    // 実際の初期化は layout.tsx で New Relic スクリプトタグによって行われる
+    this.isInitialized = true
+  }
+
+  public trackPageView(pageName: string, attributes?: Record<string, any>): void {
+    if (typeof window !== 'undefined' && window.newrelic) {
+      window.newrelic.addPageAction('PageView', {
+        page: pageName,
+        ...attributes,
+      })
+    }
+  }
+
+  public trackUserAction(actionName: string, attributes?: Record<string, any>): void {
+    if (typeof window !== 'undefined' && window.newrelic) {
+      window.newrelic.addPageAction(actionName, attributes)
+    }
+  }
+
+  public trackPurchase(orderId: string, amount: number, items: any[]): void {
+    this.trackUserAction('Purchase', {
+      orderId,
+      amount,
+      itemCount: items.length,
+      items: items.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.product?.price
+      }))
+    })
+  }
+
+  public trackAddToCart(productId: string, quantity: number, price: number): void {
+    this.trackUserAction('AddToCart', {
+      productId,
+      quantity,
+      price,
+      totalValue: quantity * price
+    })
+  }
+
+  public trackRemoveFromCart(productId: string, quantity: number): void {
+    this.trackUserAction('RemoveFromCart', {
+      productId,
+      quantity
+    })
+  }
+
+  public trackError(error: Error, context?: string): void {
+    if (typeof window !== 'undefined' && window.newrelic) {
+      if (context) {
+        window.newrelic.setCustomAttribute('errorContext', context)
+      }
+      window.newrelic.noticeError(error)
+    }
+  }
+
+  public setUserAttribute(key: string, value: string | number | boolean): void {
+    if (typeof window !== 'undefined' && window.newrelic) {
+      window.newrelic.setCustomAttribute(key, value)
+    }
+  }
+}
+
+// シングルトンインスタンスをエクスポート
+export const monitoring = NewRelicMonitoring.getInstance()
+
+// React Hook for easy monitoring
+export function useMonitoring() {
+  return {
+    trackPageView: monitoring.trackPageView.bind(monitoring),
+    trackUserAction: monitoring.trackUserAction.bind(monitoring),
+    trackPurchase: monitoring.trackPurchase.bind(monitoring),
+    trackAddToCart: monitoring.trackAddToCart.bind(monitoring),
+    trackRemoveFromCart: monitoring.trackRemoveFromCart.bind(monitoring),
+    trackError: monitoring.trackError.bind(monitoring),
+    setUserAttribute: monitoring.setUserAttribute.bind(monitoring),
+  }
+}

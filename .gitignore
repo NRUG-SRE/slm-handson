@@ -1,32 +1,152 @@
-# If you prefer the allow list template instead of the deny list, see community template:
-# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
-#
+# Environment variables (secrets and API keys)
+.env
+.env.local
+.env.production
+.env.development
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+.docker/
+
+# Claude Code
+.claude/
+
+# Go specific
 # Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
+backend/main
+backend/cmd/server/main
 
 # Test binary, built with `go test -c`
 *.test
 
-# Code coverage profiles and other test artifacts
+# Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 coverage.*
 *.coverprofile
 profile.cov
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
 # Go workspace file
 go.work
 go.work.sum
 
-# env file
-.env
+# Dependency directories
+vendor/
 
-# Editor/IDE
-# .idea/
-# .vscode/
+# Node.js specific (frontend)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+frontend/.cache/
+
+# Frontend dependencies and build artifacts
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+
+# Frontend environment files
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Python (for load generator scripts if implemented in Python)
+scripts/__pycache__/
+scripts/*.py[cod]
+scripts/*$py.class
+scripts/*.so
+scripts/.Python
+scripts/build/
+scripts/develop-eggs/
+scripts/dist/
+scripts/downloads/
+scripts/eggs/
+scripts/.eggs/
+scripts/lib/
+scripts/lib64/
+scripts/parts/
+scripts/sdist/
+scripts/var/
+scripts/wheels/
+scripts/*.egg-info/
+scripts/.installed.cfg
+scripts/*.egg
+scripts/MANIFEST
+
+# Virtual environments
+scripts/venv/
+scripts/env/
+scripts/.venv/
+
+# Coverage reports
+coverage/
+*.cover
+.coverage
+.coverage.*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Build artifacts
+build/
+dist/
+target/
+
+# Dependencies downloaded by Docker
+**/node_modules/
+
+# Local development files
+*.local
+local/
+dev/
+
+# Backup files
+*.bak
+*.backup
+
+# Archives
+*.tar.gz
+*.zip
+*.rar
+
+# Database files (if any local DBs are used)
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache directories
+.cache/
+.npm/
+.yarn/
