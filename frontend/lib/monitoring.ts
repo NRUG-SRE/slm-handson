@@ -110,5 +110,3 @@ export function useMonitoring() {
   }
 }
 
-// Alias for consistency
-export const useNewRelicMonitoring = useMonitoring

@@ -24,10 +24,20 @@ export interface Cart {
   updatedAt: string
 }
 
+export interface OrderItem {
+  id: string
+  productId: string
+  product: Product
+  price: number
+  quantity: number
+  createdAt: string
+}
+
 export interface Order {
   id: string
-  items: CartItem[]
+  items: OrderItem[]
   totalAmount: number
-  status: 'pending' | 'completed' | 'failed'
+  status: 'pending' | 'processing' | 'completed' | 'cancelled'
   createdAt: string
+  updatedAt: string
 }

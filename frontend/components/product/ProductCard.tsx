@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import { Product } from '@/lib/types'
-import { useNewRelicMonitoring } from '@/lib/monitoring'
+import { useMonitoring } from '@/lib/monitoring'
 
 interface ProductCardProps {
   product: Product
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const monitoring = useNewRelicMonitoring()
+  const monitoring = useMonitoring()
 
   const handleProductClick = () => {
     monitoring.trackUserAction('ProductView', {

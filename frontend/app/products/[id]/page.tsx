@@ -5,12 +5,12 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Product } from '@/lib/types'
 import { productApi, cartApi } from '@/lib/api'
-import { useNewRelicMonitoring } from '@/lib/monitoring'
+import { useMonitoring } from '@/lib/monitoring'
 
 export default function ProductDetailPage() {
   const params = useParams()
   const id = params.id as string
-  const monitoring = useNewRelicMonitoring()
+  const monitoring = useMonitoring()
   
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)

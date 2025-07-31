@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { cartApi } from '@/lib/api'
-import { useNewRelicMonitoring } from '@/lib/monitoring'
+import { useMonitoring } from '@/lib/monitoring'
 import { Cart } from '@/lib/types'
 import CartItem from '@/components/cart/CartItem'
 import CartSummary from '@/components/cart/CartSummary'
 
 export default function CartPage() {
-  const monitoring = useNewRelicMonitoring()
+  const monitoring = useMonitoring()
   const [cart, setCart] = useState<Cart | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

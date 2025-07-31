@@ -8,10 +8,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 現在の状態
 
-リポジトリは初期状態で、README.mdのみ存在します。以下のコンポーネントの実装が必要です：
-- New Relic APM統合を含むGo APIサーバー
-- DockerおよびDocker Compose設定
-- SLI/SLOデモンストレーション用のサンプルAPIエンドポイント
+**🎉 主要機能は実装完了済み** - ECサイトの完全なフローが動作可能です：
+- ✅ New Relic APM統合を含むGo APIサーバー
+- ✅ DockerおよびDocker Compose設定
+- ✅ SLI/SLOデモンストレーション用のサンプルAPIエンドポイント
+- ✅ Next.jsフロントエンド（全ページ実装済み）
+- ✅ Swagger/OpenAPI 3.0.3仕様書
+- ✅ New Relic RUM統合
+
+**⚠️ 未実装の補助機能**：
+- 負荷生成スクリプト（`scripts/`ディレクトリ）
+- 詳細ドキュメント（`docs/`ディレクトリ）
 
 ## アプリケーション動作環境
 
@@ -258,10 +265,9 @@ slm-handson/
    - `POST /api/cart/items` - 商品をカートに追加
    - `PUT /api/cart/items/{id}` - カート内商品の数量変更・削除（オプション）
 
-   **注文・決済API（3つ）**：
+   **注文・決済API（2つ）**：
    - `GET /api/orders` - 全注文一覧取得（管理者用・ハンズオン確認用）
    - `POST /api/orders` - 注文作成（決済処理も含む）
-   - `GET /api/orders/{id}` - 注文詳細取得
 
    **デモ用エンドポイント**：
    - `GET /api/v1/error` - ランダムにエラーを返すエンドポイント（エラー率調整用）
@@ -323,11 +329,11 @@ slm-handson/
    - 空カート時のメッセージ表示
    - レジに進むボタン（決済ページへのリンク）
 
-4. **決済ページ (/checkout) [⚠️未実装]**:
+4. **決済ページ (/checkout) [✅実装済み]**:
    - 注文内容のサマリー表示
-   - 配送先情報入力フォーム
-   - 決済方法選択
-   - 注文確定ボタンと確認ダイアログ
+   - 配送先・決済方法の表示（ハンズオン用簡略版）
+   - 注文確定ボタン（カート内容から注文作成）
+   - 注文完了画面とサンクスページ
 
 ### 環境変数
 ```
@@ -437,12 +443,11 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id
 - **NRUG-SREブランディング**: ヘッダーロゴとテキスト
 
 ### ⚠️ 未実装
-- **決済ページ** (`/checkout`): 注文確定フロー
 - **負荷生成スクリプト** (`scripts/`): Locustベースの負荷テスト
 - **ドキュメント** (`docs/`): セットアップガイド等
 
 ### 🔧 ハンズオン実施可能な機能
-- 商品閲覧フロー（TOPページ → 商品詳細 → カート追加 → カート確認）
-- エラー率調整によるSLO違反シミュレーション
-- New Relic UIでのAPM/RUMデータ確認
-- APIドキュメント閲覧（Swagger UI）
+- **完全なECサイトフロー**: TOPページ → 商品詳細 → カート追加 → カート確認 → 決済完了
+- **SLO違反シミュレーション**: エラー率調整による障害体験
+- **New Relic監視**: APM/RUMデータ確認とダッシュボード
+- **API仕様確認**: Swagger UIでのAPIドキュメント閲覧

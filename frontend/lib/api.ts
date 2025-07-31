@@ -97,17 +97,21 @@ export const cartApi = {
 }
 
 export const orderApi = {
-  // 注文作成
-  createOrder: async (cartItems: CartItem[]): Promise<Order> => {
+  // 注文作成（カート内容から自動で注文作成）
+  createOrder: async (): Promise<Order> => {
     return apiRequest<Order>('/orders', {
       method: 'POST',
-      body: JSON.stringify({ items: cartItems }),
     })
   },
 
   // 注文詳細取得
   getOrder: async (id: string): Promise<Order> => {
     return apiRequest<Order>(`/orders/${id}`)
+  },
+
+  // 全注文一覧取得（管理者用・ハンズオン確認用）
+  getOrders: async (): Promise<Order[]> => {
+    return apiRequest<Order[]>('/orders')
   },
 }
 
