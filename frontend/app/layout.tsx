@@ -21,35 +21,52 @@ export default function RootLayout({
   const newRelicAccountId = process.env.NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID
   const newRelicApplicationId = process.env.NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID
 
+  // New Relic RUM設定スクリプトを環境変数から動的生成
+  const newRelicScript = newRelicBrowserKey && newRelicAccountId && newRelicApplicationId ? `
+    window.NREUM||(NREUM={});
+    NREUM.init={
+      distributed_tracing:{enabled:true},
+      privacy:{cookies_enabled:true},
+      ajax:{deny_list:["bam.nr-data.net"]}
+    };
+
+    NREUM.loader_config={
+      accountID:"${newRelicAccountId}",
+      trustKey:"${newRelicAccountId}",
+      agentID:"${newRelicApplicationId}",
+      licenseKey:"${newRelicBrowserKey}",
+      applicationID:"${newRelicApplicationId}"
+    };
+
+    NREUM.info={
+      beacon:"bam.nr-data.net",
+      errorBeacon:"bam.nr-data.net",
+      licenseKey:"${newRelicBrowserKey}",
+      applicationID:"${newRelicApplicationId}",
+      sa:1
+    };
+
+    // New Relicローダースクリプトの動的読み込み
+    (function() {
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.async = true;
+      script.src = 'https://js-agent.newrelic.com/nr-loader-spa-1.293.0.min.js';
+      
+      var firstScript = document.getElementsByTagName('script')[0];
+      firstScript.parentNode.insertBefore(script, firstScript);
+    })();
+  ` : ''
+
   return (
     <html lang="ja">
       <head>
-        {newRelicBrowserKey && newRelicAccountId && newRelicApplicationId && (
+        {newRelicScript && (
           <Script
+            id="new-relic-rum"
             strategy="beforeInteractive"
             dangerouslySetInnerHTML={{
-              __html: `
-                window.NREUM||(NREUM={});NREUM.info={
-                  "beacon":"bam.nr-data.net",
-                  "licenseKey":"${newRelicBrowserKey}",
-                  "applicationID":"${newRelicApplicationId}",
-                  "transactionName":"",
-                  "queueTime":0,
-                  "applicationTime":0,
-                  "agent":"js-agent.newrelic.com/nr-1.260.1.js"
-                };
-                (function(a,b,c,d,e,f,g){a.NREUM||(a.NREUM={}),
-                b in a.NREUM||(a.NREUM[b]=[]);var h=typeof d==="function";
-                a.NREUM[b].push({name:c,params:h?null:d,callback:h?d:null,end:Date.now()});
-                if(a.readyState==="complete"||a.readyState==="interactive")
-                f();else a.addEventListener("DOMContentLoaded",f,false)})
-                (document,"addEventListener","DOMContentLoaded",function(){
-                (function(a,b){var c=a.createElement(b),d=a.getElementsByTagName(b)[0];
-                c.src="https://js-agent.newrelic.com/nr-1.260.1.js";
-                c.setAttribute("data-account-id","${newRelicAccountId}");
-                c.setAttribute("data-application-id","${newRelicApplicationId}");
-                d.parentNode.insertBefore(c,d)})(document,"script")});
-              `,
+              __html: newRelicScript
             }}
           />
         )}

@@ -10,8 +10,8 @@ ECサイトをモデルとしたサンプルアプリケーション（Go APIサ
 
 - Docker および Docker Compose
 - New Relicアカウント
-- New Relic API Key（APM用）
-- New Relic Browser API Key（RUM用）
+- New Relic License Key（APM用）
+- New Relic Browser License Key（RUM用）
 - Go 1.21以上（ローカル開発時）
 - Node.js 18以上（ローカル開発時）
 
@@ -35,7 +35,7 @@ cp .env.example .env
 `.env`ファイルの内容：
 ```
 # Backend (APM)
-NEW_RELIC_API_KEY=your-api-key-here
+NEW_RELIC_API_KEY=your-license-key-here
 NEW_RELIC_APP_NAME=slm-handson-api
 ERROR_RATE=0.0
 RESPONSE_TIME_MIN=50
@@ -43,9 +43,35 @@ RESPONSE_TIME_MAX=500
 SLOW_ENDPOINT_RATE=0.0
 
 # Frontend (RUM)
-NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY=your-browser-key-here
+NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY=your-browser-license-key-here
 NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID=your-account-id
-NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-app-id
+NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-app-id  # 必須
+```
+
+#### New Relic設定値の取得方法
+
+**APM用ライセンスキー (`NEW_RELIC_API_KEY`)**:
+1. New Relic UI → 右上のユーザーメニュー → **API keys**
+2. **License keys** セクションでキーをコピー
+3. 形式: `*******NRAL`
+
+**RUM用設定 (`NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY`, `NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID`, `NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID`)**:
+1. New Relic UI → **Browser** → **Add a new app**
+2. アプリ名を入力（例：`slm-handson-frontend`）
+3. **Enable via copy/paste** を選択
+4. 生成されたJavaScriptスニペットから以下を抽出：
+   - `licenseKey`: `NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY`
+   - `accountID`: `NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID`  
+   - `applicationID`: `NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID`
+
+例：
+```javascript
+// スニペットから抽出
+NREUM.loader_config={
+  accountID:"9999999",           // ← これをコピー
+  applicationID:"111111111",    // ← これをコピー
+  licenseKey:"NRBR-*****"    // ← これをコピー
+}
 ```
 
 ### 3. アプリケーションの起動
@@ -100,7 +126,7 @@ docker-compose up -d
 ## ハンズオンシナリオ
 
 ### 1. 環境セットアップ（20分）
-- New Relic APIキーの払い出しと設定
+- New Relic License Keyの払い出しと設定
 - デモアプリケーションの起動と動作確認
 - フロントエンド（http://localhost:3000）でECサイトの動作確認
 - Swagger UI（http://localhost:8080/api/docs）でAPI仕様の確認
@@ -227,12 +253,45 @@ slm-handson/
 
 ## トラブルシューティング
 
-- **ポート競合**: 3000番（フロントエンド）、8080番（API）が使用されていないか確認
-- **New Relicにデータが表示されない**: 
-  - API Keyが正しく設定されているか確認
-  - アプリケーション名が正しいか確認
-  - 数分待ってからリフレッシュ
-- **Docker関連のエラー**: `docker-compose logs` でエラーメッセージを確認
+### よくある問題と対処法
+
+**1. ポート競合エラー**
+- **症状**: `port is already allocated`
+- **対処**: 3000番（フロントエンド）、8080番（API）が使用されていないか確認
+```bash
+sudo lsof -i :3000
+sudo lsof -i :8080
+```
+
+**2. New Relicにデータが表示されない**
+- **症状**: APMやRUMでデータが送信されない
+- **対処**:
+  1. `.env`ファイルでLicense Keyが正しく設定されているか確認
+  2. `NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID`が設定されているか確認（必須）
+  3. アプリケーション名が正しいか確認
+  4. 数分待ってからNew Relic UIをリフレッシュ
+  5. ブラウザコンソールでエラーメッセージを確認
+
+**3. RUM 400 Bad Requestエラー**
+- **症状**: ブラウザコンソールに`bam.nr-data.net`への400エラー
+- **対処**: `NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID`が正しい数値で設定されているか確認
+
+**4. 環境変数が反映されない**
+- **症状**: Docker内で環境変数が読み込まれない
+- **対処**: 
+```bash
+# コンテナを完全に再ビルド
+docker-compose down
+docker-compose up --build -d
+```
+
+**5. Docker関連のエラー**
+- **対処**: ログでエラーメッセージを確認
+```bash
+docker-compose logs -f
+docker-compose logs api-server
+docker-compose logs frontend
+```
 
 ## 参考資料
 

@@ -8,17 +8,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 現在の状態
 
-**🎉 主要機能は実装完了済み** - ECサイトの完全なフローが動作可能です：
-- ✅ New Relic APM統合を含むGo APIサーバー
-- ✅ DockerおよびDocker Compose設定
-- ✅ SLI/SLOデモンストレーション用のサンプルAPIエンドポイント
-- ✅ Next.jsフロントエンド（全ページ実装済み）
-- ✅ Swagger/OpenAPI 3.0.3仕様書
-- ✅ New Relic RUM統合
+**🎉 プロジェクト完全実装済み** - 本番レベルのSLMハンズオン環境が稼働中：
 
-**⚠️ 未実装の補助機能**：
-- 負荷生成スクリプト（`scripts/`ディレクトリ）
-- 詳細ドキュメント（`docs/`ディレクトリ）
+### ✅ 実装完了（本番レベル）
+- **Go APIサーバー**: New Relic APM統合、全APIエンドポイント、Swagger UI
+- **Next.jsフロントエンド**: 全ページ実装、New Relic RUM統合、ECサイト機能完備
+- **Docker構成**: マルチステージビルド、ヘルスチェック、環境変数対応
+- **New Relic統合**: APM + RUM エンドツーエンド監視、セキュアな環境変数設定
+- **SLMデモ機能**: エラー率・レスポンス時間調整、パフォーマンス劣化シミュレーション
+- **セキュリティ**: ハードコーディング排除、環境変数ベース設定
+
+### 🎯 ハンズオン対応状況
+- **環境セットアップ**: `.env`設定 + `docker-compose up -d`で完全起動
+- **APM監視**: Go APIサーバーの全トランザクション・エラー・パフォーマンス計測
+- **RUM監視**: Next.jsフロントエンドのページビュー・Ajax・エラー・Core Web Vitals計測
+- **SLO設定**: New Relic UIでの実データベースSLI/SLO管理
+- **パフォーマンス変化体験**: 環境変数による動的制御（ERROR_RATE等）
+
+### ⚠️ 未実装（ハンズオン実施には不要）
+- **負荷生成スクリプト**: 自動負荷テスト（手動操作で代替可能）
+- **詳細ドキュメント**: アーキテクチャ詳細説明（README.mdで十分）
 
 ## アプリケーション動作環境
 
@@ -109,10 +118,9 @@ docker-compose down
 # ビルドして起動
 docker-compose up --build -d
 
-# 環境変数を設定して実行
-export NEW_RELIC_API_KEY="your-api-key-here"
-export NEW_RELIC_BROWSER_KEY="your-browser-key-here"
-docker-compose up -d
+# 環境変数を.envファイルで設定して実行
+# .envファイルを作成・編集後に実行
+docker-compose up --build -d
 ```
 
 ## プロジェクト全体のディレクトリ構成
@@ -234,7 +242,7 @@ slm-handson/
    - インターフェースは内側のレイヤーで定義し、外側で実装
 
 2. **New Relic APM統合（バックエンド）**：
-   - 環境変数: `NEW_RELIC_API_KEY` - New Relic APIキー
+   - 環境変数: `NEW_RELIC_API_KEY` - New Relic License Key
    - infrastructure/monitoring でAPMエージェントを管理
    - ミドルウェアとしてHTTPハンドラーに適用
    - ユースケース層でのカスタムセグメント追跡
@@ -335,20 +343,22 @@ slm-handson/
    - 注文確定ボタン（カート内容から注文作成）
    - 注文完了画面とサンクスページ
 
-### 環境変数
+### 環境変数（必須）
 ```
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
-NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY=your-new-relic-browser-api-key
-NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID=your-new-relic-account-id
-NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id
+NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY=your-new-relic-browser-license-key（必須）
+NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID=your-new-relic-account-id（必須）
+NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
 ```
 
 ### New Relic Real User Monitoring (RUM) 設定
-- Browser Agentをlayout.tsxで初期化
-- ページビュー、AJAXリクエスト、JavaScriptエラーの自動追跡
-- カスタムイベントとユーザーアクションの追跡
-- Core Web Vitals（LCP、FID、CLS）の測定
-- ユーザーセッション追跡とジャーニー分析
+- **セキュアな設定**: 環境変数から動的にスクリプト生成、ハードコーディング排除
+- **Browser Agent**: layout.tsxで`beforeInteractive`戦略による初期化
+- **自動追跡**: ページビュー、AJAXリクエスト、JavaScriptエラー、パフォーマンス
+- **カスタムイベント**: ユーザーアクションの追跡（商品閲覧、カート操作、注文完了）
+- **Core Web Vitals**: LCP、FID、CLS、TTFB等のパフォーマンス指標測定
+- **エラーレポーティング**: フロントエンドエラーの自動収集とレポート
+- **セッション追跡**: ユーザージャーニー分析とコンバージョン測定
 
 ### Tailwind設定
 - レスポンシブデザイン対応
