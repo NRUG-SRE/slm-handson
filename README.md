@@ -51,14 +51,13 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-app-id  # 必須
 #### New Relic設定値の取得方法
 
 **APM用ライセンスキー (`NEW_RELIC_API_KEY`)**:
-1. New Relic UI → 右上のユーザーメニュー → **API keys**
-2. **License keys** セクションでキーをコピー
-3. 形式: `*******NRAL`
+1. New Relic UI → 左下のユーザーメニュー → **API keys**
+2. **License keys** セクションで`Copy key ID`を選択して貼り付け
 
 **RUM用設定 (`NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY`, `NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID`, `NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID`)**:
-1. New Relic UI → **Browser** → **Add a new app**
-2. アプリ名を入力（例：`slm-handson-frontend`）
-3. **Enable via copy/paste** を選択
+1. New Relic UI → **Browser** → **Add your first browser app** → **Browser monitoring** → **Place a JavaScript snippet in frontend code** を選択
+2. アプリ名を入力（例：`slm-handson-frontend`）して **Save and continue**
+3. **Configure the browser agent** では、そのまま **Save and continue**
 4. 生成されたJavaScriptスニペットから以下を抽出：
    - `licenseKey`: `NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY`
    - `accountID`: `NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID`  
@@ -79,7 +78,7 @@ NREUM.loader_config={
 Docker Composeを使用してサンプルアプリケーションを起動します：
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 起動後、以下のURLでアクセスできます：
@@ -102,9 +101,9 @@ docker-compose up -d
       ▼                    ▼                    ▼
 ┌─────────────────────────────────────────────────────┐
 │              New Relic Platform                     │
-│  ┌─────────┐  ┌──────────────┐  ┌──────────────┐  │
-│  │   RUM   │  │     APM      │  │     SLM      │  │
-│  └─────────┘  └──────────────┘  └──────────────┘  │
+│  ┌─────────┐  ┌──────────────┐  ┌──────────────┐    │
+│  │   RUM   │  │     APM      │  │     SLM      │    │
+│  └─────────┘  └──────────────┘  └──────────────┘    │
 └─────────────────────────────────────────────────────┘
 ```
 
