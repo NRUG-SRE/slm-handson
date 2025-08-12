@@ -4,6 +4,7 @@ import './globals.css'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import Script from 'next/script'
+import NewRelicRouteTracker from './providers/newrelic'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -72,6 +73,7 @@ export default function RootLayout({
         )}
       </head>
       <body className={inter.className}>
+        <NewRelicRouteTracker />
         <div className="min-h-screen flex flex-col">
           <Header />
           <main className="flex-grow">

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { cartApi, orderApi } from '@/lib/api'
 import { Cart, Order } from '@/lib/types'
+import { trackECommerceAction } from '@/lib/newrelic'
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -29,6 +30,10 @@ export default function CheckoutPage() {
         router.push('/cart')
         return
       }
+      
+      // New Relic: 決済開始を記録
+      const itemCount = cartData.items.reduce((total, item) => total + item.quantity, 0)
+      trackECommerceAction.beginCheckout(cartData.totalAmount, itemCount)
     } catch (error) {
       console.error('Failed to fetch cart:', error)
       setError('カート情報の取得に失敗しました')
@@ -50,6 +55,10 @@ export default function CheckoutPage() {
       // 注文を作成（バックエンドでカートも空になる）
       const createdOrder = await orderApi.createOrder()
       setOrder(createdOrder)
+      
+      // New Relic: 購入完了を記録
+      const itemCount = cart.items.reduce((total, item) => total + item.quantity, 0)
+      trackECommerceAction.completePurchase(createdOrder.id, createdOrder.totalAmount, itemCount)
       
       // カート更新イベントを発火してヘッダーのカート数を更新
       window.dispatchEvent(new CustomEvent('cartUpdated'))

@@ -3,9 +3,11 @@
 declare global {
   interface Window {
     newrelic?: {
+      setPageViewName?: (name: string) => void
       addPageAction: (name: string, attributes?: Record<string, any>) => void
       setCustomAttribute: (name: string, value: string | number | boolean) => void
-      noticeError: (error: Error) => void
+      noticeError: (error: Error, customAttributes?: Record<string, any>) => void
+      setUserId?: (userId: string) => void
       finished: boolean
     }
   }

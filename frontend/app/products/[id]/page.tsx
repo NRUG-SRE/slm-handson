@@ -5,12 +5,11 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Product } from '@/lib/types'
 import { productApi, cartApi } from '@/lib/api'
-import { useMonitoring } from '@/lib/monitoring'
+import { trackECommerceAction, trackError } from '@/lib/newrelic'
 
 export default function ProductDetailPage() {
   const params = useParams()
   const id = params.id as string
-  const monitoring = useMonitoring()
   
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
@@ -26,14 +25,8 @@ export default function ProductDetailPage() {
         const data = await productApi.getProduct(id)
         setProduct(data)
         
-        // New Relic: 商品詳細ページビューを記録
-        if (monitoring && monitoring.trackPageView) {
-          monitoring.trackPageView('ProductDetail', {
-            productId: data.id,
-            productName: data.name,
-            productPrice: data.price
-          })
-        }
+        // New Relic: 商品閲覧を記録
+        trackECommerceAction.viewProduct(data.id, data.name, data.price)
       } catch (err) {
         console.error('商品情報の取得に失敗しました:', err)
         setError('商品情報の取得に失敗しました')
@@ -61,7 +54,7 @@ export default function ProductDetailPage() {
       await cartApi.addToCart(product.id, quantity)
       
       // New Relic: カート追加イベントを記録
-      monitoring.trackAddToCart(product.id, quantity, product.price)
+      trackECommerceAction.addToCart(product.id, product.name, quantity, product.price)
       
       // カート更新イベントを発火
       window.dispatchEvent(new CustomEvent('cartUpdated'))
