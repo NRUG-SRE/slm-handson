@@ -107,6 +107,95 @@ docker compose up -d
 └─────────────────────────────────────────────────────┘
 ```
 
+### 画面とAPI構成図
+
+```mermaid
+graph TB
+    subgraph "Frontend Pages"
+        TOP["TOPページ<br/>(/)"]
+        PRODUCT["商品詳細ページ<br/>(/products/[id])"]
+        CART["カートページ<br/>(/cart)"]
+        CHECKOUT["決済ページ<br/>(/checkout)"]
+    end
+    
+    subgraph "API Endpoints"
+        API_PRODUCTS["GET /api/products<br/>商品一覧取得"]
+        API_PRODUCT["GET /api/products/{id}<br/>商品詳細取得"]
+        API_CART_GET["GET /api/cart<br/>カート内容取得"]
+        API_CART_ADD["POST /api/cart/items<br/>カート追加"]
+        API_CART_UPDATE["PUT /api/cart/items/{id}<br/>数量変更・削除"]
+        API_ORDERS["POST /api/orders<br/>注文作成"]
+        API_ERROR["GET /api/v1/error<br/>エラー生成"]
+    end
+    
+    %% ページ遷移
+    TOP --> PRODUCT
+    PRODUCT --> CART
+    CART --> CHECKOUT
+    CHECKOUT --> TOP
+    
+    %% API呼び出し
+    TOP -.-> API_PRODUCTS
+    PRODUCT -.-> API_PRODUCT
+    PRODUCT -.-> API_CART_ADD
+    CART -.-> API_CART_GET
+    CART -.-> API_CART_UPDATE
+    CHECKOUT -.-> API_CART_GET
+    CHECKOUT -.-> API_ORDERS
+    
+    %% スタイリング
+    classDef page fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef api fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#c62828,stroke-width:2px
+    
+    class TOP,PRODUCT,CART,CHECKOUT page
+    class API_PRODUCTS,API_PRODUCT,API_CART_GET,API_CART_ADD,API_CART_UPDATE,API_ORDERS api
+    class API_ERROR error
+```
+
+### ユーザーフローとAPI呼び出しシーケンス
+
+```mermaid
+sequenceDiagram
+    participant U as ユーザー
+    participant F as Frontend
+    participant A as API Server
+    
+    %% TOPページ
+    U->>F: TOPページ訪問
+    F->>A: GET /api/products
+    A-->>F: 商品一覧データ
+    F-->>U: 商品一覧表示
+    
+    %% 商品詳細
+    U->>F: 商品クリック
+    F->>A: GET /api/products/{id}
+    A-->>F: 商品詳細データ
+    F-->>U: 商品詳細表示
+    
+    %% カート追加
+    U->>F: カートに追加
+    F->>A: POST /api/cart/items
+    A-->>F: カート更新結果
+    F-->>U: 追加完了通知
+    
+    %% カート確認
+    U->>F: カートページへ
+    F->>A: GET /api/cart
+    A-->>F: カート内容
+    F-->>U: カート表示
+    
+    %% 決済
+    U->>F: 決済ページへ
+    F->>A: GET /api/cart
+    A-->>F: カート内容
+    F-->>U: 注文内容確認
+    U->>F: 注文確定
+    F->>A: POST /api/orders
+    A-->>F: 注文完了
+    F-->>U: 注文完了画面
+```
+
 ### コンポーネント
 
 - **フロントエンド (Next.js)**
