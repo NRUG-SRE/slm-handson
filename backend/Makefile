@@ -52,7 +52,12 @@ check-deps: ## 依存関係の確認
 
 build: ## アプリケーションをビルド
 	@echo "🔨 アプリケーションビルド中..."
-	go build -v -o bin/server ./cmd/server
+	@if command -v go >/dev/null 2>&1; then \
+		go build -v -o bin/server ./cmd/server; \
+	else \
+		echo "⚠️  Goがインストールされていません。Dockerを使用します..."; \
+		docker run --rm -v $(PWD):/app -w /app golang:$(GO_VERSION) go build -v -o bin/server ./cmd/server; \
+	fi
 
 clean: ## ビルド成果物をクリーンアップ
 	@echo "🧹 クリーンアップ中..."
@@ -74,21 +79,42 @@ test-docker: ## Docker環境でテスト実行
 
 test-unit: ## ユニットテストのみ実行
 	@echo "🧪 ユニットテスト実行中..."
-	@echo "Domain層テスト..."
-	go test -v -timeout 30s ./internal/domain/entity/...
-	@echo ""
-	@echo "UseCase層テスト..."
-	go test -v -timeout 30s ./internal/usecase/...
-	@echo ""
-	@echo "Infrastructure層テスト..."
-	go test -v -timeout 30s ./internal/infrastructure/...
-	@echo ""
-	@echo "Interface層テスト..."
-	go test -v -timeout 30s ./internal/interface/...
+	@if command -v go >/dev/null 2>&1; then \
+		echo "Goを使用してテスト実行..."; \
+		echo "Domain層テスト..."; \
+		go test -v -timeout 30s ./internal/domain/entity/...; \
+		echo ""; \
+		echo "UseCase層テスト..."; \
+		go test -v -timeout 30s ./internal/usecase/...; \
+		echo ""; \
+		echo "Infrastructure層テスト..."; \
+		go test -v -timeout 30s ./internal/infrastructure/...; \
+		echo ""; \
+		echo "Interface層テスト..."; \
+		go test -v -timeout 30s ./internal/interface/...; \
+	else \
+		echo "⚠️  Goがインストールされていません。Dockerを使用します..."; \
+		echo "Domain層テスト..."; \
+		docker run --rm -v $(PWD):/app -w /app golang:$(GO_VERSION) go test -v -timeout 30s ./internal/domain/entity/...; \
+		echo ""; \
+		echo "UseCase層テスト..."; \
+		docker run --rm -v $(PWD):/app -w /app golang:$(GO_VERSION) go test -v -timeout 30s ./internal/usecase/...; \
+		echo ""; \
+		echo "Infrastructure層テスト..."; \
+		docker run --rm -v $(PWD):/app -w /app golang:$(GO_VERSION) go test -v -timeout 30s ./internal/infrastructure/...; \
+		echo ""; \
+		echo "Interface層テスト..."; \
+		docker run --rm -v $(PWD):/app -w /app golang:$(GO_VERSION) go test -v -timeout 30s ./internal/interface/...; \
+	fi
 
 test-integration: ## 統合テストのみ実行
 	@echo "🔄 統合テスト実行中..."
-	go test -v -timeout 60s ./test/integration/...
+	@if command -v go >/dev/null 2>&1; then \
+		go test -v -timeout 60s ./test/integration/...; \
+	else \
+		echo "⚠️  Goがインストールされていません。Dockerを使用します..."; \
+		docker run --rm -v $(PWD):/app -w /app golang:$(GO_VERSION) go test -v -timeout 60s ./test/integration/...; \
+	fi
 
 test-coverage: $(COVERAGE_FILE) ## カバレッジ付きテスト実行
 	@echo "📊 カバレッジレポート生成中..."
