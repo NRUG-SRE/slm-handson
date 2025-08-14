@@ -1,0 +1,236 @@
+name: Backend Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/test.yml'
+
+defaults:
+  run:
+    working-directory: ./backend
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        go-version: [1.21, 1.22]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ matrix.go-version }}
+    
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ matrix.go-version }}-${{ hashFiles('backend/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-${{ matrix.go-version }}-
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Verify dependencies
+      run: go mod verify
+    
+    - name: Build application
+      run: go build -v ./cmd/server
+    
+    - name: Run Domain layer tests
+      run: go test -v -timeout 30s ./internal/domain/entity/...
+    
+    - name: Run UseCase layer tests
+      run: go test -v -timeout 30s ./internal/usecase/...
+    
+    - name: Run Infrastructure layer tests
+      run: go test -v -timeout 30s ./internal/infrastructure/...
+    
+    - name: Run Interface layer tests
+      run: go test -v -timeout 30s ./internal/interface/...
+    
+    - name: Run Integration tests (limited)
+      run: go test -v -timeout 60s ./test/integration/...
+      continue-on-error: true  # 統合テストは現在制限付きで実行
+    
+    - name: Run full test suite with coverage
+      run: go test -v -timeout 120s -coverprofile=coverage.out ./...
+    
+    - name: Generate coverage report
+      run: |
+        go tool cover -func=coverage.out | tail -n 1
+        go tool cover -html=coverage.out -o coverage.html
+    
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./backend/coverage.out
+        directory: ./backend
+        flags: backend
+        name: backend-coverage
+        fail_ci_if_error: false  # CI失敗を防ぐため
+    
+    - name: Upload coverage HTML report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report-go-${{ matrix.go-version }}
+        path: ./backend/coverage.html
+        retention-days: 30
+
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21
+    
+    - name: Run golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
+        working-directory: ./backend
+        args: --timeout=5m
+    
+    - name: Run go vet
+      run: go vet ./...
+    
+    - name: Run go fmt check
+      run: |
+        if [ -n "$(gofmt -l .)" ]; then
+          echo "以下のファイルがフォーマットされていません:"
+          gofmt -l .
+          exit 1
+        fi
+    
+    - name: Run ineffassign
+      run: |
+        go install github.com/gordonklaus/ineffassign@latest
+        ineffassign ./...
+    
+    - name: Run misspell
+      run: |
+        go install github.com/client9/misspell/cmd/misspell@latest
+        misspell -error .
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21
+    
+    - name: Run Gosec Security Scanner
+      uses: securecodewarrior/github-action-gosec@master
+      with:
+        args: -fmt sarif -out gosec.sarif ./backend/...
+    
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      if: always()
+      with:
+        sarif_file: gosec.sarif
+
+  docker-test:
+    name: Docker Test Environment
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Test with Docker
+      run: |
+        cd backend
+        chmod +x scripts/test-docker.sh
+        ./scripts/test-docker.sh
+      env:
+        GO_VERSION: "1.21"
+        CI: "true"
+
+  integration-test:
+    name: Integration Test (Full Environment)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    # services:
+      # 将来的にデータベースやRedis等が必要になった場合の準備
+      # postgres:
+      #   image: postgres:15
+      #   env:
+      #     POSTGRES_PASSWORD: postgres
+      #   options: >-
+      #     --health-cmd pg_isready
+      #     --health-interval 10s
+      #     --health-timeout 5s
+      #     --health-retries 5
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: 1.21
+    
+    - name: Build Docker image
+      run: |
+        cd backend
+        docker build -t slm-handson-backend:test .
+    
+    - name: Start application in Docker
+      run: |
+        cd backend
+        docker run -d --name test-app -p 8080:8080 \
+          -e NEW_RELIC_API_KEY="" \
+          -e NEW_RELIC_APP_NAME="test-app" \
+          slm-handson-backend:test
+        
+        # アプリケーションの起動を待つ
+        for i in {1..30}; do
+          if curl -f http://localhost:8080/health; then
+            echo "アプリケーションが起動しました"
+            break
+          fi
+          echo "起動待機中... ($i/30)"
+          sleep 2
+        done
+    
+    - name: Run API integration tests
+      run: |
+        # 基本的なAPIテスト
+        curl -f http://localhost:8080/health
+        curl -f http://localhost:8080/api/products
+        curl -f http://localhost:8080/api/cart
+    
+    - name: Stop and remove Docker container
+      if: always()
+      run: |
+        docker stop test-app || true
+        docker rm test-app || true
