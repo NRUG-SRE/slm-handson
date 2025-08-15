@@ -22,13 +22,13 @@ func TestOrderUseCase_CreateOrder(t *testing.T) {
 	}()
 
 	tests := []struct {
-		name              string
-		cartID            string
-		setupOrderMock    func() *mocks.MockOrderRepository
-		setupCartMock     func() *mocks.MockCartRepository
-		setupProductMock  func() *mocks.MockProductRepository
-		expectError       bool
-		checkResult       func(t *testing.T, order *entity.Order)
+		name             string
+		cartID           string
+		setupOrderMock   func() *mocks.MockOrderRepository
+		setupCartMock    func() *mocks.MockCartRepository
+		setupProductMock func() *mocks.MockProductRepository
+		expectError      bool
+		checkResult      func(t *testing.T, order *entity.Order)
 	}{
 		{
 			name:   "正常に注文を作成",

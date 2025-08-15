@@ -116,9 +116,9 @@ func TestNewOrder(t *testing.T) {
 
 func TestOrder_Complete(t *testing.T) {
 	tests := []struct {
-		name         string
-		setupOrder   func() *Order
-		expectError  bool
+		name           string
+		setupOrder     func() *Order
+		expectError    bool
 		expectedStatus OrderStatus
 	}{
 		{
@@ -191,9 +191,9 @@ func TestOrder_Complete(t *testing.T) {
 
 func TestOrder_Fail(t *testing.T) {
 	tests := []struct {
-		name         string
-		setupOrder   func() *Order
-		expectError  bool
+		name           string
+		setupOrder     func() *Order
+		expectError    bool
 		expectedStatus OrderStatus
 	}{
 		{
@@ -253,9 +253,9 @@ func TestOrder_Fail(t *testing.T) {
 
 func TestOrder_Cancel(t *testing.T) {
 	tests := []struct {
-		name         string
-		setupOrder   func() *Order
-		expectError  bool
+		name           string
+		setupOrder     func() *Order
+		expectError    bool
 		expectedStatus OrderStatus
 	}{
 		{
@@ -371,12 +371,12 @@ func TestOrder_GetItemCount(t *testing.T) {
 
 func TestOrder_StatusCheckers(t *testing.T) {
 	tests := []struct {
-		name           string
-		setupOrder     func() *Order
-		isCompleted    bool
-		isPending      bool
-		isFailed       bool
-		isCanceled     bool
+		name        string
+		setupOrder  func() *Order
+		isCompleted bool
+		isPending   bool
+		isFailed    bool
+		isCanceled  bool
 	}{
 		{
 			name: "Pending状態",

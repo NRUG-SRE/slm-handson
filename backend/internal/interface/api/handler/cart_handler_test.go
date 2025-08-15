@@ -14,7 +14,7 @@ func TestCartHandler_GetCart(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// カートハンドラーをモックして登録（実際のUseCaseなしでHTTPレスポンスをテスト）
 	router.GET("/api/cart", func(c *gin.Context) {
 		// モックレスポンス
@@ -22,19 +22,19 @@ func TestCartHandler_GetCart(t *testing.T) {
 			"id": DefaultCartID,
 			"items": []gin.H{
 				{
-					"id": "item-1",
+					"id":        "item-1",
 					"productId": "product-1",
-					"quantity": 2,
-					"price": 1000,
+					"quantity":  2,
+					"price":     1000,
 				},
 			},
 			"totalAmount": 2000,
-			"itemCount": 1,
+			"itemCount":   1,
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
-			"data": cartData,
-			"error": nil,
+			"data":    cartData,
+			"error":   nil,
 		})
 	})
 
@@ -68,7 +68,7 @@ func TestCartHandler_AddToCart_ValidRequest(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// カートハンドラーをモックして登録
 	router.POST("/api/cart/items", func(c *gin.Context) {
 		var req AddToCartRequest
@@ -76,7 +76,7 @@ func TestCartHandler_AddToCart_ValidRequest(t *testing.T) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Invalid request body",
 				},
 			})
@@ -88,19 +88,19 @@ func TestCartHandler_AddToCart_ValidRequest(t *testing.T) {
 			"id": DefaultCartID,
 			"items": []gin.H{
 				{
-					"id": "item-1",
+					"id":        "item-1",
 					"productId": req.ProductID,
-					"quantity": req.Quantity,
-					"price": 1000,
+					"quantity":  req.Quantity,
+					"price":     1000,
 				},
 			},
 			"totalAmount": 1000 * req.Quantity,
-			"itemCount": 1,
+			"itemCount":   1,
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
-			"data": cartData,
-			"error": nil,
+			"data":    cartData,
+			"error":   nil,
 		})
 	})
 
@@ -135,7 +135,7 @@ func TestCartHandler_AddToCart_InvalidRequest(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// カートハンドラーをモックして登録
 	router.POST("/api/cart/items", func(c *gin.Context) {
 		var req AddToCartRequest
@@ -143,7 +143,7 @@ func TestCartHandler_AddToCart_InvalidRequest(t *testing.T) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Invalid request body",
 				},
 			})
@@ -177,7 +177,7 @@ func TestCartHandler_UpdateCartItem_ValidRequest(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// カートハンドラーをモックして登録
 	router.PUT("/api/cart/items/:id", func(c *gin.Context) {
 		itemID := c.Param("id")
@@ -185,7 +185,7 @@ func TestCartHandler_UpdateCartItem_ValidRequest(t *testing.T) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Item ID is required",
 				},
 			})
@@ -197,7 +197,7 @@ func TestCartHandler_UpdateCartItem_ValidRequest(t *testing.T) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Invalid request body",
 				},
 			})
@@ -209,7 +209,7 @@ func TestCartHandler_UpdateCartItem_ValidRequest(t *testing.T) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Quantity cannot be negative",
 				},
 			})
@@ -221,19 +221,19 @@ func TestCartHandler_UpdateCartItem_ValidRequest(t *testing.T) {
 			"id": DefaultCartID,
 			"items": []gin.H{
 				{
-					"id": itemID,
+					"id":        itemID,
 					"productId": "product-1",
-					"quantity": req.Quantity,
-					"price": 1000,
+					"quantity":  req.Quantity,
+					"price":     1000,
 				},
 			},
 			"totalAmount": 1000 * req.Quantity,
-			"itemCount": 1,
+			"itemCount":   1,
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
-			"data": cartData,
-			"error": nil,
+			"data":    cartData,
+			"error":   nil,
 		})
 	})
 
@@ -261,7 +261,7 @@ func TestCartHandler_UpdateCartItem_NegativeQuantity(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// カートハンドラーをモックして登録
 	router.PUT("/api/cart/items/:id", func(c *gin.Context) {
 		var req UpdateCartItemRequest
@@ -269,7 +269,7 @@ func TestCartHandler_UpdateCartItem_NegativeQuantity(t *testing.T) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Invalid request body",
 				},
 			})
@@ -281,7 +281,7 @@ func TestCartHandler_UpdateCartItem_NegativeQuantity(t *testing.T) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Quantity cannot be negative",
 				},
 			})

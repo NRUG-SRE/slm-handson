@@ -16,7 +16,7 @@ func setupRouter() *gin.Engine {
 
 func TestSuccessResponse(t *testing.T) {
 	router := setupRouter()
-	
+
 	router.GET("/test", func(c *gin.Context) {
 		data := map[string]string{
 			"message": "test successful",
@@ -62,7 +62,7 @@ func TestSuccessResponse(t *testing.T) {
 
 func TestErrorResponse(t *testing.T) {
 	router := setupRouter()
-	
+
 	router.GET("/error", func(c *gin.Context) {
 		ErrorResponse(c, http.StatusBadRequest, "VALIDATION_ERROR", "Invalid input provided")
 	})
@@ -106,7 +106,7 @@ func TestErrorResponse(t *testing.T) {
 
 func TestBadRequestResponse(t *testing.T) {
 	router := setupRouter()
-	
+
 	router.GET("/badrequest", func(c *gin.Context) {
 		BadRequestResponse(c, "Missing required field")
 	})
@@ -146,7 +146,7 @@ func TestBadRequestResponse(t *testing.T) {
 
 func TestNotFoundResponse(t *testing.T) {
 	router := setupRouter()
-	
+
 	router.GET("/notfound", func(c *gin.Context) {
 		NotFoundResponse(c, "Resource not found")
 	})
@@ -178,7 +178,7 @@ func TestNotFoundResponse(t *testing.T) {
 
 func TestInternalServerErrorResponse(t *testing.T) {
 	router := setupRouter()
-	
+
 	router.GET("/servererror", func(c *gin.Context) {
 		InternalServerErrorResponse(c, "Database connection failed")
 	})
@@ -210,7 +210,7 @@ func TestInternalServerErrorResponse(t *testing.T) {
 
 func TestUnprocessableEntityResponse(t *testing.T) {
 	router := setupRouter()
-	
+
 	router.GET("/unprocessable", func(c *gin.Context) {
 		UnprocessableEntityResponse(c, "Business rule violation")
 	})

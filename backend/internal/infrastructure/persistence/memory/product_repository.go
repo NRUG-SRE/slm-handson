@@ -18,10 +18,10 @@ func NewProductRepository() repository.ProductRepository {
 		products: make(map[string]*entity.Product),
 		mutex:    sync.RWMutex{},
 	}
-	
+
 	// 初期データを投入
 	repo.seedData()
-	
+
 	return repo
 }
 

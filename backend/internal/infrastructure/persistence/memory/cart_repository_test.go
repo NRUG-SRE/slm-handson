@@ -72,8 +72,8 @@ func TestCartRepository_GetByID(t *testing.T) {
 		checkResult func(t *testing.T, cart *entity.Cart)
 	}{
 		{
-			name:   "存在するカートを取得",
-			cartID: "cart-test",
+			name:        "存在するカートを取得",
+			cartID:      "cart-test",
 			expectError: false,
 			checkResult: func(t *testing.T, cart *entity.Cart) {
 				if cart == nil {
@@ -88,8 +88,8 @@ func TestCartRepository_GetByID(t *testing.T) {
 			},
 		},
 		{
-			name:   "存在しないカートを取得",
-			cartID: "nonexistent-cart",
+			name:        "存在しないカートを取得",
+			cartID:      "nonexistent-cart",
 			expectError: true,
 			checkResult: func(t *testing.T, cart *entity.Cart) {
 				if cart != nil {
@@ -168,13 +168,13 @@ func TestCartRepository_Delete(t *testing.T) {
 		expectError bool
 	}{
 		{
-			name:   "存在するカートを削除",
-			cartID: testCart.ID,
+			name:        "存在するカートを削除",
+			cartID:      testCart.ID,
 			expectError: false,
 		},
 		{
-			name:   "存在しないカートを削除",
-			cartID: "nonexistent-cart",
+			name:        "存在しないカートを削除",
+			cartID:      "nonexistent-cart",
 			expectError: true,
 		},
 	}
@@ -222,13 +222,13 @@ func TestCartRepository_Clear(t *testing.T) {
 		expectError bool
 	}{
 		{
-			name:   "存在するカートをクリア",
-			cartID: testCart.ID,
+			name:        "存在するカートをクリア",
+			cartID:      testCart.ID,
 			expectError: false,
 		},
 		{
-			name:   "存在しないカートをクリア",
-			cartID: "nonexistent-cart",
+			name:        "存在しないカートをクリア",
+			cartID:      "nonexistent-cart",
 			expectError: true,
 		},
 	}
@@ -317,7 +317,7 @@ func TestCartRepository_ConcurrentAccess(t *testing.T) {
 			for j := 0; j < operationsPerGoroutine; j++ {
 				// まずカートが存在することを確認
 				repo.GetOrCreate(ctx, "concurrent-cart")
-				
+
 				_, err := repo.GetByID(ctx, "concurrent-cart")
 				if err != nil {
 					t.Errorf("並行GetByIDでエラー: %v", err)

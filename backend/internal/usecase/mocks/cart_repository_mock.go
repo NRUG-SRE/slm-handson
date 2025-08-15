@@ -15,15 +15,33 @@ type MockCartRepository struct {
 	ClearFunc       func(ctx context.Context, id string) error
 
 	// 呼び出し記録用
-	GetByIDCalls     []struct{ Ctx context.Context; ID string }
-	GetOrCreateCalls []struct{ Ctx context.Context; ID string }
-	SaveCalls        []struct{ Ctx context.Context; Cart *entity.Cart }
-	DeleteCalls      []struct{ Ctx context.Context; ID string }
-	ClearCalls       []struct{ Ctx context.Context; ID string }
+	GetByIDCalls []struct {
+		Ctx context.Context
+		ID  string
+	}
+	GetOrCreateCalls []struct {
+		Ctx context.Context
+		ID  string
+	}
+	SaveCalls []struct {
+		Ctx  context.Context
+		Cart *entity.Cart
+	}
+	DeleteCalls []struct {
+		Ctx context.Context
+		ID  string
+	}
+	ClearCalls []struct {
+		Ctx context.Context
+		ID  string
+	}
 }
 
 func (m *MockCartRepository) GetByID(ctx context.Context, id string) (*entity.Cart, error) {
-	m.GetByIDCalls = append(m.GetByIDCalls, struct{ Ctx context.Context; ID string }{ctx, id})
+	m.GetByIDCalls = append(m.GetByIDCalls, struct {
+		Ctx context.Context
+		ID  string
+	}{ctx, id})
 	if m.GetByIDFunc != nil {
 		return m.GetByIDFunc(ctx, id)
 	}
@@ -31,7 +49,10 @@ func (m *MockCartRepository) GetByID(ctx context.Context, id string) (*entity.Ca
 }
 
 func (m *MockCartRepository) GetOrCreate(ctx context.Context, id string) (*entity.Cart, error) {
-	m.GetOrCreateCalls = append(m.GetOrCreateCalls, struct{ Ctx context.Context; ID string }{ctx, id})
+	m.GetOrCreateCalls = append(m.GetOrCreateCalls, struct {
+		Ctx context.Context
+		ID  string
+	}{ctx, id})
 	if m.GetOrCreateFunc != nil {
 		return m.GetOrCreateFunc(ctx, id)
 	}
@@ -39,7 +60,10 @@ func (m *MockCartRepository) GetOrCreate(ctx context.Context, id string) (*entit
 }
 
 func (m *MockCartRepository) Save(ctx context.Context, cart *entity.Cart) error {
-	m.SaveCalls = append(m.SaveCalls, struct{ Ctx context.Context; Cart *entity.Cart }{ctx, cart})
+	m.SaveCalls = append(m.SaveCalls, struct {
+		Ctx  context.Context
+		Cart *entity.Cart
+	}{ctx, cart})
 	if m.SaveFunc != nil {
 		return m.SaveFunc(ctx, cart)
 	}
@@ -47,7 +71,10 @@ func (m *MockCartRepository) Save(ctx context.Context, cart *entity.Cart) error 
 }
 
 func (m *MockCartRepository) Delete(ctx context.Context, id string) error {
-	m.DeleteCalls = append(m.DeleteCalls, struct{ Ctx context.Context; ID string }{ctx, id})
+	m.DeleteCalls = append(m.DeleteCalls, struct {
+		Ctx context.Context
+		ID  string
+	}{ctx, id})
 	if m.DeleteFunc != nil {
 		return m.DeleteFunc(ctx, id)
 	}
@@ -55,7 +82,10 @@ func (m *MockCartRepository) Delete(ctx context.Context, id string) error {
 }
 
 func (m *MockCartRepository) Clear(ctx context.Context, id string) error {
-	m.ClearCalls = append(m.ClearCalls, struct{ Ctx context.Context; ID string }{ctx, id})
+	m.ClearCalls = append(m.ClearCalls, struct {
+		Ctx context.Context
+		ID  string
+	}{ctx, id})
 	if m.ClearFunc != nil {
 		return m.ClearFunc(ctx, id)
 	}

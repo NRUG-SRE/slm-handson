@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	
+
 	"github.com/NRUG-SRE/slm-handson/backend/internal/domain/entity"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/infrastructure/monitoring"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/interface/api/presenter"
@@ -38,7 +38,7 @@ func NewOrderHandler(orderUseCase *usecase.OrderUseCase, nrClient *monitoring.Ne
 func (h *OrderHandler) CreateOrder(c *gin.Context) {
 	ctx := c.Request.Context()
 	cartID := DefaultCartID // 実際のアプリではユーザーセッションから取得
-	
+
 	// New Relic トランザクションにカスタム属性を追加
 	if txn := newrelic.FromContext(ctx); txn != nil {
 		txn.AddAttribute("handler", "CreateOrder")
@@ -51,7 +51,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 			presenter.UnprocessableEntityResponse(c, "Cart is empty")
 			return
 		}
-		
+
 		h.nrClient.NoticeError(err)
 		presenter.InternalServerErrorResponse(c, "Failed to create order")
 		return
@@ -75,7 +75,7 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 func (h *OrderHandler) GetOrder(c *gin.Context) {
 	ctx := c.Request.Context()
 	orderID := c.Param("id")
-	
+
 	// New Relic トランザクションにカスタム属性を追加
 	if txn := newrelic.FromContext(ctx); txn != nil {
 		txn.AddAttribute("handler", "GetOrder")
@@ -93,7 +93,7 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 			presenter.NotFoundResponse(c, "Order not found")
 			return
 		}
-		
+
 		h.nrClient.NoticeError(err)
 		presenter.InternalServerErrorResponse(c, "Failed to get order")
 		return
@@ -104,7 +104,7 @@ func (h *OrderHandler) GetOrder(c *gin.Context) {
 
 func (h *OrderHandler) GetOrders(c *gin.Context) {
 	ctx := c.Request.Context()
-	
+
 	// New Relic トランザクションにカスタム属性を追加
 	if txn := newrelic.FromContext(ctx); txn != nil {
 		txn.AddAttribute("handler", "GetOrders")

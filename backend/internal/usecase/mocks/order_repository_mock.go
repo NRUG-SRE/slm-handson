@@ -16,10 +16,22 @@ type MockOrderRepository struct {
 
 	// 呼び出し記録用
 	GetAllCalls  []context.Context
-	GetByIDCalls []struct{ Ctx context.Context; ID string }
-	CreateCalls  []struct{ Ctx context.Context; Order *entity.Order }
-	UpdateCalls  []struct{ Ctx context.Context; Order *entity.Order }
-	DeleteCalls  []struct{ Ctx context.Context; ID string }
+	GetByIDCalls []struct {
+		Ctx context.Context
+		ID  string
+	}
+	CreateCalls []struct {
+		Ctx   context.Context
+		Order *entity.Order
+	}
+	UpdateCalls []struct {
+		Ctx   context.Context
+		Order *entity.Order
+	}
+	DeleteCalls []struct {
+		Ctx context.Context
+		ID  string
+	}
 }
 
 func (m *MockOrderRepository) GetAll(ctx context.Context) ([]*entity.Order, error) {
@@ -31,7 +43,10 @@ func (m *MockOrderRepository) GetAll(ctx context.Context) ([]*entity.Order, erro
 }
 
 func (m *MockOrderRepository) GetByID(ctx context.Context, id string) (*entity.Order, error) {
-	m.GetByIDCalls = append(m.GetByIDCalls, struct{ Ctx context.Context; ID string }{ctx, id})
+	m.GetByIDCalls = append(m.GetByIDCalls, struct {
+		Ctx context.Context
+		ID  string
+	}{ctx, id})
 	if m.GetByIDFunc != nil {
 		return m.GetByIDFunc(ctx, id)
 	}
@@ -39,7 +54,10 @@ func (m *MockOrderRepository) GetByID(ctx context.Context, id string) (*entity.O
 }
 
 func (m *MockOrderRepository) Create(ctx context.Context, order *entity.Order) error {
-	m.CreateCalls = append(m.CreateCalls, struct{ Ctx context.Context; Order *entity.Order }{ctx, order})
+	m.CreateCalls = append(m.CreateCalls, struct {
+		Ctx   context.Context
+		Order *entity.Order
+	}{ctx, order})
 	if m.CreateFunc != nil {
 		return m.CreateFunc(ctx, order)
 	}
@@ -47,7 +65,10 @@ func (m *MockOrderRepository) Create(ctx context.Context, order *entity.Order) e
 }
 
 func (m *MockOrderRepository) Update(ctx context.Context, order *entity.Order) error {
-	m.UpdateCalls = append(m.UpdateCalls, struct{ Ctx context.Context; Order *entity.Order }{ctx, order})
+	m.UpdateCalls = append(m.UpdateCalls, struct {
+		Ctx   context.Context
+		Order *entity.Order
+	}{ctx, order})
 	if m.UpdateFunc != nil {
 		return m.UpdateFunc(ctx, order)
 	}
@@ -55,7 +76,10 @@ func (m *MockOrderRepository) Update(ctx context.Context, order *entity.Order) e
 }
 
 func (m *MockOrderRepository) Delete(ctx context.Context, id string) error {
-	m.DeleteCalls = append(m.DeleteCalls, struct{ Ctx context.Context; ID string }{ctx, id})
+	m.DeleteCalls = append(m.DeleteCalls, struct {
+		Ctx context.Context
+		ID  string
+	}{ctx, id})
 	if m.DeleteFunc != nil {
 		return m.DeleteFunc(ctx, id)
 	}

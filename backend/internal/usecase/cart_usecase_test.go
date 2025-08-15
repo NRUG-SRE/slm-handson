@@ -97,14 +97,14 @@ func TestCartUseCase_GetCart(t *testing.T) {
 
 func TestCartUseCase_AddToCart(t *testing.T) {
 	tests := []struct {
-		name            string
-		cartID          string
-		productID       string
-		quantity        int
-		setupCartMock   func() *mocks.MockCartRepository
+		name             string
+		cartID           string
+		productID        string
+		quantity         int
+		setupCartMock    func() *mocks.MockCartRepository
 		setupProductMock func() *mocks.MockProductRepository
-		expectError     bool
-		checkResult     func(t *testing.T, cart *entity.Cart)
+		expectError      bool
+		checkResult      func(t *testing.T, cart *entity.Cart)
 	}{
 		{
 			name:      "正常にカートに商品を追加",

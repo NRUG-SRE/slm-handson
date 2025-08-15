@@ -33,7 +33,7 @@ func RandomSleep(minMs, maxMs int) {
 		time.Sleep(time.Duration(minMs) * time.Millisecond)
 		return
 	}
-	
+
 	sleepTime := RandomInt(minMs, maxMs)
 	time.Sleep(time.Duration(sleepTime) * time.Millisecond)
 }

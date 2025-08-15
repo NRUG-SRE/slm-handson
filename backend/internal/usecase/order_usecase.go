@@ -148,16 +148,16 @@ func (uc *OrderUseCase) restoreStock(ctx context.Context, order *entity.Order) {
 func (uc *OrderUseCase) simulateResponseTime() {
 	minTime := uc.getEnvInt("RESPONSE_TIME_MIN", 50)
 	maxTime := uc.getEnvInt("RESPONSE_TIME_MAX", 500)
-	
+
 	// 注文処理は通常より時間がかかる
 	maxTime = maxTime * 2
-	
+
 	// 一定確率で遅いレスポンスを生成
 	slowEndpointRate := uc.getEnvFloat("SLOW_ENDPOINT_RATE", 0.2)
 	if rand.Float64() < slowEndpointRate {
 		maxTime = maxTime * (2 + rand.Intn(2))
 	}
-	
+
 	if maxTime > minTime {
 		responseTime := minTime + rand.Intn(maxTime-minTime)
 		time.Sleep(time.Duration(responseTime) * time.Millisecond)
@@ -176,12 +176,12 @@ func (uc *OrderUseCase) getEnvInt(key string, defaultValue int) int {
 	if value == "" {
 		return defaultValue
 	}
-	
+
 	intValue, err := strconv.Atoi(value)
 	if err != nil {
 		return defaultValue
 	}
-	
+
 	return intValue
 }
 
@@ -190,11 +190,11 @@ func (uc *OrderUseCase) getEnvFloat(key string, defaultValue float64) float64 {
 	if value == "" {
 		return defaultValue
 	}
-	
+
 	floatValue, err := strconv.ParseFloat(value, 64)
 	if err != nil {
 		return defaultValue
 	}
-	
+
 	return floatValue
 }

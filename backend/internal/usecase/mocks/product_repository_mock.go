@@ -8,24 +8,48 @@ import (
 
 // MockProductRepository はProductRepositoryのモック実装
 type MockProductRepository struct {
-	GetAllFunc         func(ctx context.Context) ([]*entity.Product, error)
-	GetByIDFunc        func(ctx context.Context, id string) (*entity.Product, error)
-	CreateFunc         func(ctx context.Context, product *entity.Product) error
-	UpdateFunc         func(ctx context.Context, product *entity.Product) error
-	DeleteFunc         func(ctx context.Context, id string) error
-	UpdateStockFunc    func(ctx context.Context, id string, newStock int) error
-	DecreaseStockFunc  func(ctx context.Context, id string, quantity int) error
-	IncreaseStockFunc  func(ctx context.Context, id string, quantity int) error
+	GetAllFunc        func(ctx context.Context) ([]*entity.Product, error)
+	GetByIDFunc       func(ctx context.Context, id string) (*entity.Product, error)
+	CreateFunc        func(ctx context.Context, product *entity.Product) error
+	UpdateFunc        func(ctx context.Context, product *entity.Product) error
+	DeleteFunc        func(ctx context.Context, id string) error
+	UpdateStockFunc   func(ctx context.Context, id string, newStock int) error
+	DecreaseStockFunc func(ctx context.Context, id string, quantity int) error
+	IncreaseStockFunc func(ctx context.Context, id string, quantity int) error
 
 	// 呼び出し記録用
-	GetAllCalls         []context.Context
-	GetByIDCalls        []struct{ Ctx context.Context; ID string }
-	CreateCalls         []struct{ Ctx context.Context; Product *entity.Product }
-	UpdateCalls         []struct{ Ctx context.Context; Product *entity.Product }
-	DeleteCalls         []struct{ Ctx context.Context; ID string }
-	UpdateStockCalls    []struct{ Ctx context.Context; ID string; NewStock int }
-	DecreaseStockCalls  []struct{ Ctx context.Context; ID string; Quantity int }
-	IncreaseStockCalls  []struct{ Ctx context.Context; ID string; Quantity int }
+	GetAllCalls  []context.Context
+	GetByIDCalls []struct {
+		Ctx context.Context
+		ID  string
+	}
+	CreateCalls []struct {
+		Ctx     context.Context
+		Product *entity.Product
+	}
+	UpdateCalls []struct {
+		Ctx     context.Context
+		Product *entity.Product
+	}
+	DeleteCalls []struct {
+		Ctx context.Context
+		ID  string
+	}
+	UpdateStockCalls []struct {
+		Ctx      context.Context
+		ID       string
+		NewStock int
+	}
+	DecreaseStockCalls []struct {
+		Ctx      context.Context
+		ID       string
+		Quantity int
+	}
+	IncreaseStockCalls []struct {
+		Ctx      context.Context
+		ID       string
+		Quantity int
+	}
 }
 
 func (m *MockProductRepository) GetAll(ctx context.Context) ([]*entity.Product, error) {
@@ -37,7 +61,10 @@ func (m *MockProductRepository) GetAll(ctx context.Context) ([]*entity.Product, 
 }
 
 func (m *MockProductRepository) GetByID(ctx context.Context, id string) (*entity.Product, error) {
-	m.GetByIDCalls = append(m.GetByIDCalls, struct{ Ctx context.Context; ID string }{ctx, id})
+	m.GetByIDCalls = append(m.GetByIDCalls, struct {
+		Ctx context.Context
+		ID  string
+	}{ctx, id})
 	if m.GetByIDFunc != nil {
 		return m.GetByIDFunc(ctx, id)
 	}
@@ -45,7 +72,10 @@ func (m *MockProductRepository) GetByID(ctx context.Context, id string) (*entity
 }
 
 func (m *MockProductRepository) Create(ctx context.Context, product *entity.Product) error {
-	m.CreateCalls = append(m.CreateCalls, struct{ Ctx context.Context; Product *entity.Product }{ctx, product})
+	m.CreateCalls = append(m.CreateCalls, struct {
+		Ctx     context.Context
+		Product *entity.Product
+	}{ctx, product})
 	if m.CreateFunc != nil {
 		return m.CreateFunc(ctx, product)
 	}
@@ -53,7 +83,10 @@ func (m *MockProductRepository) Create(ctx context.Context, product *entity.Prod
 }
 
 func (m *MockProductRepository) Update(ctx context.Context, product *entity.Product) error {
-	m.UpdateCalls = append(m.UpdateCalls, struct{ Ctx context.Context; Product *entity.Product }{ctx, product})
+	m.UpdateCalls = append(m.UpdateCalls, struct {
+		Ctx     context.Context
+		Product *entity.Product
+	}{ctx, product})
 	if m.UpdateFunc != nil {
 		return m.UpdateFunc(ctx, product)
 	}
@@ -61,7 +94,10 @@ func (m *MockProductRepository) Update(ctx context.Context, product *entity.Prod
 }
 
 func (m *MockProductRepository) Delete(ctx context.Context, id string) error {
-	m.DeleteCalls = append(m.DeleteCalls, struct{ Ctx context.Context; ID string }{ctx, id})
+	m.DeleteCalls = append(m.DeleteCalls, struct {
+		Ctx context.Context
+		ID  string
+	}{ctx, id})
 	if m.DeleteFunc != nil {
 		return m.DeleteFunc(ctx, id)
 	}
@@ -69,7 +105,11 @@ func (m *MockProductRepository) Delete(ctx context.Context, id string) error {
 }
 
 func (m *MockProductRepository) UpdateStock(ctx context.Context, id string, newStock int) error {
-	m.UpdateStockCalls = append(m.UpdateStockCalls, struct{ Ctx context.Context; ID string; NewStock int }{ctx, id, newStock})
+	m.UpdateStockCalls = append(m.UpdateStockCalls, struct {
+		Ctx      context.Context
+		ID       string
+		NewStock int
+	}{ctx, id, newStock})
 	if m.UpdateStockFunc != nil {
 		return m.UpdateStockFunc(ctx, id, newStock)
 	}
@@ -77,7 +117,11 @@ func (m *MockProductRepository) UpdateStock(ctx context.Context, id string, newS
 }
 
 func (m *MockProductRepository) DecreaseStock(ctx context.Context, id string, quantity int) error {
-	m.DecreaseStockCalls = append(m.DecreaseStockCalls, struct{ Ctx context.Context; ID string; Quantity int }{ctx, id, quantity})
+	m.DecreaseStockCalls = append(m.DecreaseStockCalls, struct {
+		Ctx      context.Context
+		ID       string
+		Quantity int
+	}{ctx, id, quantity})
 	if m.DecreaseStockFunc != nil {
 		return m.DecreaseStockFunc(ctx, id, quantity)
 	}
@@ -85,7 +129,11 @@ func (m *MockProductRepository) DecreaseStock(ctx context.Context, id string, qu
 }
 
 func (m *MockProductRepository) IncreaseStock(ctx context.Context, id string, quantity int) error {
-	m.IncreaseStockCalls = append(m.IncreaseStockCalls, struct{ Ctx context.Context; ID string; Quantity int }{ctx, id, quantity})
+	m.IncreaseStockCalls = append(m.IncreaseStockCalls, struct {
+		Ctx      context.Context
+		ID       string
+		Quantity int
+	}{ctx, id, quantity})
 	if m.IncreaseStockFunc != nil {
 		return m.IncreaseStockFunc(ctx, id, quantity)
 	}

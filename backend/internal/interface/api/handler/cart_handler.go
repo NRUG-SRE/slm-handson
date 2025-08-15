@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	
+
 	"github.com/NRUG-SRE/slm-handson/backend/internal/domain/entity"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/infrastructure/monitoring"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/interface/api/presenter"
@@ -38,7 +38,7 @@ func NewCartHandler(cartUseCase *usecase.CartUseCase, nrClient *monitoring.NewRe
 func (h *CartHandler) GetCart(c *gin.Context) {
 	ctx := c.Request.Context()
 	cartID := DefaultCartID // 実際のアプリではユーザーセッションから取得
-	
+
 	// New Relic トランザクションにカスタム属性を追加
 	if txn := newrelic.FromContext(ctx); txn != nil {
 		txn.AddAttribute("handler", "GetCart")
@@ -58,13 +58,13 @@ func (h *CartHandler) GetCart(c *gin.Context) {
 func (h *CartHandler) AddToCart(c *gin.Context) {
 	ctx := c.Request.Context()
 	cartID := DefaultCartID
-	
+
 	var req AddToCartRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		presenter.BadRequestResponse(c, "Invalid request body")
 		return
 	}
-	
+
 	// New Relic トランザクションにカスタム属性を追加
 	if txn := newrelic.FromContext(ctx); txn != nil {
 		txn.AddAttribute("handler", "AddToCart")
@@ -83,7 +83,7 @@ func (h *CartHandler) AddToCart(c *gin.Context) {
 			presenter.UnprocessableEntityResponse(c, "Insufficient stock")
 			return
 		}
-		
+
 		h.nrClient.NoticeError(err)
 		presenter.InternalServerErrorResponse(c, "Failed to add item to cart")
 		return
@@ -103,19 +103,19 @@ func (h *CartHandler) UpdateCartItem(c *gin.Context) {
 	ctx := c.Request.Context()
 	cartID := DefaultCartID
 	itemID := c.Param("id")
-	
+
 	var req UpdateCartItemRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		presenter.BadRequestResponse(c, "Invalid request body")
 		return
 	}
-	
+
 	// 数量のバリデーション（負の値のみ拒否、0は削除として許可）
 	if req.Quantity < 0 {
 		presenter.BadRequestResponse(c, "Quantity cannot be negative")
 		return
 	}
-	
+
 	// New Relic トランザクションにカスタム属性を追加
 	if txn := newrelic.FromContext(ctx); txn != nil {
 		txn.AddAttribute("handler", "UpdateCartItem")
@@ -134,7 +134,7 @@ func (h *CartHandler) UpdateCartItem(c *gin.Context) {
 			presenter.UnprocessableEntityResponse(c, "Insufficient stock")
 			return
 		}
-		
+
 		h.nrClient.NoticeError(err)
 		presenter.InternalServerErrorResponse(c, "Failed to update cart item")
 		return

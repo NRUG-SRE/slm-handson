@@ -16,11 +16,11 @@ const (
 )
 
 type OrderItem struct {
-	ID        string   `json:"id"`
-	ProductID string   `json:"productId"`
-	Product   *Product `json:"product"`
-	Quantity  int      `json:"quantity"`
-	Price     int      `json:"price"` // 注文時の価格を保存
+	ID        string    `json:"id"`
+	ProductID string    `json:"productId"`
+	Product   *Product  `json:"product"`
+	Quantity  int       `json:"quantity"`
+	Price     int       `json:"price"` // 注文時の価格を保存
 	CreatedAt time.Time `json:"createdAt"`
 }
 

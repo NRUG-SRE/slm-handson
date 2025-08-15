@@ -559,7 +559,7 @@ tags:
     description: 注文管理
   - name: Demo
     description: SLMデモ用エンドポイント`
-    
+
 	c.Data(http.StatusOK, "application/x-yaml; charset=utf-8", []byte(swaggerContent))
 }
 

@@ -7,10 +7,10 @@ import (
 )
 
 type CartItem struct {
-	ID        string   `json:"id"`
-	ProductID string   `json:"productId"`
-	Product   *Product `json:"product"`
-	Quantity  int      `json:"quantity"`
+	ID        string    `json:"id"`
+	ProductID string    `json:"productId"`
+	Product   *Product  `json:"product"`
+	Quantity  int       `json:"quantity"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }

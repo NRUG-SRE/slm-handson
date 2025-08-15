@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	Server    ServerConfig
-	NewRelic  NewRelicConfig
+	Server      ServerConfig
+	NewRelic    NewRelicConfig
 	Performance PerformanceConfig
 }
 
@@ -23,10 +23,10 @@ type NewRelicConfig struct {
 }
 
 type PerformanceConfig struct {
-	ErrorRate         float64
-	ResponseTimeMin   int
-	ResponseTimeMax   int
-	SlowEndpointRate  float64
+	ErrorRate        float64
+	ResponseTimeMin  int
+	ResponseTimeMax  int
+	SlowEndpointRate float64
 }
 
 func Load() *Config {
@@ -52,11 +52,11 @@ func (c *Config) Validate() error {
 	if c.Server.Port == "" {
 		log.Println("Warning: PORT not set, using default 8080")
 	}
-	
+
 	if c.NewRelic.APIKey == "" {
 		log.Println("Warning: NEW_RELIC_API_KEY not set, New Relic monitoring will be disabled")
 	}
-	
+
 	return nil
 }
 

@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	
+
 	"github.com/NRUG-SRE/slm-handson/backend/internal/domain/entity"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/infrastructure/monitoring"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/interface/api/presenter"
@@ -27,7 +27,7 @@ func NewProductHandler(productUseCase *usecase.ProductUseCase, nrClient *monitor
 
 func (h *ProductHandler) GetProducts(c *gin.Context) {
 	ctx := c.Request.Context()
-	
+
 	// New Relic トランザクションにカスタム属性を追加
 	if txn := newrelic.FromContext(ctx); txn != nil {
 		txn.AddAttribute("handler", "GetProducts")
@@ -52,7 +52,7 @@ func (h *ProductHandler) GetProducts(c *gin.Context) {
 func (h *ProductHandler) GetProduct(c *gin.Context) {
 	ctx := c.Request.Context()
 	productID := c.Param("id")
-	
+
 	// New Relic トランザクションにカスタム属性を追加
 	if txn := newrelic.FromContext(ctx); txn != nil {
 		txn.AddAttribute("handler", "GetProduct")
@@ -70,7 +70,7 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 			presenter.NotFoundResponse(c, "Product not found")
 			return
 		}
-		
+
 		h.nrClient.NoticeError(err)
 		presenter.InternalServerErrorResponse(c, "Failed to get product")
 		return
@@ -89,7 +89,7 @@ func (h *ProductHandler) GetProduct(c *gin.Context) {
 // SLMデモ用のエラー発生エンドポイント
 func (h *ProductHandler) TriggerError(c *gin.Context) {
 	ctx := c.Request.Context()
-	
+
 	// New Relic トランザクションにカスタム属性を追加
 	if txn := newrelic.FromContext(ctx); txn != nil {
 		txn.AddAttribute("handler", "TriggerError")
@@ -99,9 +99,9 @@ func (h *ProductHandler) TriggerError(c *gin.Context) {
 	// 意図的にエラーを発生させる
 	err := fmt.Errorf("simulated error for SLM demonstration")
 	h.nrClient.NoticeError(err)
-	
+
 	h.nrClient.RecordError("DemoError", "Intentional error for SLM testing", map[string]interface{}{
-		"endpoint": "/api/v1/error",
+		"endpoint":  "/api/v1/error",
 		"userAgent": c.GetHeader("User-Agent"),
 	})
 

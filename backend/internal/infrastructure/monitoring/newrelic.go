@@ -15,12 +15,12 @@ type NewRelicClient struct {
 func NewNewRelicClient() (*NewRelicClient, error) {
 	apiKey := os.Getenv("NEW_RELIC_API_KEY")
 	appName := os.Getenv("NEW_RELIC_APP_NAME")
-	
+
 	if apiKey == "" {
 		log.Println("NEW_RELIC_API_KEY not set, New Relic monitoring disabled")
 		return &NewRelicClient{app: nil}, nil
 	}
-	
+
 	if appName == "" {
 		appName = "slm-handson-api"
 	}
@@ -31,14 +31,14 @@ func NewNewRelicClient() (*NewRelicClient, error) {
 		newrelic.ConfigDistributedTracerEnabled(true),
 		newrelic.ConfigEnabled(true),
 	)
-	
+
 	if err != nil {
 		log.Printf("Warning: Failed to initialize New Relic: %v. Continuing without New Relic monitoring.", err)
 		return &NewRelicClient{app: nil}, nil
 	}
 
 	log.Printf("New Relic APM initialized for app: %s", appName)
-	
+
 	return &NewRelicClient{app: app}, nil
 }
 
@@ -106,7 +106,7 @@ func (nr *NewRelicClient) RecordPurchase(orderID string, amount float64, itemCou
 		"itemCount": itemCount,
 		"userId":    userID,
 	})
-	
+
 	// 売上メトリクスも記録
 	nr.RecordCustomMetric("Custom/Revenue", amount)
 	nr.RecordCustomMetric("Custom/OrderCount", 1)
@@ -125,7 +125,7 @@ func AddCustomAttributes(txn *newrelic.Transaction, attributes map[string]interf
 	if txn == nil {
 		return
 	}
-	
+
 	for key, value := range attributes {
 		txn.AddAttribute(key, value)
 	}
@@ -136,7 +136,7 @@ func StartDatastoreSegment(txn *newrelic.Transaction, product, collection, opera
 	if txn == nil {
 		return nil
 	}
-	
+
 	return &newrelic.DatastoreSegment{
 		StartTime:  txn.StartSegmentNow(),
 		Product:    newrelic.DatastoreProduct(product),
@@ -150,7 +150,7 @@ func StartExternalSegment(txn *newrelic.Transaction, url string) *newrelic.Exter
 	if txn == nil {
 		return nil
 	}
-	
+
 	return &newrelic.ExternalSegment{
 		StartTime: txn.StartSegmentNow(),
 		URL:       url,

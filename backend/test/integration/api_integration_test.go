@@ -8,13 +8,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/domain/entity"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/domain/repository"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/infrastructure/monitoring"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/infrastructure/persistence/memory"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/interface/api/handler"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/usecase"
+	"github.com/gin-gonic/gin"
 )
 
 // TestSetup はE2Eテスト用のセットアップを行う
@@ -56,10 +56,10 @@ func setupTestRouter(
 	orderHandler *handler.OrderHandler,
 ) *gin.Engine {
 	engine := gin.New()
-	
+
 	// 最小限のミドルウェア
 	engine.Use(gin.Recovery())
-	
+
 	// ヘルスチェックエンドポイント
 	engine.GET("/health", healthHandler.HealthCheck)
 
@@ -90,7 +90,7 @@ func setupTestRouter(
 // setupTestProducts はテスト用の商品データを設定する
 func setupTestProducts(repo repository.ProductRepository) {
 	ctx := context.Background()
-	
+
 	products := []*entity.Product{
 		{
 			ID:          "product-1",
@@ -143,11 +143,11 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 
 		var response map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &response)
-		
+
 		if !response["success"].(bool) {
 			t.Error("商品一覧取得: レスポンスのsuccessがfalse")
 		}
-		
+
 		data := response["data"].([]interface{})
 		if len(data) < 1 {
 			t.Errorf("商品一覧取得: 商品数 = %v, want > 0", len(data))
@@ -167,7 +167,7 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 		data := response["data"].([]interface{})
 		firstProduct := data[0].(map[string]interface{})
 		firstProductID = firstProduct["id"].(string)
-		
+
 		if len(data) > 1 {
 			secondProduct := data[1].(map[string]interface{})
 			secondProductID = secondProduct["id"].(string)
@@ -184,11 +184,11 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 
 		var detailResponse map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &detailResponse)
-		
+
 		if !detailResponse["success"].(bool) {
 			t.Error("商品詳細取得: レスポンスのsuccessがfalse")
 		}
-		
+
 		detailData := detailResponse["data"].(map[string]interface{})
 		if detailData["id"] != firstProductID {
 			t.Errorf("商品詳細取得: ID = %v, want %v", detailData["id"], firstProductID)
@@ -214,7 +214,7 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 
 		var response map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &response)
-		
+
 		if !response["success"].(bool) {
 			t.Error("カート追加: レスポンスのsuccessがfalse")
 		}
@@ -232,7 +232,7 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 
 		var response map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &response)
-		
+
 		if !response["success"].(bool) {
 			t.Error("カート取得: レスポンスのsuccessがfalse")
 		}
@@ -284,7 +284,7 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 
 		var response map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &response)
-		
+
 		if !response["success"].(bool) {
 			t.Error("注文作成: レスポンスのsuccessがfalse")
 		}
@@ -320,7 +320,7 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 
 		var response map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &response)
-		
+
 		if !response["success"].(bool) {
 			t.Error("注文詳細取得: レスポンスのsuccessがfalse")
 		}
@@ -329,7 +329,7 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 		if data["id"] != orderID {
 			t.Errorf("注文詳細取得: ID = %v, want %v", data["id"], orderID)
 		}
-		
+
 		// ステータスがpendingであることを確認
 		if data["status"] != "pending" {
 			t.Errorf("注文詳細取得: Status = %v, want pending", data["status"])
@@ -348,7 +348,7 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 
 		var response map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &response)
-		
+
 		if !response["success"].(bool) {
 			t.Error("注文一覧取得: レスポンスのsuccessがfalse")
 		}
@@ -371,7 +371,7 @@ func TestE2E_CompleteUserJourney(t *testing.T) {
 
 		var response map[string]interface{}
 		json.Unmarshal(w.Body.Bytes(), &response)
-		
+
 		data := response["data"].(map[string]interface{})
 		items := data["items"].([]interface{})
 		if len(items) != 0 {
@@ -507,10 +507,10 @@ func TestE2E_ConcurrentAccess(t *testing.T) {
 
 		var cartResponse map[string]interface{}
 		json.Unmarshal(cartW.Body.Bytes(), &cartResponse)
-		
+
 		cartData := cartResponse["data"].(map[string]interface{})
 		cartItems := cartData["items"].([]interface{})
-		
+
 		if len(cartItems) != 1 {
 			t.Errorf("並行処理後のカート: アイテム種類数 = %v, want 1", len(cartItems))
 		}

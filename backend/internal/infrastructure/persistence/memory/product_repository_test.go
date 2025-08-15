@@ -54,8 +54,8 @@ func TestProductRepository_GetByID(t *testing.T) {
 		checkResult func(t *testing.T, product *entity.Product)
 	}{
 		{
-			name:      "存在する商品を取得",
-			productID: products[0].ID,
+			name:        "存在する商品を取得",
+			productID:   products[0].ID,
 			expectError: false,
 			checkResult: func(t *testing.T, product *entity.Product) {
 				if product == nil {
@@ -67,8 +67,8 @@ func TestProductRepository_GetByID(t *testing.T) {
 			},
 		},
 		{
-			name:      "存在しない商品",
-			productID: "nonexistent-id",
+			name:        "存在しない商品",
+			productID:   "nonexistent-id",
 			expectError: true,
 			checkResult: func(t *testing.T, product *entity.Product) {
 				if product != nil {
@@ -219,13 +219,13 @@ func TestProductRepository_Delete(t *testing.T) {
 		expectError bool
 	}{
 		{
-			name:      "存在する商品を削除",
-			productID: products[0].ID,
+			name:        "存在する商品を削除",
+			productID:   products[0].ID,
 			expectError: false,
 		},
 		{
-			name:      "存在しない商品を削除",
-			productID: "nonexistent-id",
+			name:        "存在しない商品を削除",
+			productID:   "nonexistent-id",
 			expectError: true,
 		},
 	}
@@ -288,15 +288,15 @@ func TestProductRepository_UpdateStock(t *testing.T) {
 		expectError bool
 	}{
 		{
-			name:      "存在する商品の在庫を更新",
-			productID: products[0].ID,
-			newStock:  100,
+			name:        "存在する商品の在庫を更新",
+			productID:   products[0].ID,
+			newStock:    100,
 			expectError: false,
 		},
 		{
-			name:      "存在しない商品の在庫を更新",
-			productID: "nonexistent-id",
-			newStock:  50,
+			name:        "存在しない商品の在庫を更新",
+			productID:   "nonexistent-id",
+			newStock:    50,
 			expectError: true,
 		},
 	}
@@ -336,31 +336,31 @@ func TestProductRepository_DecreaseStock(t *testing.T) {
 	repo.Create(ctx, testProduct)
 
 	tests := []struct {
-		name        string
-		productID   string
-		quantity    int
-		expectError bool
+		name          string
+		productID     string
+		quantity      int
+		expectError   bool
 		expectedStock int
 	}{
 		{
-			name:        "正常な在庫減少",
-			productID:   testProduct.ID,
-			quantity:    3,
-			expectError: false,
+			name:          "正常な在庫減少",
+			productID:     testProduct.ID,
+			quantity:      3,
+			expectError:   false,
 			expectedStock: 7,
 		},
 		{
-			name:        "在庫不足",
-			productID:   testProduct.ID,
-			quantity:    10, // 現在の在庫7より多い
-			expectError: true,
+			name:          "在庫不足",
+			productID:     testProduct.ID,
+			quantity:      10, // 現在の在庫7より多い
+			expectError:   true,
 			expectedStock: 7, // 変更されない
 		},
 		{
-			name:        "存在しない商品",
-			productID:   "nonexistent-id",
-			quantity:    1,
-			expectError: true,
+			name:          "存在しない商品",
+			productID:     "nonexistent-id",
+			quantity:      1,
+			expectError:   true,
 			expectedStock: 0,
 		},
 	}
@@ -400,24 +400,24 @@ func TestProductRepository_IncreaseStock(t *testing.T) {
 	repo.Create(ctx, testProduct)
 
 	tests := []struct {
-		name        string
-		productID   string
-		quantity    int
-		expectError bool
+		name          string
+		productID     string
+		quantity      int
+		expectError   bool
 		expectedStock int
 	}{
 		{
-			name:        "正常な在庫増加",
-			productID:   testProduct.ID,
-			quantity:    3,
-			expectError: false,
+			name:          "正常な在庫増加",
+			productID:     testProduct.ID,
+			quantity:      3,
+			expectError:   false,
 			expectedStock: 8,
 		},
 		{
-			name:        "存在しない商品",
-			productID:   "nonexistent-id",
-			quantity:    1,
-			expectError: true,
+			name:          "存在しない商品",
+			productID:     "nonexistent-id",
+			quantity:      1,
+			expectError:   true,
 			expectedStock: 0,
 		},
 	}

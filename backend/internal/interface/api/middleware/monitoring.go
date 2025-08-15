@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/newrelic/go-agent/v3/integrations/nrgin"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	
+
 	"github.com/NRUG-SRE/slm-handson/backend/internal/infrastructure/monitoring"
 )
 
@@ -19,7 +19,7 @@ func NewRelicMiddleware(nrClient *monitoring.NewRelicClient) gin.HandlerFunc {
 			c.Next()
 		}
 	}
-	
+
 	return nrgin.Middleware(nrClient.GetApplication())
 }
 
@@ -45,15 +45,15 @@ func RequestIDMiddleware() gin.HandlerFunc {
 		if requestID == "" {
 			requestID = generateRequestID()
 		}
-		
+
 		c.Header("X-Request-ID", requestID)
 		c.Set("RequestID", requestID)
-		
+
 		// New Relic トランザクションに属性を追加
 		if txn := newrelic.FromContext(c.Request.Context()); txn != nil {
 			txn.AddAttribute("request.id", requestID)
 		}
-		
+
 		c.Next()
 	}
 }
@@ -67,13 +67,13 @@ func RecoveryMiddleware(nrClient *monitoring.NewRelicClient) gin.HandlerFunc {
 	return gin.CustomRecovery(func(c *gin.Context, recovered interface{}) {
 		if err, ok := recovered.(string); ok {
 			log.Printf("Panic recovered: %s", err)
-			
+
 			// New Relic にエラーを報告
 			if nrClient != nil {
 				nrClient.NoticeError(fmt.Errorf("panic: %s", err))
 			}
 		}
-		
+
 		c.AbortWithStatus(500)
 	})
 }

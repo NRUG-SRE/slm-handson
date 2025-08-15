@@ -104,14 +104,14 @@ func (uc *ProductUseCase) DeleteProduct(ctx context.Context, id string) error {
 func (uc *ProductUseCase) simulateResponseTime() {
 	minTime := uc.getEnvInt("RESPONSE_TIME_MIN", 50)
 	maxTime := uc.getEnvInt("RESPONSE_TIME_MAX", 500)
-	
+
 	// 一定確率で遅いレスポンスを生成
 	slowEndpointRate := uc.getEnvFloat("SLOW_ENDPOINT_RATE", 0.2)
 	if rand.Float64() < slowEndpointRate {
 		// 遅いエンドポイントの場合は最大時間の2-3倍にする
 		maxTime = maxTime * (2 + rand.Intn(2))
 	}
-	
+
 	if maxTime > minTime {
 		responseTime := minTime + rand.Intn(maxTime-minTime)
 		time.Sleep(time.Duration(responseTime) * time.Millisecond)
@@ -129,12 +129,12 @@ func (uc *ProductUseCase) getEnvInt(key string, defaultValue int) int {
 	if value == "" {
 		return defaultValue
 	}
-	
+
 	intValue, err := strconv.Atoi(value)
 	if err != nil {
 		return defaultValue
 	}
-	
+
 	return intValue
 }
 
@@ -143,11 +143,11 @@ func (uc *ProductUseCase) getEnvFloat(key string, defaultValue float64) float64 
 	if value == "" {
 		return defaultValue
 	}
-	
+
 	floatValue, err := strconv.ParseFloat(value, 64)
 	if err != nil {
 		return defaultValue
 	}
-	
+
 	return floatValue
 }

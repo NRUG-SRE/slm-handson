@@ -57,11 +57,11 @@ func TestNewCartItem(t *testing.T) {
 
 func TestCart_AddItem(t *testing.T) {
 	tests := []struct {
-		name         string
-		setupCart    func() *Cart
-		product      *Product
-		quantity     int
-		expectError  bool
+		name          string
+		setupCart     func() *Cart
+		product       *Product
+		quantity      int
+		expectError   bool
 		expectedItems int
 		expectedTotal int
 	}{
@@ -350,10 +350,10 @@ func TestCart_Clear(t *testing.T) {
 	product2 := NewProduct("商品2", "説明2", 500, "image2.jpg", 10)
 	cart.AddItem(product1, 2)
 	cart.AddItem(product2, 3)
-	
+
 	originalUpdatedAt := cart.UpdatedAt
 	time.Sleep(10 * time.Millisecond)
-	
+
 	cart.Clear()
 
 	if len(cart.Items) != 0 {
@@ -417,8 +417,8 @@ func TestCart_GetItemCount(t *testing.T) {
 
 func TestCart_IsEmpty(t *testing.T) {
 	tests := []struct {
-		name       string
-		setupCart  func() *Cart
+		name        string
+		setupCart   func() *Cart
 		expectEmpty bool
 	}{
 		{

@@ -73,8 +73,8 @@ func TestOrderRepository_GetByID(t *testing.T) {
 		checkResult func(t *testing.T, order *entity.Order)
 	}{
 		{
-			name:    "存在する注文を取得",
-			orderID: testOrder.ID,
+			name:        "存在する注文を取得",
+			orderID:     testOrder.ID,
 			expectError: false,
 			checkResult: func(t *testing.T, order *entity.Order) {
 				if order == nil {
@@ -92,8 +92,8 @@ func TestOrderRepository_GetByID(t *testing.T) {
 			},
 		},
 		{
-			name:    "存在しない注文を取得",
-			orderID: "nonexistent-order",
+			name:        "存在しない注文を取得",
+			orderID:     "nonexistent-order",
 			expectError: true,
 			checkResult: func(t *testing.T, order *entity.Order) {
 				if order != nil {
@@ -232,13 +232,13 @@ func TestOrderRepository_Delete(t *testing.T) {
 		expectError bool
 	}{
 		{
-			name:    "存在する注文を削除",
-			orderID: testOrder.ID,
+			name:        "存在する注文を削除",
+			orderID:     testOrder.ID,
 			expectError: false,
 		},
 		{
-			name:    "存在しない注文を削除",
-			orderID: "nonexistent-order",
+			name:        "存在しない注文を削除",
+			orderID:     "nonexistent-order",
 			expectError: true,
 		},
 	}
@@ -320,7 +320,7 @@ func TestOrderRepository_ConcurrentAccess(t *testing.T) {
 				// まず注文を作成
 				order := createTestOrder()
 				repo.Create(ctx, order)
-				
+
 				// その後更新
 				order.Complete()
 				err := repo.Update(ctx, order)

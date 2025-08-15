@@ -14,31 +14,31 @@ func TestOrderHandler_CreateOrder(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// 注文ハンドラーをモックして登録（実際のUseCaseなしでHTTPレスポンスをテスト）
 	router.POST("/api/orders", func(c *gin.Context) {
 		// モック注文データ（成功レスポンス）
 		orderData := gin.H{
-			"id": "order-123",
+			"id":     "order-123",
 			"cartId": DefaultCartID,
 			"status": "Pending",
 			"items": []gin.H{
 				{
-					"id": "item-1",
+					"id":        "item-1",
 					"productId": "product-1",
-					"quantity": 2,
-					"price": 1000,
+					"quantity":  2,
+					"price":     1000,
 				},
 			},
 			"totalAmount": 2000,
-			"itemCount": 1,
-			"createdAt": "2024-01-01T00:00:00Z",
+			"itemCount":   1,
+			"createdAt":   "2024-01-01T00:00:00Z",
 		}
-		
+
 		c.JSON(http.StatusCreated, gin.H{
 			"success": true,
-			"data": orderData,
-			"error": nil,
+			"data":    orderData,
+			"error":   nil,
 		})
 	})
 
@@ -72,14 +72,14 @@ func TestOrderHandler_CreateOrder_EmptyCart(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// 空のカートの場合のエラーレスポンスをモック
 	router.POST("/api/orders", func(c *gin.Context) {
 		// 空カートエラーをシミュレート
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"success": false,
 			"error": gin.H{
-				"code": "UNPROCESSABLE_ENTITY",
+				"code":    "UNPROCESSABLE_ENTITY",
 				"message": "Cart is empty",
 			},
 		})
@@ -102,17 +102,17 @@ func TestOrderHandler_GetOrder_ValidID(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// 注文ハンドラーをモックして登録
 	router.GET("/api/orders/:id", func(c *gin.Context) {
 		orderID := c.Param("id")
-		
+
 		// IDが空の場合のバリデーション
 		if orderID == "" {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Order ID is required",
 				},
 			})
@@ -121,26 +121,26 @@ func TestOrderHandler_GetOrder_ValidID(t *testing.T) {
 
 		// モック注文データ
 		orderData := gin.H{
-			"id": orderID,
+			"id":     orderID,
 			"cartId": DefaultCartID,
 			"status": "Completed",
 			"items": []gin.H{
 				{
-					"id": "item-1",
+					"id":        "item-1",
 					"productId": "product-1",
-					"quantity": 1,
-					"price": 1000,
+					"quantity":  1,
+					"price":     1000,
 				},
 			},
 			"totalAmount": 1000,
-			"itemCount": 1,
-			"createdAt": "2024-01-01T00:00:00Z",
+			"itemCount":   1,
+			"createdAt":   "2024-01-01T00:00:00Z",
 		}
-		
+
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
-			"data": orderData,
-			"error": nil,
+			"data":    orderData,
+			"error":   nil,
 		})
 	})
 
@@ -167,17 +167,17 @@ func TestOrderHandler_GetOrder_NotFound(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// 注文ハンドラーをモックして登録
 	router.GET("/api/orders/:id", func(c *gin.Context) {
 		orderID := c.Param("id")
-		
+
 		// 特定のIDの場合に404を返す
 		if orderID == "not-found" {
 			c.JSON(http.StatusNotFound, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "NOT_FOUND",
+					"code":    "NOT_FOUND",
 					"message": "Order not found",
 				},
 			})
@@ -187,7 +187,7 @@ func TestOrderHandler_GetOrder_NotFound(t *testing.T) {
 		// その他の場合は正常レスポンス
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
-			"data": gin.H{"id": orderID},
+			"data":    gin.H{"id": orderID},
 		})
 	})
 
@@ -208,33 +208,33 @@ func TestOrderHandler_GetOrders(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// 注文一覧ハンドラーをモックして登録
 	router.GET("/api/orders", func(c *gin.Context) {
 		// モック注文一覧データ
 		orders := []gin.H{
 			{
-				"id": "order-1",
-				"cartId": DefaultCartID,
-				"status": "Completed",
+				"id":          "order-1",
+				"cartId":      DefaultCartID,
+				"status":      "Completed",
 				"totalAmount": 1000,
-				"itemCount": 1,
-				"createdAt": "2024-01-01T00:00:00Z",
+				"itemCount":   1,
+				"createdAt":   "2024-01-01T00:00:00Z",
 			},
 			{
-				"id": "order-2",
-				"cartId": DefaultCartID,
-				"status": "Pending",
+				"id":          "order-2",
+				"cartId":      DefaultCartID,
+				"status":      "Pending",
 				"totalAmount": 2000,
-				"itemCount": 2,
-				"createdAt": "2024-01-02T00:00:00Z",
+				"itemCount":   2,
+				"createdAt":   "2024-01-02T00:00:00Z",
 			},
 		}
-		
+
 		c.JSON(http.StatusOK, gin.H{
 			"success": true,
-			"data": orders,
-			"error": nil,
+			"data":    orders,
+			"error":   nil,
 		})
 	})
 
@@ -268,7 +268,7 @@ func TestOrderHandler_CreateOrder_WithJSONRequest(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// JSON バインディングをテストするハンドラー
 	router.POST("/api/orders", func(c *gin.Context) {
 		var req CreateOrderRequest
@@ -276,7 +276,7 @@ func TestOrderHandler_CreateOrder_WithJSONRequest(t *testing.T) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Invalid request body",
 				},
 			})
@@ -285,14 +285,14 @@ func TestOrderHandler_CreateOrder_WithJSONRequest(t *testing.T) {
 
 		// リクエストが正常に解析された場合
 		orderData := gin.H{
-			"id": "order-123",
-			"items": req.Items,
+			"id":     "order-123",
+			"items":  req.Items,
 			"status": "Pending",
 		}
-		
+
 		c.JSON(http.StatusCreated, gin.H{
 			"success": true,
-			"data": orderData,
+			"data":    orderData,
 		})
 	})
 
@@ -325,7 +325,7 @@ func TestOrderHandler_CreateOrder_InvalidJSON(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// JSON バインディングをテストするハンドラー
 	router.POST("/api/orders", func(c *gin.Context) {
 		var req CreateOrderRequest
@@ -333,7 +333,7 @@ func TestOrderHandler_CreateOrder_InvalidJSON(t *testing.T) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"success": false,
 				"error": gin.H{
-					"code": "BAD_REQUEST",
+					"code":    "BAD_REQUEST",
 					"message": "Invalid request body",
 				},
 			})

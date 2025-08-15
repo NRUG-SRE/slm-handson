@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
-	
+
 	"github.com/NRUG-SRE/slm-handson/backend/internal/infrastructure/monitoring"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/interface/api/handler"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/interface/api/middleware"
@@ -37,7 +37,7 @@ func NewRouter(
 func (r *Router) SetupRoutes() *gin.Engine {
 	// プロダクション環境用の設定
 	gin.SetMode(gin.ReleaseMode)
-	
+
 	router := gin.New()
 
 	// ミドルウェア設定

@@ -12,7 +12,7 @@ func TestHealthHandler_HealthCheck(t *testing.T) {
 	// Ginエンジンのセットアップ
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	
+
 	// ヘルスチェックハンドラーを登録
 	healthHandler := NewHealthHandler()
 	router.GET("/health", healthHandler.HealthCheck)
