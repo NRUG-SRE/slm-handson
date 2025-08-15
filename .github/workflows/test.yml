@@ -149,7 +149,6 @@ jobs:
     
     - name: Run unit tests with Docker
       run: |
-        cd backend
         chmod +x scripts/test-docker.sh
         # 統合テストを除外してユニットテストのみ実行
         docker run --rm -v $(pwd):/app -w /app golang:1.21 \
@@ -160,6 +159,7 @@ jobs:
             go test -v -timeout 30s ./internal/infrastructure/... &&
             go test -v -timeout 30s ./internal/interface/...
           "
+      working-directory: ./backend
       env:
         GO_VERSION: "1.21"
         CI: "true"
@@ -175,12 +175,11 @@ jobs:
     
     - name: Build Docker image
       run: |
-        cd backend
         docker build -t slm-handson-backend:test .
+      working-directory: ./backend
     
     - name: Start application in Docker
       run: |
-        cd backend
         docker run -d --name test-app -p 8080:8080 \
           -e NEW_RELIC_API_KEY="" \
           -e NEW_RELIC_APP_NAME="test-app" \
