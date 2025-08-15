@@ -84,7 +84,6 @@ func setupTestRouter(
 	return engine
 }
 
-
 // TestE2E_CompleteUserJourney は完全なユーザージャーニーをテストする
 func TestE2E_CompleteUserJourney(t *testing.T) {
 	// アプリケーションをセットアップ

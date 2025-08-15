@@ -461,3 +461,74 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
 - **SLO違反シミュレーション**: エラー率調整による障害体験
 - **New Relic監視**: APM/RUMデータ確認とダッシュボード
 - **API仕様確認**: Swagger UIでのAPIドキュメント閲覧
+
+## 🚨 重要: CI/CDチェック必須事項
+
+**バックエンドコードを改修した後は、以下のCI/CDチェックを必ず実行し、全てがパスすることを確認してからタスクを完了すること:**
+
+### 必須チェック項目
+1. **コードフォーマット** (`gofmt`)
+   ```bash
+   # Dockerを使用した実行
+   cd backend
+   docker run --rm -v $(pwd):/app -w /app golang:1.21 bash -c "gofmt -l ."
+   # 出力が空であることを確認（フォーマットエラーがない）
+   ```
+
+2. **静的解析** (`go vet`)
+   ```bash
+   docker run --rm -v $(pwd):/app -w /app golang:1.21 go vet ./...
+   ```
+
+3. **静的チェック** (`staticcheck`)
+   ```bash
+   docker run --rm -v $(pwd):/app -w /app golang:1.21 bash -c \
+     "go install honnef.co/go/tools/cmd/staticcheck@2023.1.6 && staticcheck ./..."
+   ```
+
+4. **ユニットテスト**
+   ```bash
+   make test-unit
+   # または
+   docker run --rm -v $(pwd):/app -w /app golang:1.21 go test -v ./internal/...
+   ```
+
+5. **ビルド確認**
+   ```bash
+   docker run --rm -v $(pwd):/app -w /app golang:1.21 go build -v ./cmd/server
+   ```
+
+### 一括チェックコマンド
+```bash
+# backend ディレクトリで実行
+docker run --rm -v $(pwd):/app -w /app golang:1.21 bash -c "
+  echo '=== CI/CDチェック開始 ===' &&
+  echo '1. フォーマットチェック...' &&
+  if [ -n \"\$(gofmt -l .)\" ]; then 
+    echo '❌ フォーマットエラー:' && gofmt -l . && exit 1
+  else 
+    echo '✅ フォーマット: OK'
+  fi &&
+  echo '2. go vet...' &&
+  go vet ./... && echo '✅ go vet: OK' &&
+  echo '3. staticcheck...' &&
+  go install honnef.co/go/tools/cmd/staticcheck@2023.1.6 2>/dev/null &&
+  staticcheck ./... && echo '✅ staticcheck: OK' &&
+  echo '4. ビルド...' &&
+  go build -v ./cmd/server > /dev/null 2>&1 && echo '✅ ビルド: OK' &&
+  echo '5. テスト...' &&
+  go test ./internal/... > /dev/null 2>&1 && echo '✅ テスト: OK' &&
+  echo '=== 全チェック完了 ✅ ==='
+"
+```
+
+### GitHub Actions ワークフロー
+これらのチェックは `.github/workflows/test.yml` で自動実行されます。
+プッシュ前にローカルで上記チェックを実行し、CI/CDパイプラインでの失敗を防ぐこと。
+
+### チェック失敗時の対処
+- **フォーマットエラー**: `gofmt -w .` で自動修正
+- **go vet エラー**: 指摘された問題を手動で修正
+- **staticcheck エラー**: 警告内容に従って修正（nil pointer、deprecated関数など）
+- **テスト失敗**: 失敗したテストをデバッグして修正
+- **ビルドエラー**: コンパイルエラーを修正
