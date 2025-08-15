@@ -16,6 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Docker構成**: マルチステージビルド、ヘルスチェック、環境変数対応
 - **New Relic統合**: APM + RUM エンドツーエンド監視、セキュアな環境変数設定
 - **SLMデモ機能**: エラー率・レスポンス時間調整、パフォーマンス劣化シミュレーション
+- **ユーザージャーニー負荷生成**: Go実装、完全なECサイトフロー自動実行、リアルなユーザー行動シミュレーション
 - **セキュリティ**: ハードコーディング排除、環境変数ベース設定
 
 ### 🎯 ハンズオン対応状況
@@ -24,9 +25,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **RUM監視**: Next.jsフロントエンドのページビュー・Ajax・エラー・Core Web Vitals計測
 - **SLO設定**: New Relic UIでの実データベースSLI/SLO管理
 - **パフォーマンス変化体験**: 環境変数による動的制御（ERROR_RATE等）
+- **自動ユーザーアクセス**: プロファイル起動で継続的なユーザージャーニー実行
 
 ### ⚠️ 未実装（ハンズオン実施には不要）
-- **負荷生成スクリプト**: 自動負荷テスト（手動操作で代替可能）
 - **詳細ドキュメント**: アーキテクチャ詳細説明（README.mdで十分）
 
 ## アプリケーション動作環境
@@ -65,32 +66,37 @@ services:
     depends_on:
       - api-server
 
-  # 擬似ユーザーアクセス生成スクリプト
+  # SLOハンズオン用ユーザーアクセス生成器
   load-generator:
     build: ./scripts
     environment:
       - TARGET_URL=http://frontend:3000
-      - USERS_COUNT=10
-      - DURATION=300
+      - ACCESS_INTERVAL=10
+      - DURATION=3600
     depends_on:
       - frontend
       - api-server
+    profiles:
+      - load-test
 ```
 
-### 擬似ユーザーアクセス生成スクリプト仕様
-- **実装言語**: Python (locust) または Go
-- **シナリオ**:
-  1. TOPページ訪問
-  2. 商品一覧閲覧
-  3. ランダムな商品詳細ページへ遷移
-  4. カートに商品追加
-  5. カートページ確認
-  6. 決済処理実行
+### ユーザージャーニー負荷生成スクリプト仕様 ✅実装済み
+- **実装言語**: Go（プロジェクト全体との一貫性）
+- **完全なECサイトユーザージャーニー**:
+  1. **TOPページ訪問** → GET /api/products（商品一覧取得）
+  2. **商品詳細ページ表示** → GET /api/products/{id}（ランダム商品選択）
+  3. **カート追加** → POST /api/cart/items（1-3個ランダム数量）
+  4. **カートページ確認** → GET /api/cart（カート内容確認）
+  5. **決済ページ表示** → GET /api/cart（注文内容再確認）
+  6. **注文確定** → POST /api/orders（注文作成・決済完了）
+- **リアルなユーザー行動シミュレーション**:
+  - 各ステップ間で1-5秒のランダム思考時間
+  - 商品選択、数量選択のランダム化
+  - エラー処理と統計レポート（完了率、成功率）
 - **設定可能パラメータ**:
-  - 同時ユーザー数
-  - アクセス頻度
-  - 実行時間
-  - エラー発生率
+  - `ACCESS_INTERVAL`: ジャーニー間隔（秒、デフォルト：10）
+  - `DURATION`: 実行時間（秒、デフォルト：3600）
+  - `TARGET_URL`: フロントエンドURL（Docker：http://frontend:3000）
 
 ## 開発コマンド
 
@@ -104,8 +110,11 @@ docker-compose up -d
 docker-compose up -d api-server
 docker-compose up -d frontend
 
-# 擬似アクセスの開始
-docker-compose run load-generator
+# ユーザージャーニー負荷生成の開始（プロファイル指定）
+docker-compose --profile load-test up load-generator
+
+# カスタム設定での実行
+DURATION=300 ACCESS_INTERVAL=5 docker-compose --profile load-test up load-generator
 
 # ログの確認
 docker-compose logs -f
@@ -217,14 +226,11 @@ slm-handson/
 │   └── public/                    # 静的ファイル
 │       └── images/                # 商品画像など
 │
-├── scripts/ [⚠️未実装]              # 負荷生成スクリプト
-│   ├── Dockerfile                  # スクリプト用Dockerfile
-│   ├── requirements.txt           # Python依存関係（Locust使用時）
-│   ├── locustfile.py              # Locust負荷テストシナリオ
-│   └── scenarios/                 # テストシナリオ
-│       ├── normal_user.py         # 通常ユーザーシナリオ
-│       ├── heavy_user.py          # ヘビーユーザーシナリオ
-│       └── error_scenario.py      # エラー発生シナリオ
+├── scripts/ ✅実装済み              # ユーザージャーニー負荷生成スクリプト
+│   ├── Dockerfile                  # Go用マルチステージDockerfile
+│   ├── go.mod                      # Goモジュール定義
+│   ├── main.go                     # ユーザージャーニーシミュレーションメイン
+│   └── test_local.sh               # ローカルテスト用スクリプト
 │
 └── docs/ [⚠️未実装]               # ドキュメント
     ├── setup.md                   # セットアップガイド
@@ -405,9 +411,13 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
   - 実装：各SLIに対するSLO目標値設定
 
 ### 3. SLO管理ハンズオン（30分）
-- **擬似ユーザーアクセス生成**
+- **自動ユーザージャーニー実行**
   ```bash
-  docker-compose run load-generator
+  # 継続的なユーザージャーニー負荷生成開始
+  docker-compose --profile load-test up load-generator
+  
+  # カスタム設定での実行（5分間、10秒間隔）
+  DURATION=300 ACCESS_INTERVAL=10 docker-compose --profile load-test up load-generator
   ```
   
 - **Service Level変化の体験**
@@ -445,19 +455,20 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
 
 ### ✅ 実装完了
 - **バックエンド**: Go APIサーバー（全エンドポイント）
-- **フロントエンド**: TOPページ、商品詳細ページ、カートページ
+- **フロントエンド**: TOPページ、商品詳細ページ、カートページ、決済完了ページ
 - **Docker環境**: docker-compose.yaml設定とコンテナ化
 - **API仕様書**: Swagger/OpenAPI 3.0.3対応
 - **監視統合**: New Relic APM/RUM統合
+- **ユーザージャーニー負荷生成**: Go実装、完全なECサイトフロー自動実行
 - **SVG画像**: サンプル商品画像（6種類）
 - **NRUG-SREブランディング**: ヘッダーロゴとテキスト
 
-### ⚠️ 未実装
-- **負荷生成スクリプト** (`scripts/`): Locustベースの負荷テスト
+### ⚠️ 未実装（ハンズオン実施には不要）
 - **ドキュメント** (`docs/`): セットアップガイド等
 
 ### 🔧 ハンズオン実施可能な機能
 - **完全なECサイトフロー**: TOPページ → 商品詳細 → カート追加 → カート確認 → 決済完了
+- **自動ユーザージャーニー**: プロファイル起動による継続的な負荷生成とSLI/SLOデータ生成
 - **SLO違反シミュレーション**: エラー率調整による障害体験
 - **New Relic監視**: APM/RUMデータ確認とダッシュボード
 - **API仕様確認**: Swagger UIでのAPIドキュメント閲覧

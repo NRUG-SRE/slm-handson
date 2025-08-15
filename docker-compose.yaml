@@ -53,27 +53,31 @@ services:
     networks:
       - slm-network
 
-  # 擬似ユーザーアクセス生成スクリプト
-  # load-generator:
-  #   build:
-  #     context: ./scripts
-  #     dockerfile: Dockerfile
-  #   container_name: slm-load-generator
-  #   environment:
-  #     TARGET_URL: ${TARGET_URL:-http://frontend:3000}
-  #     USERS_COUNT: ${USERS_COUNT:-10}
-  #     SPAWN_RATE: ${SPAWN_RATE:-1}
-  #     DURATION: ${DURATION:-300}
-  #     SCENARIO: ${SCENARIO:-normal}
-  #   depends_on:
-  #     - frontend
-  #     - api-server
-  #   networks:
-  #     - slm-network
-  #   # profilesを使用して必要時のみ起動
-  #   # docker-compose --profile load-test up で起動
-  #   profiles:
-  #     - load-test
+  # SLOハンズオン用ユーザーアクセス生成器
+  load-generator:
+    build:
+      context: ./scripts
+      dockerfile: Dockerfile
+    container_name: slm-access-generator
+    environment:
+      # アクセス先URL（フロントエンドを指定）
+      TARGET_URL: ${TARGET_URL:-http://frontend:3000}
+      # アクセス間隔（秒）
+      ACCESS_INTERVAL: ${ACCESS_INTERVAL:-10}
+      # 実行時間（秒）
+      DURATION: ${DURATION:-300}
+    depends_on:
+      frontend:
+        condition: service_started
+      api-server:
+        condition: service_healthy
+    networks:
+      - slm-network
+    # profilesを使用して必要時のみ起動
+    # docker-compose --profile load-test up で起動
+    profiles:
+      - load-test
+    restart: unless-stopped
 
 networks:
   slm-network:

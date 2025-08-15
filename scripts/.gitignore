@@ -1,0 +1,17 @@
+# Go build artifacts
+access-generator
+scripts
+
+# Go test coverage
+*.out
+
+# Go build cache
+.cache/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

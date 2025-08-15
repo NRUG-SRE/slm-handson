@@ -4,7 +4,7 @@
 
 ## 概要
 
-ECサイトをモデルとしたサンプルアプリケーション（Go APIサーバー + Next.jsフロントエンド）を使用して、New Relic APMとReal User Monitoring (RUM)によるエンドツーエンドのモニタリングとSLM機能の実践的な学習ができます。Docker Composeを使用して簡単に環境を構築し、実際のテレメトリーデータをNew Relicに送信しながらSLO/SLIの設定と管理を体験できます。
+ECサイトをモデルとしたサンプルアプリケーション（Go APIサーバー + Next.jsフロントエンド）を使用して、New Relic APMとReal User Monitoring (RUM)によるエンドツーエンドのモニタリングとSLM機能の実践的な学習ができます。Docker Composeを使用して簡単に環境を構築し、自動ユーザージャーニー負荷生成により継続的にテレメトリーデータをNew Relicに送信しながらSLO/SLIの設定と管理を体験できます。
 
 ## 前提条件
 
@@ -46,6 +46,11 @@ SLOW_ENDPOINT_RATE=0.0
 NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY=your-browser-license-key-here
 NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID=your-account-id
 NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-app-id  # 必須
+
+# Load Generator (ユーザージャーニー負荷生成)
+TARGET_URL=http://frontend:3000
+ACCESS_INTERVAL=10
+DURATION=3600
 ```
 
 #### New Relic設定値の取得方法
@@ -207,9 +212,10 @@ sequenceDiagram
   - 商品管理、カート、注文処理のREST API
   - New Relic APMでサーバーサイドパフォーマンスを監視
 
-- **負荷生成スクリプト** ⚠️未実装
-  - 実際のユーザー行動をシミュレート
-  - SLO違反シナリオの再現
+- **ユーザージャーニー負荷生成スクリプト**
+  - Go言語による完全なECサイトユーザージャーニー自動実行
+  - リアルなユーザー行動シミュレーション（思考時間、ランダム選択）
+  - 継続的なSLI/SLOデータ生成とNew Relic APM/RUM連携
 
 ## ハンズオンシナリオ
 
@@ -234,10 +240,14 @@ sequenceDiagram
   - 適切な目標値の設定
 
 ### 3. SLO管理ハンズオン（30分）
-- 手動またはブラウザでのユーザーアクセス体験
-- 環境変数によるService Level変化の体験（ERROR_RATE調整）
-- エラーバジェット枯渇時の対応シミュレーション
-- New Relic UIでのSLO違反確認とアラート設定
+- **自動ユーザージャーニー実行**
+  ```bash
+  # 継続的なユーザージャーニー負荷生成開始
+  docker-compose --profile load-test up load-generator
+  ```
+- **環境変数によるService Level変化の体験**（ERROR_RATE調整）
+- **エラーバジェット運用体験**: バジェット消費とアラート確認
+- **New Relic UIでのSLO違反確認**: リアルタイムSLI/SLO監視とダッシュボード活用
 
 ## 主要なAPIエンドポイント
 
@@ -261,11 +271,34 @@ sequenceDiagram
 - `GET /api/docs` - Swagger UI（ブラウザでAPIドキュメント閲覧）
 - `GET /api/docs/swagger.yaml` - OpenAPI 3.0.3仕様書（YAML形式）
 
-## 負荷生成とテスト
+## ユーザージャーニー負荷生成
+
+### 自動ユーザージャーニー実行
+
+完全なECサイトのユーザー行動を自動でシミュレーション：
+
+```bash
+# 基本実行（デフォルト：10秒間隔、1時間継続）
+docker-compose --profile load-test up load-generator
+
+# カスタム設定での実行
+DURATION=300 ACCESS_INTERVAL=5 docker-compose --profile load-test up load-generator
+
+# バックグラウンド実行
+docker-compose --profile load-test up -d load-generator
+```
+
+**実行されるユーザージャーニー**:
+1. **TOPページ訪問** → GET /api/products
+2. **商品詳細表示** → GET /api/products/{id}（ランダム選択）
+3. **カート追加** → POST /api/cart/items（1-3個ランダム）
+4. **カート確認** → GET /api/cart
+5. **決済ページ** → GET /api/cart（注文内容確認）
+6. **注文完了** → POST /api/orders
 
 ### パフォーマンス劣化シミュレーション
 
-環境変数を変更してSLOの動作を確認：
+環境変数を変更してSLO違反を体験：
 
 ```bash
 # エラー率を30%に設定
@@ -279,9 +312,9 @@ export SLOW_ENDPOINT_RATE=0.0
 docker-compose up -d api-server
 ```
 
-### 手動負荷テスト
+### 手動APIテスト
 
-ブラウザまたはAPIクライアントを使用して手動でテスト：
+APIクライアントでの個別テスト：
 
 ```bash
 # 商品一覧を取得
@@ -290,8 +323,6 @@ curl http://localhost:8080/api/products
 # エラー生成エンドポイントでSLO違反をシミュレート
 curl http://localhost:8080/api/v1/error
 ```
-
-**注意**: 自動負荷生成スクリプト（`scripts/`）は現在未実装です。
 
 ## 開発コマンド
 
@@ -316,28 +347,32 @@ docker-compose restart frontend
 
 ```
 slm-handson/
-├── backend/          # Go APIサーバー ✅実装済み
-├── frontend/         # Next.jsフロントエンド ✅実装済み（全ページ完成）
-├── scripts/          # 負荷生成スクリプト ⚠️未実装
-├── docs/             # ドキュメント ⚠️未実装
-├── swagger.yaml      # OpenAPI 3.0.3仕様書 ✅実装済み
-├── docker-compose.yml # Docker構成 ✅実装済み
-├── .env.example      # 環境変数サンプル ✅実装済み
+├── backend/          # Go APIサーバー
+├── frontend/         # Next.jsフロントエンド
+├── scripts/          # ユーザージャーニー負荷生成スクリプト
+├── swagger.yaml      # OpenAPI 3.0.3仕様書
+├── docker-compose.yml # Docker構成
+├── .env.example      # 環境変数サンプル
 └── README.md         # プロジェクト説明
 ```
 
-### 実装済み機能
+## 主要機能
+
+### フロントエンド機能
 - **TOPページ**: 商品一覧表示、NRUG-SREブランディング
 - **商品詳細ページ**: 商品詳細表示、数量選択、カート追加機能
 - **カートページ**: カート管理、数量変更・削除機能、合計金額表示
 - **決済ページ**: 注文内容サマリー、注文確定フロー、注文完了画面
-- **API**: 全エンドポイント実装（商品、カート、注文）
-- **Swagger UI**: API仕様書の閲覧（http://localhost:8080/api/docs）
-- **New Relic統合**: APM/RUM監視機能、カスタムイベント追跡
 
-### 未実装機能（ハンズオン実施には必須ではない）
-- **負荷生成スクリプト**: 自動負荷テスト（Locustベース）
-- **詳細ドキュメント**: セットアップガイド、アーキテクチャ説明
+### APIサーバー機能
+- **REST API**: 商品、カート、注文の全エンドポイント
+- **Swagger UI**: API仕様書の閲覧（http://localhost:8080/api/docs）
+- **New Relic APM**: サーバーサイドパフォーマンス監視
+
+### 監視・負荷生成機能
+- **New Relic RUM**: クライアントサイドパフォーマンス監視
+- **ユーザージャーニー負荷生成**: 完全なECサイトフロー自動実行
+- **リアルタイムSLI/SLOデータ生成**: 継続的な監視データ提供
 
 ## トラブルシューティング
 
