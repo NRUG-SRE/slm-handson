@@ -285,6 +285,7 @@ func TestCartRepository_ConcurrentAccess(t *testing.T) {
 				}
 				if cart == nil {
 					t.Error("カートがnilです")
+					continue
 				}
 				if cart.ID != cartID {
 					t.Errorf("ID = %v, want %v", cart.ID, cartID)
@@ -335,6 +336,7 @@ func TestCartRepository_ConcurrentAccess(t *testing.T) {
 	}
 	if finalCart == nil {
 		t.Error("カートが破損しています")
+		return
 	}
 	if finalCart.ID != "concurrent-cart" {
 		t.Error("カートのIDが破損しています")
@@ -383,6 +385,7 @@ func TestCartRepository_MemoryManagement(t *testing.T) {
 		}
 		if cart == nil {
 			t.Error("残存カートがnilです")
+			continue
 		}
 		if len(cart.Items) != 1 {
 			t.Errorf("アイテム数 = %v, want 1", len(cart.Items))

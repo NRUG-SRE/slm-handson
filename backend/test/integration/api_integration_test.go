@@ -2,14 +2,11 @@ package integration
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/NRUG-SRE/slm-handson/backend/internal/domain/entity"
-	"github.com/NRUG-SRE/slm-handson/backend/internal/domain/repository"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/infrastructure/monitoring"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/infrastructure/persistence/memory"
 	"github.com/NRUG-SRE/slm-handson/backend/internal/interface/api/handler"
@@ -87,33 +84,6 @@ func setupTestRouter(
 	return engine
 }
 
-// setupTestProducts はテスト用の商品データを設定する
-func setupTestProducts(repo repository.ProductRepository) {
-	ctx := context.Background()
-
-	products := []*entity.Product{
-		{
-			ID:          "product-1",
-			Name:        "Test Product 1",
-			Description: "This is test product 1",
-			Price:       1000,
-			Stock:       100,
-			ImageURL:    "/images/product1.svg",
-		},
-		{
-			ID:          "product-2",
-			Name:        "Test Product 2",
-			Description: "This is test product 2",
-			Price:       2000,
-			Stock:       50,
-			ImageURL:    "/images/product2.svg",
-		},
-	}
-
-	for _, product := range products {
-		repo.Create(ctx, product)
-	}
-}
 
 // TestE2E_CompleteUserJourney は完全なユーザージャーニーをテストする
 func TestE2E_CompleteUserJourney(t *testing.T) {

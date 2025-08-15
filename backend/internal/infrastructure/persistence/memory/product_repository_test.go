@@ -499,6 +499,7 @@ func TestProductRepository_ConcurrentAccess(t *testing.T) {
 	}
 	if finalProduct == nil {
 		t.Error("商品が破損しています")
+		return
 	}
 
 	// 在庫が負の値になっていないことを確認
