@@ -42,6 +42,7 @@ yarn-error.log*
 *.dylib
 backend/main
 backend/cmd/server/main
+backend/server
 
 # Test binary, built with `go test -c`
 *.test

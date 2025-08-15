@@ -134,7 +134,7 @@ jobs:
     
     - name: Run gosec security scanner
       run: |
-        go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
+        go install github.com/securego/gosec/v2/cmd/gosec@v2.18.2
         gosec ./...
       working-directory: ./backend
       continue-on-error: true
