@@ -84,64 +84,44 @@ func TestProduct_UpdateStock(t *testing.T) {
 }
 
 func TestProduct_DecreaseStock(t *testing.T) {
+	// SLMハンズオン用に在庫減少が無効化されたため、常に成功することを確認
 	tests := []struct {
-		name          string
-		initialStock  int
-		decreaseBy    int
-		expectedStock int
-		expectError   bool
+		name         string
+		initialStock int
+		decreaseBy   int
 	}{
 		{
-			name:          "正常な在庫減少",
-			initialStock:  10,
-			decreaseBy:    3,
-			expectedStock: 7,
-			expectError:   false,
+			name:         "在庫管理無効化確認1",
+			initialStock: 10,
+			decreaseBy:   3,
 		},
 		{
-			name:          "在庫と同数の減少",
-			initialStock:  5,
-			decreaseBy:    5,
-			expectedStock: 0,
-			expectError:   false,
-		},
-		{
-			name:          "在庫不足エラー",
-			initialStock:  3,
-			decreaseBy:    5,
-			expectedStock: 3, // 変更されない
-			expectError:   true,
+			name:         "在庫管理無効化確認2",
+			initialStock: 0,
+			decreaseBy:   5,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			product := NewProduct("テスト商品", "説明", 1000, "image.jpg", tt.initialStock)
+			originalStock := product.Stock
 			originalUpdatedAt := product.UpdatedAt
 
 			time.Sleep(10 * time.Millisecond)
 			err := product.DecreaseStock(tt.decreaseBy)
 
-			if tt.expectError {
-				if err != ErrInsufficientStock {
-					t.Errorf("Expected ErrInsufficientStock, got %v", err)
-				}
-				if product.Stock != tt.expectedStock {
-					t.Errorf("Stock should not change on error: got %v, want %v", product.Stock, tt.expectedStock)
-				}
-				if product.UpdatedAt != originalUpdatedAt {
-					t.Error("UpdatedAt should not change on error")
-				}
-			} else {
-				if err != nil {
-					t.Errorf("Unexpected error: %v", err)
-				}
-				if product.Stock != tt.expectedStock {
-					t.Errorf("Stock = %v, want %v", product.Stock, tt.expectedStock)
-				}
-				if !product.UpdatedAt.After(originalUpdatedAt) {
-					t.Error("UpdatedAtが更新されていません")
-				}
+			// SLMハンズオン用に在庫減少は無効化されているため、常に成功する
+			if err != nil {
+				t.Errorf("Unexpected error: %v", err)
+			}
+			// 在庫は変更されないことを確認
+			if product.Stock != originalStock {
+				t.Errorf("Stock should not change: got %v, want %v", product.Stock, originalStock)
+			}
+			// UpdatedAtは更新されることを確認
+			if !product.UpdatedAt.After(originalUpdatedAt) {
+				t.Error("更新日時が更新されていません")
 			}
 		})
 	}
@@ -196,49 +176,35 @@ func TestProduct_IsInStock(t *testing.T) {
 }
 
 func TestProduct_IsAvailable(t *testing.T) {
+	// SLMハンズオン用に在庫チェックが無効化されたため、常にtrueを返すことを確認
 	tests := []struct {
-		name           string
-		stock          int
-		requestedQty   int
-		expectedResult bool
+		name         string
+		stock        int
+		requestedQty int
 	}{
 		{
-			name:           "十分な在庫あり",
-			stock:          10,
-			requestedQty:   5,
-			expectedResult: true,
+			name:         "在庫チェック無効化確認1",
+			stock:        10,
+			requestedQty: 5,
 		},
 		{
-			name:           "ちょうど同じ在庫",
-			stock:          5,
-			requestedQty:   5,
-			expectedResult: true,
+			name:         "在庫チェック無効化確認2",
+			stock:        0,
+			requestedQty: 1,
 		},
 		{
-			name:           "在庫不足",
-			stock:          3,
-			requestedQty:   5,
-			expectedResult: false,
-		},
-		{
-			name:           "在庫0で要求",
-			stock:          0,
-			requestedQty:   1,
-			expectedResult: false,
-		},
-		{
-			name:           "0個の要求",
-			stock:          5,
-			requestedQty:   0,
-			expectedResult: true,
+			name:         "在庫チェック無効化確認3",
+			stock:        3,
+			requestedQty: 100,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			product := NewProduct("テスト商品", "説明", 1000, "image.jpg", tt.stock)
-			if result := product.IsAvailable(tt.requestedQty); result != tt.expectedResult {
-				t.Errorf("IsAvailable(%d) = %v, want %v", tt.requestedQty, result, tt.expectedResult)
+			// SLMハンズオン用に在庫チェックが無効化されているため、常にtrueを返す
+			if result := product.IsAvailable(tt.requestedQty); result != true {
+				t.Errorf("IsAvailable(%d) = %v, want %v", tt.requestedQty, result, true)
 			}
 		})
 	}

@@ -95,36 +95,7 @@ func TestCart_AddItem(t *testing.T) {
 			expectedItems: 1,
 			expectedTotal: 1500,
 		},
-		{
-			name: "在庫不足エラー",
-			setupCart: func() *Cart {
-				return NewCart()
-			},
-			product:       NewProduct("商品C", "説明C", 1000, "imageC.jpg", 2),
-			quantity:      3,
-			expectError:   true,
-			expectedItems: 0,
-			expectedTotal: 0,
-		},
-		{
-			name: "既存商品で合計が在庫超過",
-			setupCart: func() *Cart {
-				cart := NewCart()
-				product := NewProduct("商品D", "説明D", 500, "imageD.jpg", 5)
-				product.ID = "product-d" // IDを固定
-				cart.AddItem(product, 3)
-				return cart
-			},
-			product: func() *Product {
-				p := NewProduct("商品D", "説明D", 500, "imageD.jpg", 5)
-				p.ID = "product-d" // 同じIDに設定
-				return p
-			}(),
-			quantity:      3,
-			expectError:   true,
-			expectedItems: 1,
-			expectedTotal: 1500, // 元の状態のまま
-		},
+		// SLMハンズオン用に在庫チェックを無効化したため、在庫エラーケースは削除
 	}
 
 	for _, tt := range tests {
@@ -135,17 +106,12 @@ func TestCart_AddItem(t *testing.T) {
 			time.Sleep(10 * time.Millisecond)
 			err := cart.AddItem(tt.product, tt.quantity)
 
-			if tt.expectError {
-				if err != ErrInsufficientStock {
-					t.Errorf("Expected ErrInsufficientStock, got %v", err)
-				}
-			} else {
-				if err != nil {
-					t.Errorf("Unexpected error: %v", err)
-				}
-				if !cart.UpdatedAt.After(originalUpdatedAt) {
-					t.Error("UpdatedAtが更新されていません")
-				}
+			// SLMハンズオン用に在庫チェックが無効化されたため、常に成功する
+			if err != nil {
+				t.Errorf("Unexpected error: %v", err)
+			}
+			if !cart.UpdatedAt.After(originalUpdatedAt) {
+				t.Error("UpdatedAtが更新されていません")
 			}
 
 			if len(cart.Items) != tt.expectedItems {
@@ -206,19 +172,7 @@ func TestCart_UpdateItemQuantity(t *testing.T) {
 			expectedItems: 0,
 			expectedTotal: 0,
 		},
-		{
-			name: "在庫超過エラー",
-			setupCart: func() (*Cart, string) {
-				cart := NewCart()
-				product := NewProduct("商品", "説明", 1000, "image.jpg", 5)
-				cart.AddItem(product, 2)
-				return cart, cart.Items[0].ID
-			},
-			newQuantity:   6,
-			expectError:   true,
-			expectedItems: 1,
-			expectedTotal: 2000, // 変更されない
-		},
+		// SLMハンズオン用に在庫チェックを無効化したため、在庫超過エラーケースは削除
 		{
 			name: "存在しないアイテムID",
 			setupCart: func() (*Cart, string) {
@@ -242,11 +196,13 @@ func TestCart_UpdateItemQuantity(t *testing.T) {
 			time.Sleep(10 * time.Millisecond)
 			err := cart.UpdateItemQuantity(itemID, tt.newQuantity)
 
-			if tt.expectError {
+			if tt.expectError && itemID == "invalid-id" {
+				// 無効なIDの場合のみエラーを期待
 				if err == nil {
 					t.Error("エラーが期待されましたが、エラーが発生しませんでした")
 				}
 			} else {
+				// SLMハンズオン用に在庫チェックが無効化されたため、有効なIDの場合は常に成功
 				if err != nil {
 					t.Errorf("Unexpected error: %v", err)
 				}

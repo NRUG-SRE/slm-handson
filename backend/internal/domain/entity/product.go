@@ -37,10 +37,8 @@ func (p *Product) UpdateStock(newStock int) {
 }
 
 func (p *Product) DecreaseStock(quantity int) error {
-	if p.Stock < quantity {
-		return ErrInsufficientStock
-	}
-	p.Stock -= quantity
+	// SLMハンズオン用に在庫減少を無効化
+	// 在庫は減らさず、常に成功を返す
 	p.UpdatedAt = time.Now()
 	return nil
 }
@@ -55,5 +53,6 @@ func (p *Product) IsInStock() bool {
 }
 
 func (p *Product) IsAvailable(quantity int) bool {
-	return p.Stock >= quantity
+	// SLMハンズオン用に在庫チェックを無効化
+	return true
 }

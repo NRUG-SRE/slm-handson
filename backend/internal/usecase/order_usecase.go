@@ -53,12 +53,8 @@ func (uc *OrderUseCase) CreateOrder(ctx context.Context, cartID string) (*entity
 		return nil, entity.ErrEmptyCart
 	}
 
-	// 在庫チェックと予約
-	for _, item := range cart.Items {
-		if !item.Product.IsAvailable(item.Quantity) {
-			return nil, fmt.Errorf("product %s is not available in requested quantity", item.Product.Name)
-		}
-	}
+	// SLMハンズオン用に在庫チェックを無効化
+	// 在庫確認は行わず、すべての商品が利用可能として処理
 
 	// 注文を作成
 	order, err := entity.NewOrder(cart)
@@ -66,13 +62,8 @@ func (uc *OrderUseCase) CreateOrder(ctx context.Context, cartID string) (*entity
 		return nil, fmt.Errorf("failed to create order: %w", err)
 	}
 
-	// 在庫を減らす
-	for _, item := range cart.Items {
-		if err := uc.productRepo.DecreaseStock(ctx, item.ProductID, item.Quantity); err != nil {
-			// ロールバック処理が必要だが、簡略化のため省略
-			return nil, fmt.Errorf("failed to decrease stock for product %s: %w", item.ProductID, err)
-		}
-	}
+	// SLMハンズオン用に在庫減少処理を無効化
+	// 在庫は減らさず、注文のみ作成
 
 	// 注文を保存
 	if err := uc.orderRepo.Create(ctx, order); err != nil {

@@ -47,18 +47,12 @@ func NewCartItem(productID string, product *Product, quantity int) *CartItem {
 }
 
 func (c *Cart) AddItem(product *Product, quantity int) error {
-	if !product.IsAvailable(quantity) {
-		return ErrInsufficientStock
-	}
+	// SLMハンズオン用に在庫チェックを無効化
 
 	// 既存のアイテムがあるかチェック
 	for _, item := range c.Items {
 		if item.ProductID == product.ID {
-			totalQuantity := item.Quantity + quantity
-			if !product.IsAvailable(totalQuantity) {
-				return ErrInsufficientStock
-			}
-			item.Quantity = totalQuantity
+			item.Quantity += quantity
 			item.UpdatedAt = time.Now()
 			c.calculateTotal()
 			c.UpdatedAt = time.Now()
@@ -80,9 +74,7 @@ func (c *Cart) UpdateItemQuantity(itemID string, quantity int) error {
 			if quantity <= 0 {
 				return c.RemoveItem(itemID)
 			}
-			if !item.Product.IsAvailable(quantity) {
-				return ErrInsufficientStock
-			}
+			// SLMハンズオン用に在庫チェックを無効化
 			item.Quantity = quantity
 			item.UpdatedAt = time.Now()
 			c.calculateTotal()
