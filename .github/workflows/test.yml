@@ -149,15 +149,20 @@ jobs:
     
     - name: Run unit tests with Docker
       run: |
-        chmod +x scripts/test-docker.sh
-        # 統合テストを除外してユニットテストのみ実行
+        # Docker環境でユニットテストのみ実行（統合テストは除外）
         docker run --rm -v $(pwd):/app -w /app golang:1.21 \
           bash -c "
+            echo '📦 依存関係のダウンロード' &&
             go mod download &&
+            echo '🏛️ Domain層テスト実行' &&
             go test -v -timeout 30s ./internal/domain/entity/... &&
+            echo '⚙️ UseCase層テスト実行' &&
             go test -v -timeout 30s ./internal/usecase/... &&
+            echo '🗄️ Infrastructure層テスト実行' &&
             go test -v -timeout 30s ./internal/infrastructure/... &&
-            go test -v -timeout 30s ./internal/interface/...
+            echo '🌐 Interface層テスト実行' &&
+            go test -v -timeout 30s ./internal/interface/... &&
+            echo '✅ 全ユニットテスト完了'
           "
       working-directory: ./backend
       env:
