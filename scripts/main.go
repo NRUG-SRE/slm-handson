@@ -42,7 +42,7 @@ type CartResponse struct {
 
 // AccessGenerator はSLMハンズオン用のユーザーアクセス生成器
 type AccessGenerator struct {
-	targetURL      string
+	frontendURL    string
 	apiBaseURL     string
 	interval       time.Duration
 	duration       time.Duration
@@ -54,6 +54,7 @@ type AccessGenerator struct {
 	completeCount  int
 	startTime      time.Time
 	rand           *rand.Rand
+	sessionID      string  // セッション管理用
 }
 
 // NewAccessGenerator は新しいアクセス生成器を作成
@@ -69,15 +70,19 @@ func NewAccessGenerator() *AccessGenerator {
 	durationSec := getEnvInt("DURATION", 300)
 
 	return &AccessGenerator{
-		targetURL:  targetURL,
-		apiBaseURL: apiBaseURL,
-		interval:   time.Duration(intervalSec) * time.Second,
-		duration:   time.Duration(durationSec) * time.Second,
-		userAgent:  "SLM-Handson-Access-Generator/1.0",
+		frontendURL: targetURL,
+		apiBaseURL:  apiBaseURL,
+		interval:    time.Duration(intervalSec) * time.Second,
+		duration:    time.Duration(durationSec) * time.Second,
+		userAgent:   "SLM-Handson-Access-Generator/1.0",
 		httpClient: &http.Client{
 			Timeout: 15 * time.Second,
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				return http.ErrUseLastResponse // リダイレクトを自動追従しない
+			},
 		},
-		rand: rand.New(rand.NewSource(time.Now().UnixNano())),
+		rand:      rand.New(rand.NewSource(time.Now().UnixNano())),
+		sessionID: fmt.Sprintf("session-%d", time.Now().UnixNano()),
 	}
 }
 
@@ -99,8 +104,8 @@ func getEnvInt(key string, defaultValue int) int {
 	return defaultValue
 }
 
-// makeRequest はHTTPリクエストを送信
-func (ag *AccessGenerator) makeRequest(method, url, description string, body []byte) (int, time.Duration, []byte) {
+// makeRequest はHTTPリクエストを送信（内部API用）
+func (ag *AccessGenerator) makeRequest(method, url, description string, body []byte, isHTML bool) (int, time.Duration, []byte) {
 	var req *http.Request
 	var err error
 
@@ -116,7 +121,13 @@ func (ag *AccessGenerator) makeRequest(method, url, description string, body []b
 	}
 
 	req.Header.Set("User-Agent", ag.userAgent)
-	if method == "GET" {
+	req.Header.Set("X-Session-ID", ag.sessionID)
+	
+	if isHTML {
+		// HTMLページリクエスト
+		req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+		req.Header.Set("Accept-Language", "ja,en;q=0.9")
+	} else if method == "GET" {
 		req.Header.Set("Accept", "application/json,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	} else {
 		req.Header.Set("Accept", "application/json")
@@ -133,22 +144,22 @@ func (ag *AccessGenerator) makeRequest(method, url, description string, body []b
 	}
 	defer resp.Body.Close()
 
-	// レスポンスボディを読み込み
+	// レスポンスボディを読み込み（最初の1KBのみ、HTMLは破棄）
 	respBody := make([]byte, 0)
-	if resp.Body != nil {
+	if !isHTML && resp.Body != nil {
 		buf := make([]byte, 1024)
 		for {
 			n, err := resp.Body.Read(buf)
 			if n > 0 {
 				respBody = append(respBody, buf[:n]...)
 			}
-			if err != nil {
+			if err != nil || len(respBody) > 10240 { // 10KB以上は読まない
 				break
 			}
 		}
 	}
 
-	if resp.StatusCode >= 200 && resp.StatusCode < 300 {
+	if resp.StatusCode >= 200 && resp.StatusCode < 400 {
 		log.Printf("✅ %s | %d | %v", description, resp.StatusCode, responseTime.Round(time.Millisecond))
 	} else {
 		log.Printf("⚠️  %s | %d | %v", description, resp.StatusCode, responseTime.Round(time.Millisecond))
@@ -157,9 +168,17 @@ func (ag *AccessGenerator) makeRequest(method, url, description string, body []b
 	return resp.StatusCode, responseTime, respBody
 }
 
-// fetchProducts は商品一覧を取得
-func (ag *AccessGenerator) fetchProducts() ([]Product, bool) {
-	statusCode, _, body := ag.makeRequest("GET", ag.apiBaseURL+"/products", "商品一覧取得 (GET /api/products)", nil)
+// visitFrontendPage はフロントエンドページを訪問（RUM計測のため）
+func (ag *AccessGenerator) visitFrontendPage(path, description string) bool {
+	url := ag.frontendURL + path
+	statusCode, _, _ := ag.makeRequest("GET", url, description, nil, true)
+	// HTMLページは200-399を成功とする（リダイレクト含む）
+	return statusCode >= 200 && statusCode < 400
+}
+
+// fetchProductsAPI は商品一覧をAPI経由で取得（商品IDリスト取得用）
+func (ag *AccessGenerator) fetchProductsAPI() ([]Product, bool) {
+	statusCode, _, body := ag.makeRequest("GET", ag.apiBaseURL+"/products", "商品一覧API (GET /api/products)", nil, false)
 	if statusCode != 200 {
 		return nil, false
 	}
@@ -186,14 +205,7 @@ func (ag *AccessGenerator) fetchProducts() ([]Product, bool) {
 	return products, true
 }
 
-// fetchProductDetail は商品詳細を取得
-func (ag *AccessGenerator) fetchProductDetail(productID string) bool {
-	url := fmt.Sprintf("%s/products/%s", ag.apiBaseURL, productID)
-	statusCode, _, _ := ag.makeRequest("GET", url, fmt.Sprintf("商品詳細取得 (GET /api/products/%s)", productID), nil)
-	return statusCode == 200
-}
-
-// addToCart は商品をカートに追加
+// addToCart は商品をカートに追加（API直接呼び出し）
 func (ag *AccessGenerator) addToCart(productID string) bool {
 	cartItem := CartItem{
 		ProductID: productID,
@@ -206,21 +218,15 @@ func (ag *AccessGenerator) addToCart(productID string) bool {
 		return false
 	}
 
-	statusCode, _, _ := ag.makeRequest("POST", ag.apiBaseURL+"/cart/items", fmt.Sprintf("カート追加 (POST /api/cart/items) - 商品ID:%s", productID), body)
+	statusCode, _, _ := ag.makeRequest("POST", ag.apiBaseURL+"/cart/items", fmt.Sprintf("カート追加API (POST /api/cart/items) - 商品ID:%s", productID), body, false)
 	return statusCode >= 200 && statusCode < 300
 }
 
-// fetchCart はカート内容を取得
-func (ag *AccessGenerator) fetchCart() bool {
-	statusCode, _, _ := ag.makeRequest("GET", ag.apiBaseURL+"/cart", "カート内容取得 (GET /api/cart)", nil)
-	return statusCode == 200
-}
-
-// createOrder は注文を作成
+// createOrder は注文を作成（API直接呼び出し）
 func (ag *AccessGenerator) createOrder() bool {
 	// 空のJSONボディで注文作成（カート内容から自動作成）
 	body := []byte("{}")
-	statusCode, _, _ := ag.makeRequest("POST", ag.apiBaseURL+"/orders", "注文作成 (POST /api/orders)", body)
+	statusCode, _, _ := ag.makeRequest("POST", ag.apiBaseURL+"/orders", "注文作成API (POST /api/orders)", body, false)
 	return statusCode >= 200 && statusCode < 300
 }
 
@@ -236,9 +242,15 @@ func (ag *AccessGenerator) simulateUserThinking(action string) {
 func (ag *AccessGenerator) performUserJourney() bool {
 	log.Printf("🛒 ユーザージャーニー開始 (#%d)", ag.journeyCount+1)
 
-	// 1. TOPページ訪問 → 商品一覧取得
+	// 1. TOPページ訪問（Frontend）- RUM計測
 	log.Printf("📱 1. TOPページ訪問")
-	products, success := ag.fetchProducts()
+	if !ag.visitFrontendPage("/", "TOPページ (GET /)") {
+		log.Printf("❌ ジャーニー失敗: TOPページアクセスエラー")
+		return false
+	}
+	
+	// API経由で商品リストを取得（ID取得のため）
+	products, success := ag.fetchProductsAPI()
 	if !success || len(products) == 0 {
 		log.Printf("❌ ジャーニー失敗: 商品一覧取得エラー")
 		return false
@@ -246,17 +258,18 @@ func (ag *AccessGenerator) performUserJourney() bool {
 
 	ag.simulateUserThinking("商品閲覧")
 
-	// 2. ランダムな商品の詳細ページを表示
+	// 2. ランダムな商品の詳細ページを表示（Frontend）- RUM計測
 	selectedProduct := products[ag.rand.Intn(len(products))]
 	log.Printf("👀 2. 商品詳細ページ表示 (商品ID: %s)", selectedProduct.ID)
-	if !ag.fetchProductDetail(selectedProduct.ID) {
-		log.Printf("❌ ジャーニー失敗: 商品詳細取得エラー")
+	productPath := fmt.Sprintf("/products/%s", selectedProduct.ID)
+	if !ag.visitFrontendPage(productPath, fmt.Sprintf("商品詳細ページ (GET %s)", productPath)) {
+		log.Printf("❌ ジャーニー失敗: 商品詳細ページアクセスエラー")
 		return false
 	}
 
 	ag.simulateUserThinking("商品検討")
 
-	// 3. カートに追加
+	// 3. カートに追加（API直接）- カート操作は内部API
 	log.Printf("🛍️  3. カートに商品追加")
 	if !ag.addToCart(selectedProduct.ID) {
 		log.Printf("❌ ジャーニー失敗: カート追加エラー")
@@ -265,30 +278,34 @@ func (ag *AccessGenerator) performUserJourney() bool {
 
 	ag.simulateUserThinking("カート確認")
 
-	// 4. カートページ表示
+	// 4. カートページ表示（Frontend）- RUM計測
 	log.Printf("🛒 4. カートページ表示")
-	if !ag.fetchCart() {
-		log.Printf("❌ ジャーニー失敗: カート内容取得エラー")
+	if !ag.visitFrontendPage("/cart", "カートページ (GET /cart)") {
+		log.Printf("❌ ジャーニー失敗: カートページアクセスエラー")
 		return false
 	}
 
 	ag.simulateUserThinking("決済検討")
 
-	// 5. 決済ページ → カート内容再確認
+	// 5. 決済ページ表示（Frontend）- RUM計測
 	log.Printf("💳 5. 決済ページ表示")
-	if !ag.fetchCart() {
-		log.Printf("❌ ジャーニー失敗: 決済時カート確認エラー")
+	if !ag.visitFrontendPage("/checkout", "決済ページ (GET /checkout)") {
+		log.Printf("❌ ジャーニー失敗: 決済ページアクセスエラー")
 		return false
 	}
 
 	ag.simulateUserThinking("注文確認")
 
-	// 6. 注文確定
+	// 6. 注文確定（API直接）- 注文処理は内部API
 	log.Printf("✅ 6. 注文確定")
 	if !ag.createOrder() {
 		log.Printf("❌ ジャーニー失敗: 注文作成エラー")
 		return false
 	}
+
+	// 7. 注文完了ページ（仮想）- 実際にはTOPにリダイレクト
+	log.Printf("🎊 7. 注文完了画面表示")
+	ag.visitFrontendPage("/", "注文完了後TOPページリダイレクト (GET /)")
 
 	log.Printf("🎉 ユーザージャーニー完了! 商品ID:%s → 注文完了", selectedProduct.ID)
 	return true
@@ -324,12 +341,13 @@ func (ag *AccessGenerator) printFinalStatistics() {
 	log.Printf("ジャーニー完了率: %.1f%%", completionRate)
 	log.Printf("🏁 SLM ハンズオン ユーザージャーニー完了")
 	log.Printf("💡 New Relic UIでSLO/SLI監視データを確認してください")
+	log.Printf("📊 APM（バックエンド）とRUM（フロントエンド）両方のデータが収集されました")
 }
 
 // Run はメインのアクセス生成ループを実行
 func (ag *AccessGenerator) Run() {
 	log.Printf("🚀 SLM ハンズオン ユーザーアクセス生成開始")
-	log.Printf("   フロントエンドURL: %s", ag.targetURL)
+	log.Printf("   フロントエンドURL: %s", ag.frontendURL)
 	log.Printf("   API URL: %s", ag.apiBaseURL)
 	log.Printf("   ジャーニー間隔: %v", ag.interval)
 	log.Printf("   実行時間: %v", ag.duration)
@@ -347,6 +365,8 @@ func (ag *AccessGenerator) Run() {
 	fmt.Println(strings.Repeat("=", 70))
 	log.Printf("🎯 SLO監視用ECサイトユーザージャーニー開始")
 	log.Printf("🛒 フロー: TOPページ → 商品詳細 → カート追加 → カート確認 → 決済 → 注文完了")
+	log.Printf("📱 Frontend（RUM）: ページ表示でブラウザメトリクスを収集")
+	log.Printf("⚙️  Backend（APM）: API呼び出しでサーバーメトリクスを収集")
 	fmt.Println(strings.Repeat("=", 70))
 
 	for {
