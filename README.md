@@ -83,7 +83,7 @@ NREUM.loader_config={
 Docker Composeを使用してサンプルアプリケーションを起動します：
 
 ```bash
-docker compose up -d
+docker-compose up -d --build
 ```
 
 起動後、以下のURLでアクセスできます：
@@ -304,12 +304,12 @@ docker-compose --profile load-test up -d load-generator
 # エラー率を30%に設定
 export ERROR_RATE=0.3
 export RESPONSE_TIME_MAX=2000
-docker-compose up -d api-server
+docker-compose up -d --build api-server
 
 # 正常な状態に戻す
 export ERROR_RATE=0.0
 export SLOW_ENDPOINT_RATE=0.0
-docker-compose up -d api-server
+docker-compose up -d --build api-server
 ```
 
 ### 手動APIテスト
@@ -336,7 +336,7 @@ docker-compose logs -f frontend
 docker-compose down
 
 # ビルドして起動
-docker-compose up --build -d
+docker-compose up -d --build
 
 # 個別サービスの再起動
 docker-compose restart api-server
@@ -405,7 +405,7 @@ sudo lsof -i :8080
 ```bash
 # コンテナを完全に再ビルド
 docker-compose down
-docker-compose up --build -d
+docker-compose up -d --build
 ```
 
 **5. Docker関連のエラー**
