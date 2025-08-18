@@ -228,34 +228,7 @@ func TestCartUseCase_AddToCart(t *testing.T) {
 				}
 			},
 		},
-		{
-			name:      "在庫不足でエラー",
-			cartID:    "cart-123",
-			productID: "product-456",
-			quantity:  15, // 在庫10を超える
-			setupCartMock: func() *mocks.MockCartRepository {
-				mock := &mocks.MockCartRepository{}
-				mock.GetOrCreateFunc = func(ctx context.Context, id string) (*entity.Cart, error) {
-					return entity.NewCart(), nil
-				}
-				return mock
-			},
-			setupProductMock: func() *mocks.MockProductRepository {
-				mock := &mocks.MockProductRepository{}
-				mock.GetByIDFunc = func(ctx context.Context, id string) (*entity.Product, error) {
-					product := entity.NewProduct("テスト商品", "説明", 1000, "image.jpg", 10)
-					product.ID = id
-					return product, nil
-				}
-				return mock
-			},
-			expectError: true,
-			checkResult: func(t *testing.T, cart *entity.Cart) {
-				if cart != nil {
-					t.Error("カートがnilであるべきです")
-				}
-			},
-		},
+		// SLMハンズオン用に在庫チェックが無効化されたため、在庫不足テストケースは削除
 	}
 
 	for _, tt := range tests {

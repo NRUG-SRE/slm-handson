@@ -334,6 +334,7 @@ func TestProductRepository_DecreaseStock(t *testing.T) {
 	// テスト用の商品を作成
 	testProduct := entity.NewProduct("在庫テスト商品", "説明", 1000, "image.jpg", 10)
 	repo.Create(ctx, testProduct)
+	originalStock := testProduct.Stock
 
 	tests := []struct {
 		name          string
@@ -343,18 +344,18 @@ func TestProductRepository_DecreaseStock(t *testing.T) {
 		expectedStock int
 	}{
 		{
-			name:          "正常な在庫減少",
+			name:          "在庫減少処理無効化確認1",
 			productID:     testProduct.ID,
 			quantity:      3,
 			expectError:   false,
-			expectedStock: 7,
+			expectedStock: originalStock, // SLMハンズオン用に在庫は変更されない
 		},
 		{
-			name:          "在庫不足",
+			name:          "在庫減少処理無効化確認2",
 			productID:     testProduct.ID,
-			quantity:      10, // 現在の在庫7より多い
-			expectError:   true,
-			expectedStock: 7, // 変更されない
+			quantity:      100, // 大きな数量でも成功する
+			expectError:   false,
+			expectedStock: originalStock, // SLMハンズオン用に在庫は変更されない
 		},
 		{
 			name:          "存在しない商品",
@@ -378,13 +379,13 @@ func TestProductRepository_DecreaseStock(t *testing.T) {
 					t.Errorf("予期しないエラー: %v", err)
 				}
 
-				// 在庫が正しく減少したことを確認
+				// SLMハンズオン用: 在庫は変更されないことを確認
 				product, err := repo.GetByID(ctx, tt.productID)
 				if err != nil {
 					t.Errorf("商品の取得でエラー: %v", err)
 				}
 				if product.Stock != tt.expectedStock {
-					t.Errorf("Stock = %v, want %v", product.Stock, tt.expectedStock)
+					t.Errorf("Stock = %v, want %v (在庫管理無効化のため変更されない)", product.Stock, tt.expectedStock)
 				}
 			}
 		})

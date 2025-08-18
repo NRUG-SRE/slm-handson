@@ -123,67 +123,7 @@ func TestOrderUseCase_CreateOrder(t *testing.T) {
 				}
 			},
 		},
-		{
-			name:   "在庫不足でエラー",
-			cartID: "cart-123",
-			setupOrderMock: func() *mocks.MockOrderRepository {
-				return &mocks.MockOrderRepository{}
-			},
-			setupCartMock: func() *mocks.MockCartRepository {
-				mock := &mocks.MockCartRepository{}
-				mock.GetByIDFunc = func(ctx context.Context, id string) (*entity.Cart, error) {
-					cart := entity.NewCart()
-					cart.ID = id
-					// 在庫不足の商品を作成
-					product := entity.NewProduct("在庫不足商品", "説明", 1000, "image.jpg", 2)
-					product.ID = "product-123"
-					cart.AddItem(product, 5) // 在庫2に対して5個要求
-					return cart, nil
-				}
-				return mock
-			},
-			setupProductMock: func() *mocks.MockProductRepository {
-				return &mocks.MockProductRepository{}
-			},
-			expectError: true,
-			checkResult: func(t *testing.T, order *entity.Order) {
-				if order != nil {
-					t.Error("注文がnilであるべきです")
-				}
-			},
-		},
-		{
-			name:   "在庫減少でエラー",
-			cartID: "cart-123",
-			setupOrderMock: func() *mocks.MockOrderRepository {
-				return &mocks.MockOrderRepository{}
-			},
-			setupCartMock: func() *mocks.MockCartRepository {
-				mock := &mocks.MockCartRepository{}
-				mock.GetByIDFunc = func(ctx context.Context, id string) (*entity.Cart, error) {
-					cart := entity.NewCart()
-					cart.ID = id
-					product := entity.NewProduct("テスト商品", "説明", 1000, "image.jpg", 10)
-					product.ID = "product-123"
-					cart.AddItem(product, 2)
-					return cart, nil
-				}
-				return mock
-			},
-			setupProductMock: func() *mocks.MockProductRepository {
-				mock := &mocks.MockProductRepository{}
-				mock.DecreaseStockFunc = func(ctx context.Context, id string, quantity int) error {
-					return errors.New("stock decrease failed")
-				}
-				return mock
-			},
-			expectError: true,
-			checkResult: func(t *testing.T, order *entity.Order) {
-				if order != nil {
-					t.Error("注文がnilであるべきです")
-				}
-			},
-		},
+		// SLMハンズオン用に在庫チェックと在庫減少が無効化されたため、在庫関連エラーテストケースは削除
 		{
 			name:   "注文保存でエラー",
 			cartID: "cart-123",
