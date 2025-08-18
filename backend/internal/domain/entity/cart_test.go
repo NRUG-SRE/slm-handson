@@ -61,7 +61,6 @@ func TestCart_AddItem(t *testing.T) {
 		setupCart     func() *Cart
 		product       *Product
 		quantity      int
-		expectError   bool
 		expectedItems int
 		expectedTotal int
 	}{
@@ -72,7 +71,6 @@ func TestCart_AddItem(t *testing.T) {
 			},
 			product:       NewProduct("商品A", "説明A", 1000, "imageA.jpg", 10),
 			quantity:      2,
-			expectError:   false,
 			expectedItems: 1,
 			expectedTotal: 2000,
 		},
@@ -91,7 +89,6 @@ func TestCart_AddItem(t *testing.T) {
 				return p
 			}(),
 			quantity:      2,
-			expectError:   false,
 			expectedItems: 1,
 			expectedTotal: 1500,
 		},
@@ -172,7 +169,6 @@ func TestCart_UpdateItemQuantity(t *testing.T) {
 			expectedItems: 0,
 			expectedTotal: 0,
 		},
-		// SLMハンズオン用に在庫チェックを無効化したため、在庫超過エラーケースは削除
 		{
 			name: "存在しないアイテムID",
 			setupCart: func() (*Cart, string) {
