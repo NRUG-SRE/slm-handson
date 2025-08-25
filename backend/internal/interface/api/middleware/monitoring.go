@@ -23,6 +23,62 @@ func NewRelicMiddleware(nrClient *monitoring.NewRelicClient) gin.HandlerFunc {
 	return nrgin.Middleware(nrClient.GetApplication())
 }
 
+// Distributed Tracingヘッダーを処理するミドルウェア
+func DistributedTracingMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// New Relic v3では、distributed tracingはW3C Trace Contextとして処理される
+		// カスタムヘッダーは属性として記録
+		if tracePayload := c.GetHeader("newrelic"); tracePayload != "" {
+			if txn := newrelic.FromContext(c.Request.Context()); txn != nil {
+				// カスタム属性として記録
+				txn.AddAttribute("distributedTrace.payload", tracePayload)
+			}
+		}
+
+		// フロントエンドからのNew Relicトレース情報
+		if newRelicTrace := c.GetHeader("X-NewRelic-Trace"); newRelicTrace != "" {
+			if txn := newrelic.FromContext(c.Request.Context()); txn != nil {
+				txn.AddAttribute("frontend.trace.id", newRelicTrace)
+			}
+		}
+
+		// ブラウザからのリクエストであることを記録
+		if browserFlag := c.GetHeader("X-NewRelic-Browser"); browserFlag == "true" {
+			if txn := newrelic.FromContext(c.Request.Context()); txn != nil {
+				txn.AddAttribute("request.source", "browser")
+			}
+		}
+
+		// W3C Trace Context ヘッダーの処理（New Relic v3で自動サポート）
+		if traceParent := c.GetHeader("traceparent"); traceParent != "" {
+			if txn := newrelic.FromContext(c.Request.Context()); txn != nil {
+				// 明示的にカスタム属性として記録
+				txn.AddAttribute("trace.parent", traceParent)
+			}
+		}
+
+		// トレース状態ヘッダーも処理
+		if traceState := c.GetHeader("tracestate"); traceState != "" {
+			if txn := newrelic.FromContext(c.Request.Context()); txn != nil {
+				txn.AddAttribute("trace.state", traceState)
+			}
+		}
+
+		// セッションIDを受け取ってNew Relicに記録
+		if sessionId := c.GetHeader("X-Session-ID"); sessionId != "" {
+			if txn := newrelic.FromContext(c.Request.Context()); txn != nil {
+				txn.AddAttribute("session.id", sessionId)
+				// ユーザーIDとしても設定（RUMとの連携用）
+				txn.AddAttribute("user.id", sessionId)
+			}
+			// Ginコンテキストにも保存（ハンドラーで利用可能に）
+			c.Set("SessionID", sessionId)
+		}
+
+		c.Next()
+	}
+}
+
 func LoggingMiddleware() gin.HandlerFunc {
 	return gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
 		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",

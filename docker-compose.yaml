@@ -46,6 +46,8 @@ services:
     environment:
       # ブラウザからアクセス可能なAPIサーバーURL
       NEXT_PUBLIC_API_BASE_URL: http://localhost:8080/api
+      # Docker内部通信用APIサーバーURL
+      INTERNAL_API_URL: http://api-server:8080/api
       NODE_ENV: production
     depends_on:
       api-server:
@@ -53,7 +55,7 @@ services:
     networks:
       - slm-network
 
-  # SLOハンズオン用ユーザーアクセス生成器
+  # SLOハンズオン用ユーザーアクセス生成器（Go版）
   load-generator:
     build:
       context: ./scripts
@@ -78,6 +80,42 @@ services:
     profiles:
       - load-test
     restart: unless-stopped
+
+  # Playwrightベースの負荷生成器（RUM対応・軽量版）
+  playwright-generator:
+    build:
+      context: ./scripts/playwright
+      dockerfile: Dockerfile
+    container_name: slm-playwright-generator
+    environment:
+      # アクセス先URL（フロントエンドを指定）
+      TARGET_URL: ${TARGET_URL:-http://frontend:3000}
+      # アクセス間隔（秒）
+      ACCESS_INTERVAL: ${ACCESS_INTERVAL:-10}
+      # 実行時間（秒）
+      DURATION: ${DURATION:-300}
+      # ヘッドレスモード（true/false）
+      HEADLESS: ${HEADLESS:-true}
+      # 同時実行ユーザー数
+      CONCURRENT_USERS: ${CONCURRENT_USERS:-1}
+    depends_on:
+      frontend:
+        condition: service_started
+      api-server:
+        condition: service_healthy
+    networks:
+      - slm-network
+    # profilesを使用して必要時のみ起動
+    # docker compose --profile playwright up で起動
+    profiles:
+      - playwright
+    # restart: "no" を設定してテスト完了時に自動停止
+    restart: "no"
+    # Playwrightのブラウザ実行に必要な権限
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
 
 networks:
   slm-network:

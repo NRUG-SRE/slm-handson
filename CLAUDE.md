@@ -13,19 +13,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### ✅ 実装完了（本番レベル）
 - **Go APIサーバー**: New Relic APM統合、全APIエンドポイント、Swagger UI
 - **Next.jsフロントエンド**: 全ページ実装、New Relic RUM統合、ECサイト機能完備
-- **Docker構成**: マルチステージビルド、ヘルスチェック、環境変数対応
+- **Docker構成**: マルチステージビルド、ヘルスチェック、環境変数対応、Docker Compose V2対応
 - **New Relic統合**: APM + RUM エンドツーエンド監視、セキュアな環境変数設定
+- **RUM/APM連携**: Distributed Tracing、セッション追跡、カスタム属性による完全なエンドツーエンド可視性
 - **SLMデモ機能**: エラー率・レスポンス時間調整、パフォーマンス劣化シミュレーション
-- **ユーザージャーニー負荷生成**: Go実装、完全なECサイトフロー自動実行、リアルなユーザー行動シミュレーション
+- **ユーザージャーニー負荷生成**: Playwright実装、完全なECサイトフロー自動実行、リアルなユーザー行動シミュレーション
 - **セキュリティ**: ハードコーディング排除、環境変数ベース設定
 
 ### 🎯 ハンズオン対応状況
-- **環境セットアップ**: `.env`設定 + `docker-compose up -d`で完全起動
+- **環境セットアップ**: `.env`設定 + `docker compose up -d`で完全起動（Docker Compose V2）
 - **APM監視**: Go APIサーバーの全トランザクション・エラー・パフォーマンス計測
 - **RUM監視**: Next.jsフロントエンドのページビュー・Ajax・エラー・Core Web Vitals計測
+- **RUM/APM完全連携**: セッションID統一、Distributed Tracing、カスタム属性による統合ダッシュボード
 - **SLO設定**: New Relic UIでの実データベースSLI/SLO管理
 - **パフォーマンス変化体験**: 環境変数による動的制御（ERROR_RATE等）
-- **自動ユーザーアクセス**: プロファイル起動で継続的なユーザージャーニー実行
+- **自動ユーザーアクセス**: Playwrightベースで継続的なユーザージャーニー実行、JavaScript実行による完全なRUMデータ生成
 
 ### ⚠️ 未実装（ハンズオン実施には不要）
 - **詳細ドキュメント**: アーキテクチャ詳細説明（README.mdで十分）
@@ -80,23 +82,30 @@ services:
       - load-test
 ```
 
-### ユーザージャーニー負荷生成スクリプト仕様 ✅実装済み
-- **実装言語**: Go（プロジェクト全体との一貫性）
+### ユーザージャーニー負荷生成スクリプト仕様 ✅実装済み（Playwright版）
+- **実装技術**: Playwright + JavaScript（RUMデータ生成のためブラウザベース）
 - **完全なECサイトユーザージャーニー**:
-  1. **TOPページ訪問** → GET /api/products（商品一覧取得）
-  2. **商品詳細ページ表示** → GET /api/products/{id}（ランダム商品選択）
-  3. **カート追加** → POST /api/cart/items（1-3個ランダム数量）
-  4. **カートページ確認** → GET /api/cart（カート内容確認）
-  5. **決済ページ表示** → GET /api/cart（注文内容再確認）
-  6. **注文確定** → POST /api/orders（注文作成・決済完了）
+  1. **TOPページ訪問** → フロントエンドページ表示 + GET /api/products（商品一覧取得）
+  2. **商品詳細ページ表示** → ページ遷移 + GET /api/products/{id}（ランダム商品選択）
+  3. **カート追加** → ボタンクリック + POST /api/cart/items（1-3個ランダム数量）
+  4. **カートページ確認** → ページ遷移 + GET /api/cart（カート内容確認）
+  5. **決済ページ表示** → ページ遷移 + GET /api/cart（注文内容再確認）
+  6. **注文確定** → ボタンクリック + POST /api/orders（注文作成・決済完了）
+- **RUM/APM統合機能**:
+  - JavaScript実行によるNew Relic RUMデータ生成（ページビュー、Ajax、エラー、Core Web Vitals）
+  - セッションID連携によるフロントエンド〜バックエンドのトレース統合
+  - リアルなブラウザ環境での完全なユーザーエクスペリエンス計測
 - **リアルなユーザー行動シミュレーション**:
   - 各ステップ間で1-5秒のランダム思考時間
   - 商品選択、数量選択のランダム化
-  - エラー処理と統計レポート（完了率、成功率）
+  - ブラウザ操作（クリック、ページ遷移、フォーム入力）の完全再現
+  - エラー処理と統計レポート（完了率、成功率、パフォーマンス指標）
 - **設定可能パラメータ**:
   - `ACCESS_INTERVAL`: ジャーニー間隔（秒、デフォルト：10）
-  - `DURATION`: 実行時間（秒、デフォルト：3600）
+  - `DURATION`: 実行時間（秒、デフォルト：300）
   - `TARGET_URL`: フロントエンドURL（Docker：http://frontend:3000）
+  - `HEADLESS`: ヘッドレスモード（true/false、デフォルト：true）
+  - `CONCURRENT_USERS`: 同時実行ユーザー数（デフォルト：1）
 
 ## 開発コマンド
 
@@ -104,39 +113,44 @@ services:
 
 ```bash
 # アプリケーション全体の起動
-docker-compose up -d
+docker compose up -d
 
 # 個別サービスの起動
-docker-compose up -d api-server
-docker-compose up -d frontend
+docker compose up -d api-server
+docker compose up -d frontend
 
-# ユーザージャーニー負荷生成の開始（プロファイル指定）
-docker-compose --profile load-test up load-generator
+# ユーザージャーニー負荷生成の開始（Playwright版・推奨）
+# 2段階起動でネットワークエラー回避
+docker compose up -d
+docker compose --profile playwright up playwright-generator
 
-# カスタム設定での実行
-DURATION=300 ACCESS_INTERVAL=5 docker-compose --profile load-test up load-generator
+# カスタム設定での実行（短時間テスト）
+DURATION=60 ACCESS_INTERVAL=5 docker compose --profile playwright up playwright-generator
+
+# 従来のGo版負荷生成器（オプション・RUMデータなし）
+docker compose --profile load-test up load-generator
 
 # ログの確認
-docker-compose logs -f
-docker-compose logs -f api-server
-docker-compose logs -f frontend
+docker compose logs -f
+docker compose logs -f api-server
+docker compose logs -f frontend
 
 # アプリケーションの停止
-docker-compose down
+docker compose down
 
 # ビルドして起動
-docker-compose up --build -d
+docker compose up --build -d
 
 # 環境変数を.envファイルで設定して実行
 # .envファイルを作成・編集後に実行
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 ## プロジェクト全体のディレクトリ構成
 
 ```
 slm-handson/
-├── docker-compose.yml              # Docker Compose設定ファイル
+├── docker compose.yml              # Docker Compose設定ファイル
 ├── .env.example                    # 環境変数のサンプル
 ├── README.md                       # プロジェクト説明
 ├── CLAUDE.md                       # このファイル
@@ -262,7 +276,7 @@ slm-handson/
 
 3. **Docker設定**：
    - Goアプリケーション用のマルチステージDockerfile
-   - 環境変数サポート付きのdocker-compose.yml
+   - 環境変数サポート付きのdocker compose.yml
    - コンテナ監視用のヘルスチェックエンドポイント
 
 4. **API仕様**：
@@ -414,10 +428,10 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
 - **自動ユーザージャーニー実行**
   ```bash
   # 継続的なユーザージャーニー負荷生成開始
-  docker-compose --profile load-test up load-generator
+  docker compose --profile load-test up load-generator
   
   # カスタム設定での実行（5分間、10秒間隔）
-  DURATION=300 ACCESS_INTERVAL=10 docker-compose --profile load-test up load-generator
+  DURATION=300 ACCESS_INTERVAL=10 docker compose --profile load-test up load-generator
   ```
   
 - **Service Level変化の体験**
@@ -425,7 +439,7 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
   ```bash
   export ERROR_RATE=0.3
   export RESPONSE_TIME_MAX=2000
-  docker-compose up -d api-server
+  docker compose up -d api-server
   ```
   - New Relic UIでのSLO違反確認
   
@@ -456,7 +470,7 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
 ### ✅ 実装完了
 - **バックエンド**: Go APIサーバー（全エンドポイント）
 - **フロントエンド**: TOPページ、商品詳細ページ、カートページ、決済完了ページ
-- **Docker環境**: docker-compose.yaml設定とコンテナ化
+- **Docker環境**: docker compose.yaml設定とコンテナ化
 - **API仕様書**: Swagger/OpenAPI 3.0.3対応
 - **監視統合**: New Relic APM/RUM統合
 - **ユーザージャーニー負荷生成**: Go実装、完全なECサイトフロー自動実行
@@ -472,6 +486,66 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
 - **SLO違反シミュレーション**: エラー率調整による障害体験
 - **New Relic監視**: APM/RUMデータ確認とダッシュボード
 - **API仕様確認**: Swagger UIでのAPIドキュメント閲覧
+
+## 🔗 New Relic RUM/APM完全連携機能
+
+**2025年8月実装完了** - フロントエンドとバックエンドの完全なトレース統合：
+
+### ✅ 実装済み連携機能
+
+1. **Distributed Tracing**
+   - フロントエンド: APIリクエスト時にNew Relicトレース情報をヘッダーに追加
+   - バックエンド: トレースヘッダーを受け取り、トランザクション属性として記録
+   - Next.js API Proxy: ブラウザリクエスト→Docker内APIサーバーへの完全なヘッダー転送
+
+2. **セッション/ユーザーID統一**
+   - セッションID生成: フロントエンドで一意セッションID生成（`session_{timestamp}_{random}`）
+   - RUMでのユーザー識別: セッションIDをNew Relic RUMのユーザーIDとして設定
+   - APMでのユーザー追跡: バックエンドでセッションIDをトランザクション属性として記録
+
+3. **カスタム属性による統合**
+   - `session.id`: 統一セッション識別子
+   - `user.id`: ユーザー追跡用（セッションIDと同値）
+   - `frontend.trace.id`: フロントエンド→バックエンドのトレース連携
+   - `request.source`: リクエスト元識別（"browser"）
+   - `distributedTrace.payload`: New Relicトレースペイロード
+
+### 📊 New Relic UIでの確認方法
+
+1. **Distributed Tracing表示**
+   - APM → Distributed Tracing
+   - Browser（RUM）→ API Server（APM）への完全なリクエストフロー表示
+   - 各サービス間のレイテンシと依存関係を可視化
+
+2. **ユーザージャーニー統合追跡**
+   - Browser → Page views → Session details
+   - 同じセッションIDでRUMとAPMデータを関連付け
+   - ユーザー行動（ページ遷移、Ajax、エラー）と対応するAPI呼び出しの連携表示
+
+3. **統合ダッシュボード作成**
+   ```sql
+   -- RUMとAPMデータを結合するNRQLクエリ例
+   SELECT count(*) FROM PageView, Transaction 
+   WHERE session.id IS NOT NULL 
+   FACET session.id 
+   TIMESERIES
+   
+   -- エラー率の統合監視
+   SELECT percentage(count(*), WHERE error IS true) 
+   FROM PageView, Transaction 
+   WHERE session.id IS NOT NULL
+   ```
+
+4. **Service Maps**
+   - サービス間の依存関係とパフォーマンスメトリクス
+   - フロントエンド→Next.js API Proxy→Go API Server→データストアの全体フロー可視化
+
+### 🎯 ハンズオン体験での活用
+
+- **完全なユーザージャーニー追跡**: Playwrightによる自動ユーザー操作で、RUMとAPMデータを同時生成
+- **エンドツーエンドSLO監視**: フロントエンドUXからバックエンドAPIまでの統合SLI/SLO設定
+- **パフォーマンス分析**: ブラウザ側とサーバー側の両方からボトルネック特定
+- **エラー分析**: フロントエンドエラーと対応するAPI呼び出しの関連付け
 
 ## 🚨 重要: CI/CDチェック必須事項
 

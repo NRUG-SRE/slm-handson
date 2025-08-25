@@ -45,6 +45,7 @@ func (r *Router) SetupRoutes() *gin.Engine {
 	router.Use(middleware.RecoveryMiddleware(r.nrClient))
 	router.Use(middleware.CORS())
 	router.Use(middleware.NewRelicMiddleware(r.nrClient))
+	router.Use(middleware.DistributedTracingMiddleware())
 	router.Use(middleware.RequestIDMiddleware())
 
 	// ヘルスチェックエンドポイント

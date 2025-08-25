@@ -1,6 +1,8 @@
 import { Product, Cart, CartItem, Order } from './types'
+import { monitoring } from './monitoring'
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api'
+// ブラウザからはNext.jsのプロキシAPI経由でアクセス
+const API_BASE_URL = typeof window !== 'undefined' ? '/api' : (process.env.INTERNAL_API_URL || 'http://api-server:8080/api')
 
 class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -25,9 +27,40 @@ async function apiRequest<T>(
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`
   
+  // New Relic distributed tracing用のヘッダーを追加
+  const distributedTracingHeaders: Record<string, string> = {}
+  
+  // New Relic Browser Agent v3では、W3C Trace Contextが自動的に処理される
+  // カスタムヘッダーとして情報を送信
+  if (typeof window !== 'undefined' && (window as any).newrelic) {
+    try {
+      // New Relicの現在のトレース情報を取得（利用可能な場合）
+      if ((window as any).newrelic.getTrace) {
+        const traceInfo = (window as any).newrelic.getTrace()
+        if (traceInfo && traceInfo.traceId) {
+          distributedTracingHeaders['X-NewRelic-Trace'] = traceInfo.traceId
+        }
+      }
+      
+      // セッション情報も含める
+      distributedTracingHeaders['X-NewRelic-Browser'] = 'true'
+    } catch (error) {
+      console.debug('New Relic tracing header creation failed:', error)
+    }
+  }
+  
+  // セッションIDをヘッダーに追加（RUMとAPMの連携用）
+  if (typeof window !== 'undefined') {
+    const sessionId = monitoring.getSessionId()
+    if (sessionId) {
+      distributedTracingHeaders['X-Session-ID'] = sessionId
+    }
+  }
+  
   const config: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
+      ...distributedTracingHeaders,
       ...options.headers,
     },
     ...options,

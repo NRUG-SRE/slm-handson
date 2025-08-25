@@ -4,7 +4,7 @@
 
 ## 概要
 
-ECサイトをモデルとしたサンプルアプリケーション（Go APIサーバー + Next.jsフロントエンド）を使用して、New Relic APMとReal User Monitoring (RUM)によるエンドツーエンドのモニタリングとSLM機能の実践的な学習ができます。Docker Composeを使用して簡単に環境を構築し、自動ユーザージャーニー負荷生成により継続的にテレメトリーデータをNew Relicに送信しながらSLO/SLIの設定と管理を体験できます。
+ECサイトをモデルとしたサンプルアプリケーション（Go APIサーバー + Next.jsフロントエンド）を使用して、New Relic APMとReal User Monitoring (RUM)によるエンドツーエンドのモニタリングとSLM機能の実践的な学習ができます。Docker Composeを使用して簡単に環境を構築し、**Playwrightベースの自動ユーザージャーニー負荷生成**により継続的にリアルなブラウザ操作でテレメトリーデータをNew Relicに送信しながら、**RUMとAPMの完全統合**によるSLO/SLIの設定と管理を体験できます。
 
 ## 前提条件
 
@@ -83,7 +83,7 @@ NREUM.loader_config={
 Docker Composeを使用してサンプルアプリケーションを起動します：
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 起動後、以下のURLでアクセスできます：
@@ -212,10 +212,10 @@ sequenceDiagram
   - 商品管理、カート、注文処理のREST API
   - New Relic APMでサーバーサイドパフォーマンスを監視
 
-- **ユーザージャーニー負荷生成スクリプト**
-  - Go言語による完全なECサイトユーザージャーニー自動実行
-  - リアルなユーザー行動シミュレーション（思考時間、ランダム選択）
-  - 継続的なSLI/SLOデータ生成とNew Relic APM/RUM連携
+- **ユーザージャーニー負荷生成スクリプト（Playwright版）**
+  - JavaScript + Playwrightによる完全なECサイトユーザージャーニー自動実行
+  - リアルなブラウザ環境でのユーザー行動シミュレーション（思考時間、ランダム選択、実際のページ遷移）
+  - 継続的なSLI/SLOデータ生成とNew Relic RUM/APM完全統合（セッション追跡、Distributed Tracing）
 
 ## ハンズオンシナリオ
 
@@ -240,14 +240,19 @@ sequenceDiagram
   - 適切な目標値の設定
 
 ### 3. SLO管理ハンズオン（30分）
-- **自動ユーザージャーニー実行**
+- **自動ユーザージャーニー実行（Playwright版・推奨）**
   ```bash
-  # 継続的なユーザージャーニー負荷生成開始
-  docker-compose --profile load-test up load-generator
+  # 2段階起動でネットワークエラー回避
+  docker compose up -d
+  docker compose --profile playwright up playwright-generator
+  
+  # 短時間テスト（1分間、5秒間隔）
+  DURATION=60 ACCESS_INTERVAL=5 docker compose --profile playwright up playwright-generator
   ```
+- **RUM/APM統合データ確認**: フロントエンドとバックエンドの完全なトレース統合
 - **環境変数によるService Level変化の体験**（ERROR_RATE調整）
 - **エラーバジェット運用体験**: バジェット消費とアラート確認
-- **New Relic UIでのSLO違反確認**: リアルタイムSLI/SLO監視とダッシュボード活用
+- **New Relic UIでのSLO違反確認**: リアルタイムSLI/SLO監視と統合ダッシュボード活用
 
 ## 主要なAPIエンドポイント
 
@@ -273,28 +278,39 @@ sequenceDiagram
 
 ## ユーザージャーニー負荷生成
 
-### 自動ユーザージャーニー実行
+### 自動ユーザージャーニー実行（Playwright版・推奨）
 
-完全なECサイトのユーザー行動を自動でシミュレーション：
+**New Relic RUM/APM完全統合** - リアルなブラウザ環境での完全なECサイトユーザー行動シミュレーション：
 
 ```bash
-# 基本実行（デフォルト：10秒間隔、1時間継続）
-docker-compose --profile load-test up load-generator
+# 推奨: 2段階起動でネットワークエラー回避
+docker compose up -d
+docker compose --profile playwright up playwright-generator
 
-# カスタム設定での実行
-DURATION=300 ACCESS_INTERVAL=5 docker-compose --profile load-test up load-generator
+# 短時間テスト（1分間、5秒間隔）
+DURATION=60 ACCESS_INTERVAL=5 docker compose --profile playwright up playwright-generator
 
-# バックグラウンド実行
-docker-compose --profile load-test up -d load-generator
+# バックグラウンド実行（ログなし）
+docker compose up -d
+docker compose --profile playwright up -d playwright-generator
 ```
 
-**実行されるユーザージャーニー**:
-1. **TOPページ訪問** → GET /api/products
-2. **商品詳細表示** → GET /api/products/{id}（ランダム選択）
-3. **カート追加** → POST /api/cart/items（1-3個ランダム）
-4. **カート確認** → GET /api/cart
-5. **決済ページ** → GET /api/cart（注文内容確認）
-6. **注文完了** → POST /api/orders
+**実行されるユーザージャーニー**（RUM/APM統合データ生成）:
+1. **TOPページ訪問** → ページ表示 + GET /api/products（RUMページビュー + APMトランザクション）
+2. **商品詳細表示** → 実際のページ遷移 + GET /api/products/{id}（ランダム選択）
+3. **カート追加** → ボタンクリック + POST /api/cart/items（1-3個ランダム）
+4. **カート確認** → ページ遷移 + GET /api/cart
+5. **決済ページ** → ページ遷移 + GET /api/cart（注文内容確認）
+6. **注文完了** → フォーム送信 + POST /api/orders
+
+### 従来のGo版負荷生成器（オプション）
+
+API呼び出しのみ（RUMデータなし）:
+
+```bash
+# API負荷のみ生成
+docker compose --profile load-test up load-generator
+```
 
 ### パフォーマンス劣化シミュレーション
 
@@ -304,12 +320,12 @@ docker-compose --profile load-test up -d load-generator
 # エラー率を30%に設定
 export ERROR_RATE=0.3
 export RESPONSE_TIME_MAX=2000
-docker-compose up -d --build api-server
+docker compose up -d --build api-server
 
 # 正常な状態に戻す
 export ERROR_RATE=0.0
 export SLOW_ENDPOINT_RATE=0.0
-docker-compose up -d --build api-server
+docker compose up -d --build api-server
 ```
 
 ### 手動APIテスト
@@ -328,19 +344,19 @@ curl http://localhost:8080/api/v1/error
 
 ```bash
 # ログの確認
-docker-compose logs -f
-docker-compose logs -f api-server
-docker-compose logs -f frontend
+docker compose logs -f
+docker compose logs -f api-server
+docker compose logs -f frontend
 
 # アプリケーションの停止
-docker-compose down
+docker compose down
 
 # ビルドして起動
-docker-compose up -d --build
+docker compose up -d --build
 
 # 個別サービスの再起動
-docker-compose restart api-server
-docker-compose restart frontend
+docker compose restart api-server
+docker compose restart frontend
 ```
 
 ## プロジェクト構成
@@ -351,7 +367,7 @@ slm-handson/
 ├── frontend/         # Next.jsフロントエンド
 ├── scripts/          # ユーザージャーニー負荷生成スクリプト
 ├── swagger.yaml      # OpenAPI 3.0.3仕様書
-├── docker-compose.yml # Docker構成
+├── docker compose.yml # Docker構成
 ├── .env.example      # 環境変数サンプル
 └── README.md         # プロジェクト説明
 ```
@@ -370,9 +386,46 @@ slm-handson/
 - **New Relic APM**: サーバーサイドパフォーマンス監視
 
 ### 監視・負荷生成機能
-- **New Relic RUM**: クライアントサイドパフォーマンス監視
-- **ユーザージャーニー負荷生成**: 完全なECサイトフロー自動実行
-- **リアルタイムSLI/SLOデータ生成**: 継続的な監視データ提供
+- **New Relic RUM**: クライアントサイドパフォーマンス監視（ページビュー、Ajax、エラー、Core Web Vitals）
+- **New Relic APM**: サーバーサイドパフォーマンス監視（トランザクション、データベース、外部API）
+- **RUM/APM完全統合**: セッション追跡、Distributed Tracing、カスタム属性による統合ダッシュボード
+- **Playwrightユーザージャーニー負荷生成**: 完全なECサイトフロー自動実行（ブラウザベース）
+- **リアルタイムSLI/SLOデータ生成**: 継続的な監視データ提供とエンドツーエンド可視性
+
+## 🔗 New Relic RUM/APM完全統合機能
+
+**2025年8月実装完了** - フロントエンドとバックエンドの完全なトレース統合により、真のエンドツーエンド監視を実現：
+
+### ✅ 統合機能詳細
+
+1. **セッション統一追跡**
+   - 一意のセッションID（`session_{timestamp}_{random}`）により、ブラウザとAPIサーバー間の完全な追跡
+   - New Relic UI で同一セッションのフロントエンド操作とバックエンド処理を関連付けて分析
+
+2. **Distributed Tracing**
+   - フロントエンド Ajax リクエストからバックエンド API トランザクションまでの完全なトレース
+   - リクエストフローの可視化とボトルネック特定
+
+3. **統合ダッシュボード活用**
+   ```sql
+   -- セッション別パフォーマンス分析
+   SELECT session.id, average(duration) 
+   FROM PageView, Transaction 
+   WHERE session.id IS NOT NULL 
+   GROUP BY session.id
+   
+   -- エンドツーエンドエラー率監視
+   SELECT percentage(count(*), WHERE error IS true) 
+   FROM PageView, Transaction 
+   WHERE session.id IS NOT NULL
+   ```
+
+### 🎯 ハンズオンでの体験価値
+
+- **完全なSLO設定**: フロントエンドUXとバックエンドAPIの統合SLO設定
+- **リアルタイム監視**: Playwright負荷生成により、実際のユーザー行動に近い監視データを生成
+- **統合パフォーマンス分析**: ブラウザ側とサーバー側の両方からのボトルネック特定
+- **エラー根本原因分析**: フロントエンドエラーと対応するAPI呼び出しの関連分析
 
 ## トラブルシューティング
 
@@ -404,16 +457,27 @@ sudo lsof -i :8080
 - **対処**: 
 ```bash
 # コンテナを完全に再ビルド
-docker-compose down
-docker-compose up -d --build
+docker compose down
+docker compose up -d --build
 ```
 
-**5. Docker関連のエラー**
+**5. Playwright負荷生成器のネットワークエラー**
+- **症状**: `network not found` エラー
+- **対処**: 2段階起動を使用
+```bash
+# 基本サービスを先に起動
+docker compose up -d
+# Playwrightサービスを起動
+docker compose --profile playwright up playwright-generator
+```
+
+**6. Docker関連のエラー**
 - **対処**: ログでエラーメッセージを確認
 ```bash
-docker-compose logs -f
-docker-compose logs api-server
-docker-compose logs frontend
+docker compose logs -f
+docker compose logs api-server
+docker compose logs frontend
+docker compose logs playwright-generator
 ```
 
 ## 参考資料

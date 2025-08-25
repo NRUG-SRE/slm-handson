@@ -16,14 +16,22 @@ declare global {
 export class NewRelicMonitoring {
   private static instance: NewRelicMonitoring
   private isInitialized = false
+  private sessionId: string
 
-  private constructor() {}
+  private constructor() {
+    // セッションIDを生成（ユーザー識別用）
+    this.sessionId = this.generateSessionId()
+  }
 
   public static getInstance(): NewRelicMonitoring {
     if (!NewRelicMonitoring.instance) {
       NewRelicMonitoring.instance = new NewRelicMonitoring()
     }
     return NewRelicMonitoring.instance
+  }
+
+  private generateSessionId(): string {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }
 
   public init(): void {
@@ -33,6 +41,16 @@ export class NewRelicMonitoring {
 
     // New Relic Browser Agentの初期化
     // 実際の初期化は layout.tsx で New Relic スクリプトタグによって行われる
+    
+    // セッションIDをNew Relicに設定
+    if (window.newrelic && window.newrelic.setUserId) {
+      window.newrelic.setUserId(this.sessionId)
+    }
+    
+    // セッション情報をカスタム属性として設定
+    this.setUserAttribute('sessionId', this.sessionId)
+    this.setUserAttribute('clientTimestamp', Date.now())
+    
     this.isInitialized = true
   }
 
@@ -93,6 +111,10 @@ export class NewRelicMonitoring {
     if (typeof window !== 'undefined' && window.newrelic) {
       window.newrelic.setCustomAttribute(key, value)
     }
+  }
+
+  public getSessionId(): string {
+    return this.sessionId
   }
 }
 

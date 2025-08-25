@@ -1,0 +1,12 @@
+{
+  "name": "slm-handson-playwright-generator",
+  "version": "1.0.0",
+  "description": "Lightweight Playwright load generator for SLM Handson with RUM support",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "playwright-chromium": "1.40.0"
+  }
+}
