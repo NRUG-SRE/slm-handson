@@ -387,7 +387,7 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
 
 ## ハンズオンシナリオ
 
-### 1. 環境セットアップ（20分）
+### 1. 環境セットアップ（30分）
 - **New Relic APIキー払出し**
   - New Relicアカウントへのアクセス確認
   - APIキーの生成と環境変数への設定
@@ -402,7 +402,7 @@ NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=your-new-relic-application-id（必須）
   - Browser (RUM)データの確認
   - 現状の計測内容の理解
 
-### 2. SLM設定ハンズオン（40分）
+### 2. SLM設定ハンズオン（60分）
 - **ユーザージャーニーの設定**
   - ユーザージャーニーの概念説明
   - 推奨事項：SLOは1〜3つから開始
