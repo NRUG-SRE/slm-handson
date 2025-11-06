@@ -8,31 +8,44 @@ ECサイトをモデルとしたサンプルアプリケーション（Go APIサ
 
 ## 前提条件
 
-- Docker および Docker Compose
+- **GitHub Codespaces** または **ローカル環境（Docker / Docker Compose）**
 - New Relicアカウント
 - New Relic License Key（APM用）
 - New Relic Browser License Key（RUM用）
-- Go 1.21以上（ローカル開発時）
-- Node.js 18以上（ローカル開発時）
 
 ## セットアップ
 
-### 1. リポジトリのクローン
+### GitHub Codespacesを使用する場合（推奨）
+
+GitHub Codespacesを使用すると、ブラウザだけで完全なハンズオン環境を構築できます。
+
+**Codespacesの起動手順:**
+
+1. このリポジトリのGitHubページ（https://github.com/NRUG-SRE/slm-handson）にアクセス
+2. 画面右上の緑色ボタン **Code** をクリック
+3. **Codespaces** タブを選択
+4. **Create codespace on main** をクリック
+
+数分後、ブラウザ内でVS Codeが起動し、プロジェクトが自動的に開きます。`.env`ファイルが自動生成されるので、次のステップ「環境変数の設定」に進んでください。
+
+### ローカル環境を使用する場合
+
+**前提条件:**
+- Docker および Docker Compose
+- Go 1.21以上（ローカル開発時）
+- Node.js 18以上（ローカル開発時）
+
+**リポジトリのクローン:**
 
 ```bash
 git clone https://github.com/NRUG-SRE/slm-handson.git
 cd slm-handson
-```
-
-### 2. 環境変数の設定
-
-`.env.example`をコピーして`.env`ファイルを作成し、必要な値を設定します：
-
-```bash
 cp .env.example .env
 ```
 
-`.env`ファイルの内容：
+### 共通: 環境変数の設定
+
+`.env`ファイルを編集して、New Relicのライセンスキーを設定します：
 ```
 # Backend (APM)
 NEW_RELIC_API_KEY=your-license-key-here
@@ -78,7 +91,7 @@ NREUM.loader_config={
 }
 ```
 
-### 3. アプリケーションの起動
+### 共通: アプリケーションの起動
 
 Docker Composeを使用してサンプルアプリケーションを起動します：
 
@@ -86,11 +99,14 @@ Docker Composeを使用してサンプルアプリケーションを起動しま
 docker compose up -d --build
 ```
 
-起動後、以下のURLでアクセスできます：
-- **フロントエンド**: http://localhost:3000
-- **バックエンドAPI**: http://localhost:8080/api
-- **ヘルスチェック**: http://localhost:8080/health
-- **API仕様書 (Swagger UI)**: http://localhost:8080/api/docs
+**アクセス方法:**
+
+- **GitHub Codespaces**: VS Codeの「PORTS」タブで、3000番と8080番ポートの地球儀アイコンをクリック
+- **ローカル環境**: 以下のURLにブラウザでアクセス
+  - **フロントエンド**: http://localhost:3000
+  - **バックエンドAPI**: http://localhost:8080/api
+  - **ヘルスチェック**: http://localhost:8080/health
+  - **API仕様書 (Swagger UI)**: http://localhost:8080/api/docs
 
 ## アーキテクチャ
 
@@ -220,11 +236,19 @@ sequenceDiagram
 ## ハンズオンシナリオ
 
 ### 1. 環境セットアップ（20分）
-- New Relic License Keyの払い出しと設定
-- デモアプリケーションの起動と動作確認
-- フロントエンド（http://localhost:3000）でECサイトの動作確認
-- Swagger UI（http://localhost:8080/api/docs）でAPI仕様の確認
-- APM / Real User Monitoringの計測確認
+- **GitHub Codespacesの起動**（ローカル環境の場合はリポジトリクローン）
+- **New Relic License Keyの払い出しと設定**
+  - `.env`ファイルの編集でライセンスキーを設定
+- **デモアプリケーションの起動と動作確認**
+  - `docker compose up -d --build`で起動
+- **フロントエンドでECサイトの動作確認**
+  - Codespaces: PORTSタブから3000番ポートを開く
+  - ローカル: http://localhost:3000 にアクセス
+- **Swagger UIでAPI仕様の確認**
+  - Codespaces: PORTSタブから8080番ポート `/api/docs` にアクセス
+  - ローカル: http://localhost:8080/api/docs にアクセス
+- **APM / Real User Monitoringの計測確認**
+  - New Relic UIでデータ受信を確認
 
 ### 2. SLM設定ハンズオン（40分）
 - **ユーザージャーニーの設定**
