@@ -7,29 +7,958 @@
     <title>New Relic SLM ハンズオンガイド</title>
   </head>
   <body class="bg-gray-50 text-gray-900">
-    <div id="app" class="container mx-auto p-8">
-      <h1 class="text-4xl font-bold text-blue-600 mb-8">New Relic SLM ハンズオンガイド</h1>
-      <p class="mt-4 text-lg mb-8">Tailwind CSS v4 + Prism.js 統合テスト</p>
+    <!-- ヘッダー -->
+    <header id="header" class="bg-blue-600 text-white py-8 shadow-lg">
+      <div class="container mx-auto px-6">
+        <h1 class="text-4xl font-bold">New Relic Service Level Management ハンズオン</h1>
+        <p class="mt-3 text-xl">座学と実技で学ぶSLI/SLO設計・管理</p>
+      </div>
+    </header>
 
-      <section class="mb-8">
-        <h2 class="text-2xl font-semibold mb-4">Bashコマンド例</h2>
-        <pre class="rounded-lg"><code class="language-bash">docker compose up -d --build
-npm run dev
-git status</code></pre>
-      </section>
+    <!-- 目次 -->
+    <nav id="toc" class="container mx-auto px-6 py-10">
+      <h2 class="text-3xl font-bold mb-6 text-gray-800">目次</h2>
+      <ul class="space-y-3 text-lg">
+        <li>
+          <a href="#lecture" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
+            1. 座学: Service Level Management基礎 (推奨時間: 20分)
+          </a>
+        </li>
+        <li>
+          <a href="#setup" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
+            2. 環境セットアップ (推奨時間: 30分)
+          </a>
+        </li>
+        <li class="text-gray-500 italic">
+          休憩時間: 10分
+        </li>
+        <li>
+          <a href="#slo-management" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
+            3. SLO設定・管理 (推奨時間: 30分)
+          </a>
+        </li>
+      </ul>
+    </nav>
 
-      <section class="mb-8">
-        <h2 class="text-2xl font-semibold mb-4">YAML設定例</h2>
-        <pre class="rounded-lg"><code class="language-yaml">version: '3.8'
-services:
-  api-server:
-    build: ./backend
-    ports:
-      - "8080:8080"
-    environment:
-      - NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY}</code></pre>
-      </section>
-    </div>
+    <!-- 座学セクション -->
+    <section id="lecture" class="container mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">座学: Service Level Management基礎</h2>
+      <p class="text-sm text-gray-600 mb-6">推奨時間: 20分</p>
+
+      <!-- スライドコンテナ -->
+      <div id="slide-container" class="min-h-[500px] mb-8">
+        <!-- スライド1 -->
+        <div class="slide" data-slide="0">
+          <h3 class="text-3xl font-bold mb-6 text-center text-blue-700">AI時代におけるService Level Management</h3>
+          <p class="text-xl text-gray-700 text-center mt-8">プロダクトオーナー、PM、SRE、開発者のための</p>
+          <p class="text-2xl font-semibold text-center text-blue-600 mt-4">実践的SLI/SLO設計ガイド</p>
+        </div>
+
+        <!-- スライド2 -->
+        <div class="slide hidden" data-slide="1">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">従来の組織内成果物の問題点</h3>
+          <div class="space-y-4 text-lg text-gray-700">
+            <p class="font-semibold">これらの報告書、誰のためのものですか？</p>
+            <ul class="list-disc list-inside space-y-2 ml-4">
+              <li>月次・週次報告書</li>
+              <li>改善提案書</li>
+              <li>障害報告書</li>
+              <li>再発防止策</li>
+              <li>品質向上レポート</li>
+            </ul>
+            <p class="mt-6 text-xl font-bold text-red-600">→ 最も重要なステークホルダー（ユーザー）の視点が欠けている</p>
+          </div>
+        </div>
+
+        <!-- スライド3 -->
+        <div class="slide hidden" data-slide="2">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">ユーザー視点 vs プロダクト視点</h3>
+          <div class="grid grid-cols-2 gap-6 mt-8">
+            <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-300">
+              <h4 class="text-xl font-bold text-blue-700 mb-4">ユーザー視点</h4>
+              <p class="text-lg text-gray-700">高い可用性による<br>良質なユーザー体験</p>
+            </div>
+            <div class="bg-green-50 p-6 rounded-lg border-2 border-green-300">
+              <h4 class="text-xl font-bold text-green-700 mb-4">プロダクト視点</h4>
+              <ul class="text-lg text-gray-700 space-y-2">
+                <li>• ユーザー数</li>
+                <li>• 利用量</li>
+                <li>• 単価</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- スライド4 -->
+        <div class="slide hidden" data-slide="3">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">なぜユーザー視点を最優先すべきか</h3>
+          <div class="space-y-6 text-lg text-gray-700 mt-8">
+            <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500">
+              <p class="font-semibold text-xl mb-3">Service Level Managementの本質</p>
+              <p>ユーザーが期待する<strong class="text-blue-600">サービス品質</strong>を定量的に測定し、継続的に改善するプロセス</p>
+            </div>
+            <div class="mt-6">
+              <p class="text-xl font-bold text-gray-800">ユーザー満足度が高ければ...</p>
+              <ul class="list-disc list-inside space-y-2 ml-4 mt-4">
+                <li>利用継続率が向上</li>
+                <li>口コミによる新規ユーザー獲得</li>
+                <li>プロダクト指標（ユーザー数、利用量、単価）が自然に向上</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- スライド5 -->
+        <div class="slide hidden" data-slide="4">
+          <h3 class="text-3xl font-bold mb-8 text-center text-blue-700">可用性 vs 機能</h3>
+          <p class="text-xl text-center text-gray-700 mt-12">次の2つのアプリケーション、あなたはどちらを選びますか？</p>
+        </div>
+
+        <!-- スライド6 -->
+        <div class="slide hidden" data-slide="5">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">Aのアプリ</h3>
+          <div class="bg-blue-50 p-8 rounded-lg border-2 border-blue-300 mt-8">
+            <p class="text-xl text-gray-800 mb-6"><strong>機能:</strong> タスクの登録と削除の機能しかない</p>
+            <p class="text-2xl font-bold text-blue-600">✅ 絶対に期待した通りの操作ができる</p>
+          </div>
+          <div class="mt-8 bg-green-50 p-6 rounded-lg">
+            <p class="text-lg text-gray-700"><strong>可用性:</strong> 100% 安定動作</p>
+            <p class="text-lg text-gray-700"><strong>機能性:</strong> 最小限</p>
+          </div>
+        </div>
+
+        <!-- スライド7 -->
+        <div class="slide hidden" data-slide="6">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">Bのアプリ</h3>
+          <div class="bg-purple-50 p-8 rounded-lg border-2 border-purple-300 mt-8">
+            <p class="text-xl text-gray-800 mb-6"><strong>機能:</strong> Notion/Backlogのように魅力的な機能を兼ね揃えている</p>
+            <p class="text-2xl font-bold text-red-600">❌ 3回に1回くらいの頻度で操作が失敗する</p>
+          </div>
+          <div class="mt-8 bg-red-50 p-6 rounded-lg">
+            <p class="text-lg text-gray-700"><strong>可用性:</strong> 約66% （3回に1回失敗）</p>
+            <p class="text-lg text-gray-700"><strong>機能性:</strong> 非常に豊富</p>
+          </div>
+        </div>
+
+        <!-- スライド8 -->
+        <div class="slide hidden" data-slide="7">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">信頼性を基準としたバランス</h3>
+          <div class="space-y-6 text-lg text-gray-700 mt-8">
+            <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500">
+              <p class="font-semibold text-xl mb-3">結論</p>
+              <p>どちらも極端すぎる。<strong class="text-blue-600">信頼性（Reliability）</strong>を基準にバランスをとることが重要。</p>
+            </div>
+            <div class="grid grid-cols-2 gap-6 mt-8">
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <p class="font-bold text-lg mb-3 text-gray-800">機能が多すぎる</p>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                  <li>複雑性が増す</li>
+                  <li>バグが増える</li>
+                  <li>可用性が低下</li>
+                </ul>
+              </div>
+              <div class="bg-gray-50 p-6 rounded-lg">
+                <p class="font-bold text-lg mb-3 text-gray-800">適切なバランス</p>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                  <li>ユーザーに必要な機能</li>
+                  <li>高い可用性</li>
+                  <li>持続可能な開発速度</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- スライド9 -->
+        <div class="slide hidden" data-slide="8">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">SLOレベル比較表</h3>
+          <div class="overflow-x-auto mt-6">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="bg-blue-600 text-white">
+                  <th class="border border-blue-700 px-4 py-3 text-left">SLOレベル</th>
+                  <th class="border border-blue-700 px-4 py-3 text-left">月間ダウンタイム許容</th>
+                  <th class="border border-blue-700 px-4 py-3 text-left">年間ダウンタイム許容</th>
+                </tr>
+              </thead>
+              <tbody class="text-lg">
+                <tr class="bg-gray-50">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold">90%</td>
+                  <td class="border border-gray-300 px-4 py-3">3日</td>
+                  <td class="border border-gray-300 px-4 py-3">36.5日</td>
+                </tr>
+                <tr class="bg-white">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold">99%</td>
+                  <td class="border border-gray-300 px-4 py-3">7時間12分</td>
+                  <td class="border border-gray-300 px-4 py-3">3.65日</td>
+                </tr>
+                <tr class="bg-blue-50">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold text-blue-700">99.9%</td>
+                  <td class="border border-gray-300 px-4 py-3">43分12秒</td>
+                  <td class="border border-gray-300 px-4 py-3">8.76時間</td>
+                </tr>
+                <tr class="bg-green-50">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold text-green-700">99.99%</td>
+                  <td class="border border-gray-300 px-4 py-3">4分19秒</td>
+                  <td class="border border-gray-300 px-4 py-3">52.56分</td>
+                </tr>
+                <tr class="bg-yellow-50">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold text-yellow-700">99.999%</td>
+                  <td class="border border-gray-300 px-4 py-3">26秒</td>
+                  <td class="border border-gray-300 px-4 py-3">5.26分</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- スライド10 -->
+        <div class="slide hidden" data-slide="9">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">SLOに9を一つ追加するたびに...</h3>
+          <div class="space-y-6 text-lg text-gray-700 mt-8">
+            <div class="bg-red-50 p-6 rounded-lg border-l-4 border-red-500">
+              <p class="font-semibold text-xl mb-3 text-red-700">必要となる労力とコストが指数関数的に増加</p>
+            </div>
+            <div class="grid grid-cols-2 gap-6 mt-8">
+              <div>
+                <h4 class="font-bold text-lg mb-3 text-gray-800">インフラコスト</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                  <li>冗長化（マルチAZ、マルチリージョン）</li>
+                  <li>ロードバランサーの増強</li>
+                  <li>データベースのレプリケーション</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg mb-3 text-gray-800">運用コスト</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                  <li>24時間365日のオンコール体制</li>
+                  <li>監視システムの強化</li>
+                  <li>インシデント対応プロセスの整備</li>
+                </ul>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-6 mt-6">
+              <div>
+                <h4 class="font-bold text-lg mb-3 text-gray-800">開発コスト</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                  <li>テストの厳格化</li>
+                  <li>デプロイ自動化の高度化</li>
+                  <li>カナリアリリース、ブルーグリーンデプロイ</li>
+                </ul>
+              </div>
+              <div>
+                <h4 class="font-bold text-lg mb-3 text-gray-800">機会コスト</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                  <li>新機能開発の優先度低下</li>
+                  <li>リスク回避のための保守的な判断</li>
+                  <li>技術的負債の蓄積</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- スライド11 -->
+        <div class="slide hidden" data-slide="10">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">SLA（Service Level Agreement）</h3>
+          <div class="bg-blue-50 p-8 rounded-lg border-2 border-blue-400 mt-8">
+            <p class="text-xl font-semibold text-blue-800 mb-4">顧客との契約上の合意</p>
+            <p class="text-lg text-gray-700 mb-6">サービス提供者が顧客に対して保証するサービス品質の水準</p>
+            <div class="bg-white p-6 rounded-lg mt-6">
+              <p class="font-bold text-lg text-gray-800 mb-3">特徴:</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li>法的拘束力を持つ契約</li>
+                <li>違反時の補償・ペナルティが定義される</li>
+                <li>外部に公開される（顧客向け）</li>
+                <li>例: 「可用性99.9%を保証、違反時は利用料金の10%を返金」</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- スライド12 -->
+        <div class="slide hidden" data-slide="11">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">SLI（Service Level Indicator）</h3>
+          <div class="bg-green-50 p-8 rounded-lg border-2 border-green-400 mt-8">
+            <p class="text-xl font-semibold text-green-800 mb-4">サービス品質の測定指標</p>
+            <p class="text-lg text-gray-700 mb-6">サービスのパフォーマンスを定量的に測定するメトリクス</p>
+            <div class="bg-white p-6 rounded-lg mt-6">
+              <p class="font-bold text-lg text-gray-800 mb-3">代表的なSLI:</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li><strong>可用性（Availability）:</strong> 成功したリクエスト数 / 全リクエスト数</li>
+                <li><strong>レイテンシ（Latency）:</strong> リクエストのレスポンス時間（95パーセンタイル等）</li>
+                <li><strong>スループット（Throughput）:</strong> 単位時間あたりの処理リクエスト数</li>
+                <li><strong>エラー率（Error Rate）:</strong> エラーリクエスト数 / 全リクエスト数</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- スライド13 -->
+        <div class="slide hidden" data-slide="12">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">SLO（Service Level Objective）</h3>
+          <div class="bg-yellow-50 p-8 rounded-lg border-2 border-yellow-400 mt-8">
+            <p class="text-xl font-semibold text-yellow-800 mb-4">内部目標値</p>
+            <p class="text-lg text-gray-700 mb-6">SLIに対して設定する具体的な目標値（内部運用基準）</p>
+            <div class="bg-white p-6 rounded-lg mt-6">
+              <p class="font-bold text-lg text-gray-800 mb-3">特徴:</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li>SLAよりも厳しい値を設定（バッファを確保）</li>
+                <li>内部チーム向けの運用指標</li>
+                <li>エラーバジェットの算出に使用</li>
+                <li>例: 「可用性 &gt;= 99.9%」「レスポンスタイム95パーセンタイル &lt; 300ms」</li>
+              </ul>
+            </div>
+            <div class="mt-6 bg-blue-50 p-4 rounded-lg">
+              <p class="text-gray-700"><strong>関係:</strong> SLI（測定） → SLO（目標） → SLA（契約）</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- スライド14 -->
+        <div class="slide hidden" data-slide="13">
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">SLIとSLOの設計方法</h3>
+          <div class="space-y-6 text-lg text-gray-700 mt-6">
+            <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+              <p class="font-semibold text-xl mb-3">1. 成功率ベースのSLI/SLO</p>
+              <p><strong>SLI:</strong> 成功したリクエスト数 / 全リクエスト数</p>
+              <p class="mt-2"><strong>SLO例:</strong> 商品詳細ページの成功率 >= 99.9%</p>
+              <p class="mt-2 text-gray-600">→ 1000リクエストのうち999回は成功する必要がある</p>
+            </div>
+            <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-500">
+              <p class="font-semibold text-xl mb-3">2. レスポンスタイムベースのSLI/SLO</p>
+              <p><strong>SLI:</strong> 指定時間内に完了したリクエスト数 / 全リクエスト数</p>
+              <p class="mt-2"><strong>SLO例:</strong> カート追加APIのレスポンスタイム95パーセンタイル &lt; 300ms</p>
+              <p class="mt-2 text-gray-600">→ 100リクエストのうち95回は300ms以内に完了する必要がある</p>
+            </div>
+            <div class="mt-6 bg-yellow-50 p-4 rounded-lg">
+              <p class="font-bold text-gray-800">ポイント: ユーザー視点で重要な指標を選択する</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- スライドナビゲーション -->
+      <div class="flex justify-between items-center py-4 border-t border-b border-gray-300 mb-6">
+        <button id="prevSlideBtn" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+          ← 前へ
+        </button>
+        <span id="slideCounter" class="text-lg font-semibold text-gray-700">1 / 14</span>
+        <button id="nextSlideBtn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+          次へ →
+        </button>
+      </div>
+
+      <!-- セクションナビゲーションボタン -->
+      <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+        <a href="#toc" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+          ← 目次へ戻る
+        </a>
+        <a href="#setup" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+          次へ: 環境セットアップ →
+        </a>
+      </div>
+    </section>
+
+    <!-- 環境セットアップセクション -->
+    <section id="setup" class="container mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">環境セットアップ</h2>
+      <p class="text-sm text-gray-600 mb-6">推奨時間: 30分</p>
+
+      <!-- 1. GitHub Codespacesセットアップ -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">1. GitHub Codespacesの起動</h3>
+        <div class="space-y-4 text-gray-700">
+          <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-lg mb-3">📌 開発環境の選択肢</p>
+            <ul class="list-disc list-inside space-y-2">
+              <li><strong>GitHub Codespaces（推奨）:</strong> ブラウザ上で完結する開発環境</li>
+              <li><strong>ローカル環境:</strong> Docker Desktop導入済みの場合</li>
+            </ul>
+          </div>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">手順: GitHub Codespacesで起動</h4>
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li>
+              <a href="https://github.com/NRUG-SRE/slm-handson" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                GitHubリポジトリ
+              </a>
+              にアクセス
+            </li>
+            <li>緑色の「Code」ボタンをクリック</li>
+            <li>「Codespaces」タブを選択</li>
+            <li>「Create codespace on main」をクリック</li>
+            <li>数分待つとVS Code環境がブラウザ上で起動します</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- 2. New Relic設定 -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">2. New Relic License Keyの設定</h3>
+        <div class="space-y-4 text-gray-700">
+          <h4 class="font-bold text-lg text-gray-800">手順: License Keyの取得</h4>
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li>
+              <a href="https://one.newrelic.com" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                New Relic
+              </a>
+              にログイン
+            </li>
+            <li>右上のユーザーアイコン → 「API Keys」をクリック</li>
+            <li>「License key」をコピー</li>
+          </ol>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">手順: .envファイルへの設定</h4>
+          <p class="text-gray-700">プロジェクトルートに<code class="bg-gray-100 px-2 py-1 rounded">.env</code>ファイルを作成し、以下を記述:</p>
+
+          <pre class="rounded-lg bg-gray-900 text-gray-100 p-4 overflow-x-auto"><code class="language-bash"># .envファイルを作成
+cp .env.example .env
+
+# エディタで.envファイルを開き、以下を設定
+NEW_RELIC_LICENSE_KEY=your-license-key-here</code></pre>
+
+          <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500 mt-4">
+            <p class="font-semibold text-yellow-800">⚠️ 注意</p>
+            <p class="text-gray-700 mt-2">License Keyは秘密情報です。Gitにコミットしないよう注意してください（.gitignoreに.envが登録済み）</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Docker Compose起動 -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">3. アプリケーションの起動</h3>
+        <div class="space-y-4 text-gray-700">
+          <p class="text-lg">Docker Composeでアプリケーション全体を起動します。</p>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">起動コマンド</h4>
+          <pre class="rounded-lg bg-gray-900 text-gray-100 p-4 overflow-x-auto"><code class="language-bash">docker compose up -d --build</code></pre>
+
+          <div class="bg-blue-50 p-4 rounded-lg mt-4">
+            <p class="font-semibold text-blue-800 mb-2">💡 コマンドの説明</p>
+            <ul class="list-disc list-inside space-y-1 text-gray-700">
+              <li><code class="bg-gray-100 px-2 py-1 rounded">up -d</code>: バックグラウンドでコンテナ起動</li>
+              <li><code class="bg-gray-100 px-2 py-1 rounded">--build</code>: イメージを再ビルドしてから起動</li>
+            </ul>
+          </div>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">起動確認</h4>
+          <pre class="rounded-lg bg-gray-900 text-gray-100 p-4 overflow-x-auto"><code class="language-bash"># コンテナの起動状態を確認
+docker compose ps</code></pre>
+          <p class="mt-2 text-gray-600">全てのコンテナが「Up」状態になっていることを確認してください。</p>
+        </div>
+      </div>
+
+      <!-- 4. アプリケーションへのアクセス -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">4. デモECサイトへのアクセス</h3>
+        <div class="space-y-4 text-gray-700">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-green-50 p-6 rounded-lg border-2 border-green-300">
+              <h4 class="font-bold text-lg text-green-800 mb-3">フロントエンド</h4>
+              <p class="text-gray-700 mb-2">
+                <a href="http://localhost:3000" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                  http://localhost:3000
+                </a>
+              </p>
+              <p class="text-sm text-gray-600">Next.js製のECサイト画面</p>
+            </div>
+
+            <div class="bg-purple-50 p-6 rounded-lg border-2 border-purple-300">
+              <h4 class="font-bold text-lg text-purple-800 mb-3">バックエンドAPI</h4>
+              <p class="text-gray-700 mb-2">
+                <a href="http://localhost:8080/api/docs" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                  http://localhost:8080/api/docs
+                </a>
+              </p>
+              <p class="text-sm text-gray-600">Go API + Swagger UI</p>
+            </div>
+          </div>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">デモECサイトの操作フロー</h4>
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li><strong>TOPページ:</strong> 商品一覧を表示</li>
+            <li><strong>商品詳細ページ:</strong> 気になる商品をクリック</li>
+            <li><strong>カート追加:</strong> 「カートに追加」ボタンをクリック（数量を選択）</li>
+            <li><strong>カートページ:</strong> ヘッダーのカートアイコンから確認</li>
+            <li><strong>決済ページ:</strong> 「レジに進む」ボタンをクリック</li>
+            <li><strong>注文確定:</strong> 「注文を確定する」ボタンをクリック</li>
+          </ol>
+
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mt-4">
+            <p class="font-semibold text-green-800">✅ 動作確認のポイント</p>
+            <p class="text-gray-700 mt-2">複数回操作することで、New Relicに十分なデータが蓄積されます。いろいろな商品を閲覧・カート追加してみましょう！</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. New Relic APM/RUMデータ確認 -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">5. New RelicでAPM/RUMデータを確認</h3>
+        <div class="space-y-4 text-gray-700">
+          <p class="text-lg">アプリケーションを操作した後、New Relicでデータを確認します。</p>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">APM（Application Performance Monitoring）の確認</h4>
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li>
+              <a href="https://one.newrelic.com" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                New Relic
+              </a>
+              にアクセス
+            </li>
+            <li>左メニューから「APM & Services」を選択</li>
+            <li>「slm-handson-api」（バックエンドアプリケーション）をクリック</li>
+            <li>
+              <strong>確認ポイント:</strong>
+              <ul class="list-disc list-inside space-y-1 ml-6 mt-2">
+                <li><strong>トランザクション:</strong> APIエンドポイントごとのレスポンスタイム</li>
+                <li><strong>エラー:</strong> エラー発生率と詳細</li>
+                <li><strong>スループット:</strong> 単位時間あたりのリクエスト数</li>
+                <li><strong>データベース:</strong> データベースクエリのパフォーマンス（該当する場合）</li>
+              </ul>
+            </li>
+          </ol>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">RUM（Real User Monitoring / Browser）の確認</h4>
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li>左メニューから「Browser」を選択</li>
+            <li>「slm-handson-frontend」（フロントエンドアプリケーション）をクリック</li>
+            <li>
+              <strong>確認ポイント:</strong>
+              <ul class="list-disc list-inside space-y-1 ml-6 mt-2">
+                <li><strong>Page views:</strong> ページごとのアクセス数とロード時間</li>
+                <li><strong>Ajax:</strong> APIリクエストのレスポンスタイムと成功/失敗</li>
+                <li><strong>JavaScript errors:</strong> フロントエンドで発生したエラー</li>
+                <li><strong>Core Web Vitals:</strong> LCP、FID、CLSなどのUX指標</li>
+                <li><strong>Session traces:</strong> ユーザーのページ遷移とアクション履歴</li>
+              </ul>
+            </li>
+          </ol>
+
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mt-6">
+            <p class="font-semibold text-blue-800 mb-2">💡 Distributed Tracingで連携確認</p>
+            <p class="text-gray-700">「Distributed tracing」メニューから、フロントエンド（Browser）→ バックエンド（API）の完全なリクエストフローを可視化できます。</p>
+          </div>
+
+          <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500 mt-4">
+            <p class="font-semibold text-yellow-800">⏱️ データ反映までの時間</p>
+            <p class="text-gray-700 mt-2">New Relicへのデータ送信には数分かかる場合があります。データが表示されない場合は、少し待ってからリロードしてください。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ナビゲーションボタン -->
+      <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+        <a href="#lecture" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+          ← 前へ: 座学
+        </a>
+        <div class="text-center">
+          <p class="text-sm text-gray-600 mb-2 font-medium">休憩時間</p>
+          <p class="text-2xl font-bold text-blue-600">10分</p>
+        </div>
+        <a href="#slo-management" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+          次へ: SLO設定・管理 →
+        </a>
+      </div>
+    </section>
+
+    <!-- SLO設定・管理セクション -->
+    <section id="slo-management" class="container mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">SLO設定・管理</h2>
+      <p class="text-sm text-gray-600 mb-6">推奨時間: 30分</p>
+
+      <div class="text-gray-700 mb-6">
+        <p class="text-lg">このセクションでは、実際のアプリケーションでSLOを設計・設定・管理する実技を体験します。</p>
+      </div>
+
+      <!-- 1. ユーザージャーニーの特定 -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">1. ユーザージャーニーの特定</h3>
+        <div class="space-y-4 text-gray-700">
+          <p class="text-lg">SLO設計の第一歩は、ユーザーにとって最も重要な機能フローを特定することです。</p>
+
+          <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500 mt-4">
+            <p class="font-semibold text-blue-800 mb-3">💡 ディスカッション</p>
+            <p class="text-gray-700 mb-2"><strong>問:</strong> このECサイトで、最も重要なユーザージャーニーは何でしょうか？</p>
+            <p class="text-gray-700 mt-4"><strong>答:</strong> 商品購入フロー（TOPページ → 商品詳細 → カート追加 → 決済完了）</p>
+          </div>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">デモECサイトのユーザージャーニー</h4>
+
+          <!-- ユーザージャーニーフロー図 -->
+          <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-300">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 text-center">
+              <div class="bg-blue-100 p-4 rounded-lg border-2 border-blue-400">
+                <p class="font-bold text-blue-800">1. TOPページ</p>
+                <p class="text-sm text-gray-600 mt-2">商品一覧表示</p>
+                <p class="text-xs text-gray-500 mt-1">GET /api/products</p>
+              </div>
+              <div class="flex items-center justify-center">
+                <span class="text-3xl text-gray-400">→</span>
+              </div>
+              <div class="bg-green-100 p-4 rounded-lg border-2 border-green-400">
+                <p class="font-bold text-green-800">2. 商品詳細</p>
+                <p class="text-sm text-gray-600 mt-2">商品情報確認</p>
+                <p class="text-xs text-gray-500 mt-1">GET /api/products/{"{id}"}</p>
+              </div>
+              <div class="flex items-center justify-center">
+                <span class="text-3xl text-gray-400">→</span>
+              </div>
+              <div class="bg-purple-100 p-4 rounded-lg border-2 border-purple-400">
+                <p class="font-bold text-purple-800">3. カート追加</p>
+                <p class="text-sm text-gray-600 mt-2">商品をカートに追加</p>
+                <p class="text-xs text-gray-500 mt-1">POST /api/cart/items</p>
+              </div>
+              <div class="flex items-center justify-center">
+                <span class="text-3xl text-gray-400">→</span>
+              </div>
+              <div class="bg-yellow-100 p-4 rounded-lg border-2 border-yellow-400">
+                <p class="font-bold text-yellow-800">4. 決済完了</p>
+                <p class="text-sm text-gray-600 mt-2">注文確定</p>
+                <p class="text-xs text-gray-500 mt-1">POST /api/orders</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mt-4">
+            <p class="font-semibold text-green-800">✅ 重要なポイント</p>
+            <p class="text-gray-700 mt-2">このユーザージャーニーは、ECサイトにおける最も重要なコンバージョン経路です。この経路の可用性とパフォーマンスがビジネスに直結します。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. SLI設計ワークフロー -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">2. SLI設計ワークフロー</h3>
+        <div class="space-y-4 text-gray-700">
+          <p class="text-lg">ユーザージャーニーを特定したら、各ステップのSLIを設計します。</p>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">SLI設計の2つのアプローチ</h4>
+
+          <!-- 成功率ベースのSLI -->
+          <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+            <p class="font-semibold text-xl mb-3 text-blue-800">📊 成功率ベースのSLI</p>
+            <div class="space-y-3">
+              <p><strong>計算式:</strong> 成功したリクエスト数 / 全リクエスト数</p>
+              <p><strong>対象:</strong> APIエンドポイントやページビュー</p>
+              <div class="bg-white p-4 rounded-lg mt-3">
+                <p class="font-bold text-gray-800 mb-2">例: 商品詳細ページの成功率</p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                  <li>SLI: HTTPステータス200のリクエスト数 / 全リクエスト数</li>
+                  <li>SLO目標: 成功率 >= 99.9%</li>
+                  <li>意味: 1000回のアクセスのうち、999回は成功する必要がある</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- レスポンスタイムベースのSLI -->
+          <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-500 mt-6">
+            <p class="font-semibold text-xl mb-3 text-green-800">⏱️ レスポンスタイムベースのSLI</p>
+            <div class="space-y-3">
+              <p><strong>計算式:</strong> 指定時間内に完了したリクエスト数 / 全リクエスト数</p>
+              <p><strong>対象:</strong> ユーザー体験に直結するパフォーマンス</p>
+              <div class="bg-white p-4 rounded-lg mt-3">
+                <p class="font-bold text-gray-800 mb-2">例: カート追加APIのレスポンスタイム</p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                  <li>SLI: 300ms以内に完了したリクエスト数 / 全リクエスト数</li>
+                  <li>SLO目標: 95パーセンタイル &lt; 300ms</li>
+                  <li>意味: 100回のリクエストのうち、95回は300ms以内に完了する必要がある</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLI設計のステップ -->
+          <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500 mt-6">
+            <p class="font-semibold text-xl mb-3 text-yellow-800">🎯 SLI設計の3ステップ</p>
+            <ol class="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+              <li><strong>ユーザー視点で重要な指標を選択:</strong> エラー率？レスポンスタイム？</li>
+              <li><strong>測定可能な指標に変換:</strong> 成功率？95パーセンタイル？</li>
+              <li><strong>現実的な目標値を設定:</strong> 過去のデータと組織の能力を考慮</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. New Relic Service Level ManagementでSLOを作成 -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">3. New Relic Service Level ManagementでSLOを作成</h3>
+        <div class="space-y-4 text-gray-700">
+          <p class="text-lg">設計したSLIをNew Relic UIで実装しましょう。</p>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">手順: SLOの作成</h4>
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li>
+              <a href="https://one.newrelic.com" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                New Relic
+              </a>
+              にアクセス
+            </li>
+            <li>左メニューから「Service levels」を選択</li>
+            <li>右上の「+ Add a service level」ボタンをクリック</li>
+            <li>
+              <strong>エンティティを選択:</strong>
+              <ul class="list-disc list-inside space-y-1 ml-6 mt-2">
+                <li>APMの場合: 「slm-handson-api」を選択</li>
+                <li>Browserの場合: 「slm-handson-frontend」を選択</li>
+              </ul>
+            </li>
+            <li>
+              <strong>SLIを設定:</strong>
+              <ul class="list-disc list-inside space-y-1 ml-6 mt-2">
+                <li>「Success」タイプ: 成功率ベースのSLI</li>
+                <li>「Latency」タイプ: レスポンスタイムベースのSLI</li>
+              </ul>
+            </li>
+            <li>
+              <strong>SLO目標値を設定:</strong>
+              <ul class="list-disc list-inside space-y-1 ml-6 mt-2">
+                <li>Target: 99.9%（推奨）</li>
+                <li>Time window: 7 days または 28 days</li>
+              </ul>
+            </li>
+            <li>「Create」ボタンをクリックして保存</li>
+          </ol>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">具体的なSLO例</h4>
+
+          <!-- SLO例1: 商品詳細ページの成功率 -->
+          <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-300">
+            <p class="font-bold text-lg text-blue-800 mb-3">SLO例1: 商品詳細ページの成功率</p>
+            <div class="space-y-2 text-gray-700">
+              <p><strong>エンティティ:</strong> slm-handson-frontend (Browser)</p>
+              <p><strong>SLIタイプ:</strong> Success</p>
+              <p><strong>NRQL（成功の定義）:</strong></p>
+              <pre class="bg-gray-900 text-gray-100 p-3 rounded mt-2 text-sm overflow-x-auto"><code class="language-sql">FROM PageView
+SELECT percentage(count(*), WHERE httpResponseCode = 200)
+WHERE pageUrl LIKE '%/products/%'</code></pre>
+              <p><strong>SLO目標:</strong> 99.9%</p>
+              <p><strong>Time window:</strong> 7 days</p>
+            </div>
+          </div>
+
+          <!-- SLO例2: カート追加APIのレスポンスタイム -->
+          <div class="bg-green-50 p-6 rounded-lg border-2 border-green-300 mt-4">
+            <p class="font-bold text-lg text-green-800 mb-3">SLO例2: カート追加APIのレスポンスタイム</p>
+            <div class="space-y-2 text-gray-700">
+              <p><strong>エンティティ:</strong> slm-handson-api (APM)</p>
+              <p><strong>SLIタイプ:</strong> Latency</p>
+              <p><strong>NRQL（レイテンシの定義）:</strong></p>
+              <pre class="bg-gray-900 text-gray-100 p-3 rounded mt-2 text-sm overflow-x-auto"><code class="language-sql">FROM Transaction
+SELECT percentage(count(*), WHERE duration < 0.3)
+WHERE request.uri = '/api/cart/items' AND request.method = 'POST'</code></pre>
+              <p><strong>SLO目標:</strong> 95パーセンタイル &lt; 300ms</p>
+              <p><strong>Time window:</strong> 7 days</p>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500 mt-4">
+            <p class="font-semibold text-yellow-800">📝 ワークショップTips</p>
+            <p class="text-gray-700 mt-2">最初は1〜3つのSLOから始めることをお勧めします。多すぎるSLOは管理が困難になり、本質的な改善活動から遠ざかる原因になります。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. パフォーマンス劣化シミュレーションとSLO違反体験 -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">4. パフォーマンス劣化シミュレーションとSLO違反体験</h3>
+        <div class="space-y-4 text-gray-700">
+          <p class="text-lg">環境変数を変更して、意図的にパフォーマンスを劣化させ、SLO違反を体験しましょう。</p>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">手順: パフォーマンス劣化のシミュレーション</h4>
+
+          <div class="bg-red-50 p-6 rounded-lg border-l-4 border-red-500">
+            <p class="font-semibold text-red-800 mb-3">⚠️ 環境変数の変更</p>
+            <p class="text-gray-700 mb-4">プロジェクトルートの<code class="bg-gray-100 px-2 py-1 rounded">.env</code>ファイルを編集します。</p>
+
+            <pre class="rounded-lg bg-gray-900 text-gray-100 p-4 overflow-x-auto"><code class="language-bash"># エラー率を30%に上昇（デフォルト: 10%）
+ERROR_RATE=0.3
+
+# 最大レスポンスタイムを2000msに増加（デフォルト: 500ms）
+RESPONSE_TIME_MAX=2000
+
+# 最小レスポンスタイムを500msに増加（デフォルト: 50ms）
+RESPONSE_TIME_MIN=500</code></pre>
+          </div>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">APIサーバーの再起動</h4>
+          <p class="text-gray-700">環境変数を変更したら、APIサーバーを再起動して反映させます。</p>
+          <pre class="rounded-lg bg-gray-900 text-gray-100 p-4 overflow-x-auto"><code class="language-bash"># APIサーバーのみ再起動
+docker compose up -d api-server
+
+# 起動確認
+docker compose ps api-server</code></pre>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">自動ユーザージャーニー負荷生成の開始</h4>
+          <p class="text-gray-700">Playwrightベースの自動ユーザージャーニー負荷生成を開始し、継続的なアクセスを生成します。</p>
+          <pre class="rounded-lg bg-gray-900 text-gray-100 p-4 overflow-x-auto"><code class="language-bash"># 2段階起動でネットワークエラー回避
+docker compose up -d
+docker compose --profile playwright up playwright-generator
+
+# カスタム設定での実行（短時間テスト: 5分間、10秒間隔）
+DURATION=300 ACCESS_INTERVAL=10 docker compose --profile playwright up playwright-generator</code></pre>
+
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mt-4">
+            <p class="font-semibold text-blue-800 mb-2">💡 負荷生成スクリプトの動作</p>
+            <p class="text-gray-700">Playwrightスクリプトは、リアルなブラウザ操作を自動実行します：</p>
+            <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4 mt-2">
+              <li>TOPページ訪問 → 商品詳細表示 → カート追加 → カート確認 → 決済完了</li>
+              <li>各ステップ間で1-5秒のランダム思考時間</li>
+              <li>完全なRUM/APMデータ生成（Page views, Ajax, エラー、トレース）</li>
+            </ul>
+          </div>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">New RelicダッシュボードでSLO違反を確認</h4>
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li>
+              <a href="https://one.newrelic.com" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                New Relic
+              </a>
+              にアクセス
+            </li>
+            <li>左メニューから「Service levels」を選択</li>
+            <li>作成したSLOをクリック</li>
+            <li>
+              <strong>確認ポイント:</strong>
+              <ul class="list-disc list-inside space-y-1 ml-6 mt-2">
+                <li><strong>SLO達成率:</strong> 目標値（99.9%）を下回っているか確認</li>
+                <li><strong>エラーバジェット残量:</strong> 消費状況を確認</li>
+                <li><strong>グラフ:</strong> 成功率やレスポンスタイムの推移を確認</li>
+                <li><strong>違反期間:</strong> いつからSLOを下回り始めたか確認</li>
+              </ul>
+            </li>
+          </ol>
+
+          <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mt-4">
+            <p class="font-semibold text-green-800">✅ 体験のポイント</p>
+            <p class="text-gray-700 mt-2">パフォーマンス劣化により、実際にSLOが違反される様子を観察できます。これにより、SLO管理の重要性と、リアルタイム監視の価値を体感できます。</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. エラーバジェット運用とアラート設定 -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">5. エラーバジェット運用とアラート設定</h3>
+        <div class="space-y-4 text-gray-700">
+          <p class="text-lg">エラーバジェットを理解し、SLO違反時のアラート設定と意思決定プロセスを学びましょう。</p>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">エラーバジェットとは</h4>
+          <div class="bg-purple-50 p-6 rounded-lg border-l-4 border-purple-500">
+            <p class="font-semibold text-xl mb-3 text-purple-800">📊 エラーバジェットの定義</p>
+            <p class="text-gray-700 mb-4">エラーバジェットとは、SLO目標値を達成するために許容される「失敗の余地」です。</p>
+
+            <div class="bg-white p-4 rounded-lg mt-3">
+              <p class="font-bold text-gray-800 mb-2">計算例: SLO 99.9%の場合</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4">
+                <li><strong>目標:</strong> 1000回のリクエストのうち、999回は成功する</li>
+                <li><strong>エラーバジェット:</strong> 1000回のリクエストのうち、1回は失敗しても良い（0.1%）</li>
+                <li><strong>月間エラーバジェット:</strong> 約43分のダウンタイム許容</li>
+              </ul>
+            </div>
+          </div>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">New Relicでのエラーバジェット確認</h4>
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li>
+              <a href="https://one.newrelic.com" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                New Relic
+              </a>
+              → 「Service levels」
+            </li>
+            <li>作成したSLOをクリック</li>
+            <li>
+              <strong>エラーバジェット表示:</strong>
+              <ul class="list-disc list-inside space-y-1 ml-6 mt-2">
+                <li><strong>Remaining error budget:</strong> 残りのエラーバジェット（%表示）</li>
+                <li><strong>Error budget consumed:</strong> 消費したエラーバジェット</li>
+                <li><strong>Time window:</strong> 計測期間（7日間 or 28日間）</li>
+              </ul>
+            </li>
+          </ol>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">SLO違反時のアラート設定</h4>
+          <p class="text-gray-700">エラーバジェットが枯渇する前にアラートを設定し、事前に対応できるようにします。</p>
+
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li>Service Levelページで「Alert conditions」タブを選択</li>
+            <li>「+ Add alert condition」をクリック</li>
+            <li>
+              <strong>アラート条件の設定:</strong>
+              <ul class="list-disc list-inside space-y-1 ml-6 mt-2">
+                <li><strong>Condition type:</strong> Error budget consumption</li>
+                <li><strong>Threshold:</strong> 80%（エラーバジェットの80%を消費したら警告）</li>
+                <li><strong>Time window:</strong> 1 hour（1時間以内に80%消費）</li>
+              </ul>
+            </li>
+            <li>通知先（Slack、Email等）を設定</li>
+            <li>「Create」ボタンをクリックして保存</li>
+          </ol>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">エラーバジェット枯渇時の意思決定シナリオ</h4>
+          <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500">
+            <p class="font-semibold text-xl mb-3 text-yellow-800">🤔 ディスカッション: エラーバジェットが枯渇したら？</p>
+
+            <div class="space-y-4 mt-4">
+              <div class="bg-white p-4 rounded-lg">
+                <p class="font-bold text-red-600 mb-2">シナリオA: 機能凍結（Feature Freeze）</p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                  <li>新機能のリリースを一時停止</li>
+                  <li>全リソースを信頼性向上に集中</li>
+                  <li>エラーバジェットが回復するまで待機</li>
+                </ul>
+              </div>
+
+              <div class="bg-white p-4 rounded-lg">
+                <p class="font-bold text-blue-600 mb-2">シナリオB: リスクを取る</p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                  <li>ビジネス上の緊急性が高い場合、リスクを承知で新機能をリリース</li>
+                  <li>リスクと利益のトレードオフを経営層と共有</li>
+                  <li>追加の監視とロールバック準備を強化</li>
+                </ul>
+              </div>
+
+              <div class="bg-white p-4 rounded-lg">
+                <p class="font-bold text-green-600 mb-2">シナリオC: SLO目標の再評価</p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                  <li>SLO目標が厳しすぎる場合、現実的な値に調整</li>
+                  <li>ユーザー影響とビジネス影響を再分析</li>
+                  <li>組織の成熟度に応じた目標設定</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mt-4">
+            <p class="font-semibold text-blue-800 mb-2">💡 SLM運用のベストプラクティス</p>
+            <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
+              <li>エラーバジェットは「リスクを取るための資本」として活用する</li>
+              <li>ゼロエラーを目指すのではなく、ユーザーにとって適切な信頼性を目指す</li>
+              <li>エラーバジェットの消費状況をチーム全体で共有する</li>
+              <li>定期的にSLOを見直し、ビジネスとユーザーニーズに合わせて調整する</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ナビゲーションボタン -->
+      <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+        <a href="#setup" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+          ← 前へ: 環境セットアップ
+        </a>
+        <a href="#toc" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+          目次へ戻る
+        </a>
+      </div>
+    </section>
+
+    <!-- フッター -->
+    <footer id="footer" class="bg-gray-800 text-white py-6 mt-12">
+      <div class="container mx-auto px-6 text-center">
+        <p>&copy; 2025 New Relic SLM ハンズオン | NRUG-SRE</p>
+      </div>
+    </footer>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -27,29 +27,29 @@
   - ワークフロー実行権限（`pages: write`, `id-token: write`）を設定
   - _Requirements: 8.2_
 
-- [ ] 2. HTMLドキュメントの基本構造とナビゲーションシステムの実装
-- [ ] 2.1 HTMLドキュメントの骨格作成とセマンティックHTML構造の定義
+- [x] 2. HTMLドキュメントの基本構造とナビゲーションシステムの実装
+- [x] 2.1 HTMLドキュメントの骨格作成とセマンティックHTML構造の定義
   - `docs/index.html`を作成し、ヘッダー、目次、セクション（座学/環境セットアップ/SLO管理）、フッターの基本構造を定義
   - 各セクションに一意のID（`#lecture`, `#setup`, `#slo-management`）を設定
   - `<meta charset="UTF-8">`と`<meta name="viewport">`でPCブラウザ対応を設定
   - Tailwind CSSクラス（`bg-gray-50 text-gray-900`）で基本スタイルを適用
   - _Requirements: 1.1, 1.2, 1.4_
 
-- [ ] 2.2 目次（Table of Contents）の実装とアンカーリンクの設定
+- [x] 2.2 目次（Table of Contents）の実装とアンカーリンクの設定
   - `<nav id="toc">`内に、各セクションへのアンカーリンク（`#lecture`, `#setup`, `#slo-management`）を配置
   - Tailwind CSSでリスト形式の目次レイアウトを作成
   - CSSで`scroll-behavior: smooth;`を設定し、スムーススクロールを有効化
   - 各セクションへのリンクをクリックし、該当セクションへスクロールすることを確認
   - _Requirements: 1.3_
 
-- [ ] 2.3 ナビゲーションボタンと推奨時間インジケーターの実装
+- [x] 2.3 ナビゲーションボタンと推奨時間インジケーターの実装
   - 各セクションの末尾に「前へ」「次へ」ボタンを配置（Tailwind CSSでスタイリング）
   - 座学セクションのヘッダーに「推奨時間: 20分」、環境セットアップに「推奨時間: 30分」、SLO管理に「推奨時間: 30分」、休憩セクションに「休憩時間: 10分」を表示
   - ボタンクリックで次のセクションへスクロールする動作を実装
   - _Requirements: 7.1, 7.2, 7.4_
 
-- [ ] 3. 座学セクション - スライドシステムの実装
-- [ ] 3.1 スライド表示エリアとスライドナビゲーションロジックの実装
+- [x] 3. 座学セクション - スライドシステムの実装
+- [x] 3.1 スライド表示エリアとスライドナビゲーションロジックの実装
   - `<section id="lecture">`内に、スライドコンテナと14枚のスライド用`<div class="slide">`を作成
   - JavaScriptで`currentSlideIndex`状態を管理し、1つのスライドのみを表示（他は`hidden`クラス）
   - 「次へ」「前へ」ボタンとキーボード操作（ArrowLeft/ArrowRight）でスライド切り替えを実装
@@ -57,7 +57,7 @@
   - 最初のスライドで「前へ」ボタン無効化、最後のスライドで「次へ」ボタン無効化
   - _Requirements: 2.1, 2.13_
 
-- [ ] 3.2 座学コンテンツ - AI時代のSLMとユーザー視点の重要性スライドの作成
+- [x] 3.2 座学コンテンツ - AI時代のSLMとユーザー視点の重要性スライドの作成
   - スライド1: 「AI時代におけるService Level Management」のタイトルとイントロダクション
   - スライド2: 従来の組織内成果物（月次報告、障害報告書等）がユーザー視点を欠いている問題を指摘
   - スライド3: ユーザー視点（高い可用性による良質なUX）とプロダクト視点（ユーザー数、利用量、単価）の違いを対比図で表示
@@ -65,7 +65,7 @@
   - Tailwind CSSで大きなフォントサイズとセンタリングレイアウトを適用
   - _Requirements: 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 3.3 座学コンテンツ - 可用性vs機能のトレードオフスライドの作成
+- [x] 3.3 座学コンテンツ - 可用性vs機能のトレードオフスライドの作成
   - スライド5: 「可用性 vs 機能」のトレードオフのタイトル
   - スライド6: Aのアプリ（タスク登録/削除のみ、絶対に期待通り動作）の説明
   - スライド7: Bのアプリ（Notion/Backlogのような魅力的機能、3回に1回操作失敗）の説明
@@ -73,13 +73,13 @@
   - 対比表をTailwind CSSのグリッドレイアウトで視覚的に表示
   - _Requirements: 2.6, 2.7, 2.8_
 
-- [ ] 3.4 座学コンテンツ - SLOレベル比較表とコスト解説スライドの作成
+- [x] 3.4 座学コンテンツ - SLOレベル比較表とコスト解説スライドの作成
   - スライド9: SLOレベル（99.9%, 99.99%, 99.999%）とダウンタイム許容時間の比較表を作成
   - スライド10: SLOに9を一つ追加するたびに必要となる労力とコストの指数関数的増加を解説
   - 比較表をTailwind CSSのテーブルレイアウトで実装（月間ダウンタイム: 43分、4.3分、26秒等）
   - _Requirements: 2.9, 2.10_
 
-- [ ] 3.5 座学コンテンツ - SLA/SLI/SLO定義とSLI/SLO設計ガイドラインスライドの作成
+- [x] 3.5 座学コンテンツ - SLA/SLI/SLO定義とSLI/SLO設計ガイドラインスライドの作成
   - スライド11: SLA（Service Level Agreement）の定義 - 顧客との契約上の合意
   - スライド12: SLI（Service Level Indicator）の定義 - サービス品質の測定指標
   - スライド13: SLO（Service Level Objective）の定義 - 内部目標値
@@ -87,49 +87,49 @@
   - 各定義をTailwind CSSのカードレイアウトで視覚的に区別
   - _Requirements: 2.11, 2.12, 2.14_
 
-- [ ] 4. 環境セットアップセクションの実装
-- [ ] 4.1 GitHub Codespacesセットアップ手順とNew Relic設定の実装
+- [x] 4. 環境セットアップセクションの実装
+- [x] 4.1 GitHub Codespacesセットアップ手順とNew Relic設定の実装
   - `<section id="setup">`内に、GitHub Codespacesの起動手順を段階的に記述
   - New Relic License Keyの取得方法とNew Relic UIへのアクセス手順を説明
   - `.env`ファイルの設定例（`NEW_RELIC_LICENSE_KEY=your-key-here`）をコードブロックで表示
   - Tailwind CSSで番号付きリストと強調表示を適用
   - _Requirements: 3.1, 3.2_
 
-- [ ] 4.2 Docker Compose起動コマンドとアクセス確認手順の実装
+- [x] 4.2 Docker Compose起動コマンドとアクセス確認手順の実装
   - `docker compose up -d --build`コマンドをシンタックスハイライト付きコードブロックで表示
   - フロントエンド（`http://localhost:3000`）とAPI（`http://localhost:8080`）へのアクセス方法を説明
   - デモECサイトの動作確認手順（商品閲覧→カート追加→決済フロー）をステップバイステップで記述
   - _Requirements: 3.3, 3.4, 3.5_
 
-- [ ] 4.3 New Relic APM/RUMデータ確認手順の実装
+- [x] 4.3 New Relic APM/RUMデータ確認手順の実装
   - New Relic APMでのトランザクションデータ確認手順を説明
   - New Relic Browser（RUM）でのページビューとAjaxリクエスト確認手順を説明
   - スクリーンショット用のプレースホルダー画像（`docs/images/newrelic-apm.png`等）を配置
   - 全ての画像に代替テキスト（alt属性）を設定
   - _Requirements: 3.6, 6.2, 6.5_
 
-- [ ] 5. SLO設定・管理セクションの実装
-- [ ] 5.1 ユーザージャーニー特定とSLI設計ワークフローの実装
+- [x] 5. SLO設定・管理セクションの実装
+- [x] 5.1 ユーザージャーニー特定とSLI設計ワークフローの実装
   - `<section id="slo-management">`内に、ユーザージャーニーの特定方法（TOPページ→商品詳細→カート→決済）を説明
   - ユーザージャーニーフロー図をMermaidまたは画像で表示（`docs/images/user-journey.png`）
   - SLI設計のワークフロー（成功率ベース、レスポンスタイムベース）を段階的に解説
   - Tailwind CSSでフローチャート風のレイアウトを作成
   - _Requirements: 4.1, 4.2, 6.3_
 
-- [ ] 5.2 New Relic Service Level ManagementでのSLO作成手順の実装
+- [x] 5.2 New Relic Service Level ManagementでのSLO作成手順の実装
   - New Relic UIでのSLO作成手順を詳細に記述（Service Level Management画面へのアクセス、SLI選択、SLO目標値設定）
   - スクリーンショット用のプレースホルダー画像（`docs/images/newrelic-slo-setup.png`）を配置
   - 具体的なSLO例（「商品詳細ページの成功率 >= 99.9%」「カート追加APIのレスポンスタイム95パーセンタイル < 300ms」）を提示
   - _Requirements: 4.3_
 
-- [ ] 5.3 パフォーマンス劣化シミュレーションとSLO違反体験手順の実装
+- [x] 5.3 パフォーマンス劣化シミュレーションとSLO違反体験手順の実装
   - 環境変数（`ERROR_RATE=0.3`, `RESPONSE_TIME_MAX=2000`）を変更してパフォーマンス劣化をシミュレートする手順を記述
   - `docker compose up -d api-server`コマンドでAPIサーバーを再起動する手順を説明
   - Playwrightベースの自動ユーザージャーニー負荷生成コマンド（`docker compose --profile playwright up playwright-generator`）を記述
   - New RelicダッシュボードでSLO違反を確認する手順を説明
   - _Requirements: 4.4, 4.5_
 
-- [ ] 5.4 エラーバジェット運用とアラート設定の実装
+- [x] 5.4 エラーバジェット運用とアラート設定の実装
   - エラーバジェットの概念（許容エラー数）を解説
   - エラーバジェット消費状況の確認方法をNew Relic UIのスクリーンショット（`docs/images/error-budget.png`）とともに説明
   - SLO違反時のアラート設定手順を記述
