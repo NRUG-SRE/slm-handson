@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Relic SLM ハンズオンガイド</title>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div id="app" class="container mx-auto p-8">
+      <h1 class="text-4xl font-bold text-blue-600 mb-8">New Relic SLM ハンズオンガイド</h1>
+      <p class="mt-4 text-lg mb-8">Tailwind CSS v4 + Prism.js 統合テスト</p>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Bashコマンド例</h2>
+        <pre class="rounded-lg"><code class="language-bash">docker compose up -d --build
+npm run dev
+git status</code></pre>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">YAML設定例</h2>
+        <pre class="rounded-lg"><code class="language-yaml">version: '3.8'
+services:
+  api-server:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      - NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY}</code></pre>
+      </section>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
