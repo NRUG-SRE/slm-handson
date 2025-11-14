@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300">
+  <!-- Title -->
+  <text x="450" y="30" font-size="20" font-weight="bold" text-anchor="middle" fill="#1f2937">
+    ユーザージャーニー: 商品購入フロー
+  </text>
+
+  <!-- Step 1: TOP Page -->
+  <rect x="20" y="80" width="160" height="120" fill="#dbeafe" stroke="#3b82f6" stroke-width="3" rx="8"/>
+  <text x="100" y="110" font-size="16" font-weight="bold" text-anchor="middle" fill="#1e40af">
+    1. TOPページ
+  </text>
+  <text x="100" y="135" font-size="13" text-anchor="middle" fill="#374151">
+    商品一覧表示
+  </text>
+  <text x="100" y="160" font-size="11" text-anchor="middle" fill="#6b7280">
+    GET /api/products
+  </text>
+  <text x="100" y="180" font-size="11" font-weight="bold" text-anchor="middle" fill="#059669">
+    RUM + APM
+  </text>
+
+  <!-- Arrow 1 -->
+  <path d="M 180 140 L 220 140" stroke="#6b7280" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 2: Product Detail -->
+  <rect x="220" y="80" width="160" height="120" fill="#dcfce7" stroke="#10b981" stroke-width="3" rx="8"/>
+  <text x="300" y="110" font-size="16" font-weight="bold" text-anchor="middle" fill="#047857">
+    2. 商品詳細
+  </text>
+  <text x="300" y="135" font-size="13" text-anchor="middle" fill="#374151">
+    商品情報確認
+  </text>
+  <text x="300" y="160" font-size="11" text-anchor="middle" fill="#6b7280">
+    GET /api/products/{id}
+  </text>
+  <text x="300" y="180" font-size="11" font-weight="bold" text-anchor="middle" fill="#059669">
+    RUM + APM
+  </text>
+
+  <!-- Arrow 2 -->
+  <path d="M 380 140 L 420 140" stroke="#6b7280" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 3: Add to Cart -->
+  <rect x="420" y="80" width="160" height="120" fill="#fae8ff" stroke="#a855f7" stroke-width="3" rx="8"/>
+  <text x="500" y="110" font-size="16" font-weight="bold" text-anchor="middle" fill="#7e22ce">
+    3. カート追加
+  </text>
+  <text x="500" y="135" font-size="13" text-anchor="middle" fill="#374151">
+    商品をカートに追加
+  </text>
+  <text x="500" y="160" font-size="11" text-anchor="middle" fill="#6b7280">
+    POST /api/cart/items
+  </text>
+  <text x="500" y="180" font-size="11" font-weight="bold" text-anchor="middle" fill="#059669">
+    RUM + APM
+  </text>
+
+  <!-- Arrow 3 -->
+  <path d="M 580 140 L 620 140" stroke="#6b7280" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Step 4: Checkout -->
+  <rect x="620" y="80" width="160" height="120" fill="#fef3c7" stroke="#f59e0b" stroke-width="3" rx="8"/>
+  <text x="700" y="110" font-size="16" font-weight="bold" text-anchor="middle" fill="#b45309">
+    4. 決済完了
+  </text>
+  <text x="700" y="135" font-size="13" text-anchor="middle" fill="#374151">
+    注文確定
+  </text>
+  <text x="700" y="160" font-size="11" text-anchor="middle" fill="#6b7280">
+    POST /api/orders
+  </text>
+  <text x="700" y="180" font-size="11" font-weight="bold" text-anchor="middle" fill="#059669">
+    RUM + APM
+  </text>
+
+  <!-- Arrow marker -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#6b7280"/>
+    </marker>
+  </defs>
+
+  <!-- Success Indicator -->
+  <rect x="820" y="80" width="60" height="120" fill="#d1fae5" stroke="#10b981" stroke-width="2" rx="8"/>
+  <text x="850" y="140" font-size="40" text-anchor="middle" fill="#059669">✓</text>
+  <text x="850" y="180" font-size="12" font-weight="bold" text-anchor="middle" fill="#047857">成功</text>
+
+  <!-- Arrow to success -->
+  <path d="M 780 140 L 820 140" stroke="#10b981" stroke-width="3" fill="none" marker-end="url(#arrow-green)"/>
+
+  <defs>
+    <marker id="arrow-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#10b981"/>
+    </marker>
+  </defs>
+
+  <!-- SLI/SLO Note -->
+  <rect x="20" y="220" width="860" height="60" fill="#f3f4f6" stroke="#9ca3af" stroke-width="2" rx="6"/>
+  <text x="450" y="245" font-size="14" font-weight="bold" text-anchor="middle" fill="#374151">
+    📊 SLI/SLO測定ポイント
+  </text>
+  <text x="450" y="265" font-size="12" text-anchor="middle" fill="#6b7280">
+    成功率: 全ステップの成功/失敗 | レスポンスタイム: 各APIの95パーセンタイル &lt; 300ms
+  </text>
+</svg>
