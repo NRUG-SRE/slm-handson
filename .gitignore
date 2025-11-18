@@ -33,6 +33,10 @@ yarn-error.log*
 # Claude Code
 .claude/
 
+# MCP (Model Context Protocol)
+.mcp/output/
+.mcp/*.log
+
 # Go specific
 # Binaries for programs and plugins
 *.exe

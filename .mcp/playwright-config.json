@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp",
+        "--browser",
+        "chromium",
+        "--headless",
+        "--timeout-action",
+        "10000",
+        "--timeout-navigation",
+        "30000",
+        "--output-dir",
+        "/Users/kagadminmac/src/github.com/NRUG-SRE/slm-handson/.mcp/output",
+        "--save-trace",
+        "--save-video",
+        "1280x720"
+      ],
+      "env": {},
+      "disabled": false,
+      "alwaysAllow": []
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest"]
+    }
+  }
+}
