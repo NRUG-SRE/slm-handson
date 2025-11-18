@@ -412,14 +412,18 @@
             <div class="bg-white p-6 rounded-lg mt-6">
               <p class="font-bold text-lg text-gray-800 mb-3">特徴:</p>
               <ul class="list-disc list-inside space-y-2 text-gray-700">
-                <li>SLAよりも厳しい値を設定（バッファを確保）</li>
                 <li>内部チーム向けの運用指標</li>
                 <li>エラーバジェットの算出に使用</li>
+                <li>機能開発とサービス信頼性のバランスを取るための指標</li>
                 <li>例: 「可用性 &gt;= 99.9%」「レスポンスタイム95パーセンタイル &lt; 300ms」</li>
               </ul>
             </div>
-            <div class="mt-6 bg-blue-50 p-4 rounded-lg">
-              <p class="text-gray-700"><strong>関係:</strong> SLI（測定） → SLO（目標） → SLA（契約）</p>
+            <div class="mt-6 bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+              <p class="font-bold text-gray-800 mb-2">💡 SLAとの関係</p>
+              <p class="text-gray-700 text-sm">一般的にはSLAより厳しく設定してバッファを確保しますが、必須ではありません。機能や顧客セグメントによって柔軟に設定可能です。SLAがない場合でも、SLOは有効です。</p>
+            </div>
+            <div class="mt-4 bg-blue-50 p-4 rounded-lg">
+              <p class="text-gray-700"><strong>関係:</strong> SLI（測定） → SLO（目標） → SLA（契約、オプション）</p>
             </div>
           </div>
         </div>
