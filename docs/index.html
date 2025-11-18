@@ -56,54 +56,113 @@
 
         <!-- スライド2 -->
         <div class="slide hidden" data-slide="1">
-          <h3 class="text-2xl font-bold mb-6 text-blue-700">従来の組織内成果物の問題点</h3>
-          <div class="space-y-4 text-lg text-gray-700">
-            <p class="font-semibold">これらの報告書、誰のためのものですか？</p>
-            <ul class="list-disc list-inside space-y-2 ml-4">
-              <li>月次・週次報告書</li>
-              <li>改善提案書</li>
-              <li>障害報告書</li>
-              <li>再発防止策</li>
-              <li>品質向上レポート</li>
-            </ul>
-            <p class="mt-6 text-xl font-bold text-red-600">→ 最も重要なステークホルダー（ユーザー）の視点が欠けている</p>
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">よくある構図</h3>
+          <div class="grid grid-cols-2 gap-8 mt-6">
+            <!-- 左側: リスト -->
+            <div class="space-y-4 text-lg text-gray-700">
+              <p class="font-semibold text-xl mb-6">品質向上の取り組み例</p>
+              <ul class="list-disc list-inside space-y-3 ml-4 text-lg">
+                <li>月次・週次報告書</li>
+                <li>改善提案書</li>
+                <li>障害報告書</li>
+                <li>再発防止策</li>
+                <li>品質向上レポート</li>
+              </ul>
+            </div>
+
+            <!-- 右側: フロー図 -->
+            <div class="flex flex-col items-center justify-center space-y-6">
+              <!-- 開発者/運用者 -->
+              <div class="bg-blue-100 p-4 rounded-lg border-2 border-blue-400 w-64 text-center">
+                <p class="text-lg font-bold text-blue-800">開発者 / SRE / 運用者</p>
+                <p class="text-xs text-gray-600 mt-1">報告書を作成する側</p>
+              </div>
+
+              <!-- 下向き矢印 -->
+              <div class="flex flex-col items-center">
+                <div class="text-4xl text-gray-400">↓</div>
+                <p class="text-sm text-gray-600 font-semibold">報告書を提出</p>
+              </div>
+
+              <!-- PO/マネージャー -->
+              <div class="bg-green-100 p-4 rounded-lg border-2 border-green-400 w-64 text-center">
+                <p class="text-lg font-bold text-green-800">PO / マネージャー</p>
+                <p class="text-xs text-gray-600 mt-1">報告書を受け取る側</p>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- スライド3 -->
         <div class="slide hidden" data-slide="2">
-          <h3 class="text-2xl font-bold mb-6 text-blue-700">ユーザー視点 vs プロダクト視点</h3>
-          <div class="grid grid-cols-2 gap-6 mt-8">
-            <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-300">
-              <h4 class="text-xl font-bold text-blue-700 mb-4">ユーザー視点</h4>
-              <p class="text-lg text-gray-700">高い可用性による<br>良質なユーザー体験</p>
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">ユーザー視点で考えると、プロダクトにも恩恵がある</h3>
+          <div class="grid grid-cols-2 gap-8 mt-6">
+            <!-- 左側: ユーザー視点 -->
+            <div class="space-y-4">
+              <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-400">
+                <h4 class="text-xl font-bold text-blue-800 mb-3 text-center">📊 ユーザー視点での品質向上</h4>
+                <p class="text-gray-700 text-center mb-3">高い可用性による良質なユーザー体験</p>
+                <ul class="list-disc list-inside space-y-2 text-gray-700 text-sm">
+                  <li>サービスが期待通りに動く</li>
+                  <li>ストレスなく使える</li>
+                  <li>信頼できる</li>
+                </ul>
+              </div>
             </div>
-            <div class="bg-green-50 p-6 rounded-lg border-2 border-green-300">
-              <h4 class="text-xl font-bold text-green-700 mb-4">プロダクト視点</h4>
-              <ul class="text-lg text-gray-700 space-y-2">
-                <li>• ユーザー数</li>
-                <li>• 利用量</li>
-                <li>• 単価</li>
-              </ul>
+
+            <!-- 右側: プロダクト恩恵 -->
+            <div class="space-y-4">
+              <div class="bg-green-50 p-6 rounded-lg border-2 border-green-400">
+                <h4 class="text-xl font-bold text-green-800 mb-3 text-center">📈 プロダクトへの恩恵</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700 text-sm">
+                  <li><strong>利用継続率が向上</strong> → ユーザー数増加</li>
+                  <li><strong>口コミによる新規獲得</strong> → 利用量拡大</li>
+                  <li><strong>ロイヤルティ向上</strong> → 単価アップ</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- 中央の矢印とまとめ -->
+          <div class="flex flex-col items-center mt-6 space-y-4">
+            <div class="flex items-center space-x-4">
+              <div class="text-4xl text-green-600">→</div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500 max-w-3xl">
+              <p class="text-gray-700 text-center font-semibold">
+                品質向上の取り組みは、<strong class="text-purple-700">ユーザー視点</strong>を起点にすることで、<strong class="text-green-700">プロダクト指標も自然に向上</strong>する
+              </p>
             </div>
           </div>
         </div>
 
         <!-- スライド4 -->
         <div class="slide hidden" data-slide="3">
-          <h3 class="text-2xl font-bold mb-6 text-blue-700">なぜユーザー視点を最優先すべきか</h3>
-          <div class="space-y-6 text-lg text-gray-700 mt-8">
-            <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500">
-              <p class="font-semibold text-xl mb-3">Service Level Managementの本質</p>
-              <p>ユーザーが期待する<strong class="text-blue-600">サービス品質</strong>を定量的に測定し、継続的に改善するプロセス</p>
+          <h3 class="text-2xl font-bold mb-6 text-blue-700">Service Level Managementの本質</h3>
+          <div class="space-y-8 text-lg text-gray-700 mt-8">
+            <div class="bg-yellow-50 p-8 rounded-lg border-l-4 border-yellow-500">
+              <p class="font-semibold text-2xl mb-4 text-yellow-800">ユーザーが期待するサービス品質を定量的に測定し、継続的に改善する</p>
             </div>
-            <div class="mt-6">
-              <p class="text-xl font-bold text-gray-800">ユーザー満足度が高ければ...</p>
-              <ul class="list-disc list-inside space-y-2 ml-4 mt-4">
-                <li>利用継続率が向上</li>
-                <li>口コミによる新規ユーザー獲得</li>
-                <li>プロダクト指標（ユーザー数、利用量、単価）が自然に向上</li>
-              </ul>
+
+            <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-300">
+              <p class="font-bold text-xl text-blue-800 mb-4">SLMによる品質向上サイクル</p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div class="bg-white p-4 rounded-lg text-center">
+                  <p class="text-3xl mb-2">📊</p>
+                  <p class="font-semibold text-blue-700">測定</p>
+                  <p class="text-sm text-gray-600 mt-2">ユーザー体験を数値化</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg text-center">
+                  <p class="text-3xl mb-2">🎯</p>
+                  <p class="font-semibold text-blue-700">目標設定</p>
+                  <p class="text-sm text-gray-600 mt-2">適切なSLO策定</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg text-center">
+                  <p class="text-3xl mb-2">🔄</p>
+                  <p class="font-semibold text-blue-700">改善</p>
+                  <p class="text-sm text-gray-600 mt-2">継続的な最適化</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -117,26 +176,54 @@
         <!-- スライド6 -->
         <div class="slide hidden" data-slide="5">
           <h3 class="text-2xl font-bold mb-6 text-blue-700">Aのアプリ</h3>
-          <div class="bg-blue-50 p-8 rounded-lg border-2 border-blue-300 mt-8">
-            <p class="text-xl text-gray-800 mb-6"><strong>機能:</strong> タスクの登録と削除の機能しかない</p>
-            <p class="text-2xl font-bold text-blue-600">✅ 絶対に期待した通りの操作ができる</p>
-          </div>
-          <div class="mt-8 bg-green-50 p-6 rounded-lg">
-            <p class="text-lg text-gray-700"><strong>可用性:</strong> 100% 安定動作</p>
-            <p class="text-lg text-gray-700"><strong>機能性:</strong> 最小限</p>
+          <div class="grid grid-cols-2 gap-6 mt-6">
+            <!-- 良い点 -->
+            <div class="bg-green-50 p-6 rounded-lg border-2 border-green-400">
+              <h4 class="text-xl font-bold text-green-700 mb-4 text-center">✅ 良い点</h4>
+              <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li><strong>可用性100%</strong></li>
+                <li>絶対に期待した通りの操作ができる</li>
+                <li>安定して使える</li>
+                <li>ストレスフリー</li>
+              </ul>
+            </div>
+            <!-- 悪い点 -->
+            <div class="bg-red-50 p-6 rounded-lg border-2 border-red-400">
+              <h4 class="text-xl font-bold text-red-700 mb-4 text-center">❌ 悪い点</h4>
+              <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li><strong>機能が最小限</strong></li>
+                <li>タスクの登録と削除しかできない</li>
+                <li>便利な機能が一切ない</li>
+                <li>物足りない</li>
+              </ul>
+            </div>
           </div>
         </div>
 
         <!-- スライド7 -->
         <div class="slide hidden" data-slide="6">
           <h3 class="text-2xl font-bold mb-6 text-blue-700">Bのアプリ</h3>
-          <div class="bg-purple-50 p-8 rounded-lg border-2 border-purple-300 mt-8">
-            <p class="text-xl text-gray-800 mb-6"><strong>機能:</strong> Notion/Backlogのように魅力的な機能を兼ね揃えている</p>
-            <p class="text-2xl font-bold text-red-600">❌ 3回に1回くらいの頻度で操作が失敗する</p>
-          </div>
-          <div class="mt-8 bg-red-50 p-6 rounded-lg">
-            <p class="text-lg text-gray-700"><strong>可用性:</strong> 約66% （3回に1回失敗）</p>
-            <p class="text-lg text-gray-700"><strong>機能性:</strong> 非常に豊富</p>
+          <div class="grid grid-cols-2 gap-6 mt-6">
+            <!-- 良い点 -->
+            <div class="bg-green-50 p-6 rounded-lg border-2 border-green-400">
+              <h4 class="text-xl font-bold text-green-700 mb-4 text-center">✅ 良い点</h4>
+              <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li><strong>機能が非常に豊富</strong></li>
+                <li>Notion/Backlogのような魅力的な機能</li>
+                <li>できることが多い</li>
+                <li>便利で効率的</li>
+              </ul>
+            </div>
+            <!-- 悪い点 -->
+            <div class="bg-red-50 p-6 rounded-lg border-2 border-red-400">
+              <h4 class="text-xl font-bold text-red-700 mb-4 text-center">❌ 悪い点</h4>
+              <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li><strong>可用性約66%</strong></li>
+                <li>3回に1回くらい操作が失敗する</li>
+                <li>不安定</li>
+                <li>ストレスがたまる</li>
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -149,19 +236,19 @@
               <p>どちらも極端すぎる。<strong class="text-blue-600">信頼性（Reliability）</strong>を基準にバランスをとることが重要。</p>
             </div>
             <div class="grid grid-cols-2 gap-6 mt-8">
-              <div class="bg-gray-50 p-6 rounded-lg">
-                <p class="font-bold text-lg mb-3 text-gray-800">機能が多すぎる</p>
+              <div class="bg-red-50 p-6 rounded-lg border-l-4 border-red-400">
+                <p class="font-bold text-lg mb-3 text-red-700">可用性を犠牲にした機能追加</p>
                 <ul class="list-disc list-inside space-y-2 text-gray-700">
                   <li>複雑性が増す</li>
                   <li>バグが増える</li>
-                  <li>可用性が低下</li>
+                  <li>信頼性が低下する</li>
                 </ul>
               </div>
-              <div class="bg-gray-50 p-6 rounded-lg">
-                <p class="font-bold text-lg mb-3 text-gray-800">適切なバランス</p>
+              <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-400">
+                <p class="font-bold text-lg mb-3 text-green-700">適切なバランス</p>
                 <ul class="list-disc list-inside space-y-2 text-gray-700">
                   <li>ユーザーに必要な機能</li>
-                  <li>高い可用性</li>
+                  <li>高い信頼性（可用性）</li>
                   <li>持続可能な開発速度</li>
                 </ul>
               </div>
@@ -171,49 +258,6 @@
 
         <!-- スライド9 -->
         <div class="slide hidden" data-slide="8">
-          <h3 class="text-2xl font-bold mb-6 text-blue-700">SLOレベル比較表</h3>
-          <div class="overflow-x-auto mt-6">
-            <table class="w-full border-collapse">
-              <thead>
-                <tr class="bg-blue-600 text-white">
-                  <th class="border border-blue-700 px-4 py-3 text-left">SLOレベル</th>
-                  <th class="border border-blue-700 px-4 py-3 text-left">月間ダウンタイム許容</th>
-                  <th class="border border-blue-700 px-4 py-3 text-left">年間ダウンタイム許容</th>
-                </tr>
-              </thead>
-              <tbody class="text-lg">
-                <tr class="bg-gray-50">
-                  <td class="border border-gray-300 px-4 py-3 font-semibold">90%</td>
-                  <td class="border border-gray-300 px-4 py-3">3日</td>
-                  <td class="border border-gray-300 px-4 py-3">36.5日</td>
-                </tr>
-                <tr class="bg-white">
-                  <td class="border border-gray-300 px-4 py-3 font-semibold">99%</td>
-                  <td class="border border-gray-300 px-4 py-3">7時間12分</td>
-                  <td class="border border-gray-300 px-4 py-3">3.65日</td>
-                </tr>
-                <tr class="bg-blue-50">
-                  <td class="border border-gray-300 px-4 py-3 font-semibold text-blue-700">99.9%</td>
-                  <td class="border border-gray-300 px-4 py-3">43分12秒</td>
-                  <td class="border border-gray-300 px-4 py-3">8.76時間</td>
-                </tr>
-                <tr class="bg-green-50">
-                  <td class="border border-gray-300 px-4 py-3 font-semibold text-green-700">99.99%</td>
-                  <td class="border border-gray-300 px-4 py-3">4分19秒</td>
-                  <td class="border border-gray-300 px-4 py-3">52.56分</td>
-                </tr>
-                <tr class="bg-yellow-50">
-                  <td class="border border-gray-300 px-4 py-3 font-semibold text-yellow-700">99.999%</td>
-                  <td class="border border-gray-300 px-4 py-3">26秒</td>
-                  <td class="border border-gray-300 px-4 py-3">5.26分</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- スライド10 -->
-        <div class="slide hidden" data-slide="9">
           <h3 class="text-2xl font-bold mb-6 text-blue-700">SLOに9を一つ追加するたびに...</h3>
           <div class="space-y-6 text-lg text-gray-700 mt-8">
             <div class="bg-red-50 p-6 rounded-lg border-l-4 border-red-500">
@@ -258,15 +302,80 @@
           </div>
         </div>
 
+        <!-- スライド10: 参考資料 - SLO比較表 -->
+        <div class="slide hidden" data-slide="9">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-blue-700">SLOレベル比較表</h3>
+            <span class="text-sm bg-gray-200 text-gray-700 px-3 py-1 rounded-full">📚 参考資料</span>
+          </div>
+          <div class="overflow-x-auto mt-6">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="bg-blue-600 text-white">
+                  <th class="border border-blue-700 px-4 py-3 text-left">SLOレベル</th>
+                  <th class="border border-blue-700 px-4 py-3 text-left">月間ダウンタイム許容</th>
+                  <th class="border border-blue-700 px-4 py-3 text-left">年間ダウンタイム許容</th>
+                </tr>
+              </thead>
+              <tbody class="text-lg">
+                <tr class="bg-gray-50">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold">90%</td>
+                  <td class="border border-gray-300 px-4 py-3">3日</td>
+                  <td class="border border-gray-300 px-4 py-3">36.5日</td>
+                </tr>
+                <tr class="bg-white">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold">99%</td>
+                  <td class="border border-gray-300 px-4 py-3">7時間12分</td>
+                  <td class="border border-gray-300 px-4 py-3">3.65日</td>
+                </tr>
+                <tr class="bg-blue-50">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold text-blue-700">99.9%</td>
+                  <td class="border border-gray-300 px-4 py-3">43分12秒</td>
+                  <td class="border border-gray-300 px-4 py-3">8.76時間</td>
+                </tr>
+                <tr class="bg-green-50">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold text-green-700">99.99%</td>
+                  <td class="border border-gray-300 px-4 py-3">4分19秒</td>
+                  <td class="border border-gray-300 px-4 py-3">52.56分</td>
+                </tr>
+                <tr class="bg-yellow-50">
+                  <td class="border border-gray-300 px-4 py-3 font-semibold text-yellow-700">99.999%</td>
+                  <td class="border border-gray-300 px-4 py-3">26秒</td>
+                  <td class="border border-gray-300 px-4 py-3">5.26分</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-6 bg-gray-50 p-4 rounded-lg border-l-4 border-gray-400">
+            <p class="text-sm text-gray-700">
+              <strong>💡 参考:</strong> SLOは稼働時間で計測するべきではありませんが、難易度の参考として参照してください。
+              SLOレベルが高いほど達成難易度が上がり、ビジネス要件とコストのバランスを考慮した適切な設定が重要です。
+            </p>
+          </div>
+        </div>
+
         <!-- スライド11 -->
         <div class="slide hidden" data-slide="10">
           <h3 class="text-2xl font-bold mb-6 text-blue-700">SLA（Service Level Agreement）</h3>
-          <div class="bg-blue-50 p-8 rounded-lg border-2 border-blue-400 mt-8">
-            <p class="text-xl font-semibold text-blue-800 mb-4">顧客との契約上の合意</p>
-            <p class="text-lg text-gray-700 mb-6">サービス提供者が顧客に対して保証するサービス品質の水準</p>
-            <div class="bg-white p-6 rounded-lg mt-6">
-              <p class="font-bold text-lg text-gray-800 mb-3">特徴:</p>
-              <ul class="list-disc list-inside space-y-2 text-gray-700">
+          <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-400 mb-6">
+            <p class="text-lg font-semibold text-blue-800 mb-2">顧客との契約上の合意</p>
+            <p class="text-gray-700">サービス提供者が顧客に対して保証するサービス品質の水準</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <!-- 左側: SLAの本質 -->
+            <div class="bg-yellow-50 p-5 rounded-lg border-l-4 border-yellow-500">
+              <p class="font-bold text-lg text-gray-800 mb-3">SLAの本質</p>
+              <p class="text-gray-700 text-sm mb-3">利用前のユーザーに安心して利用の意思決定をしてもらうため、ビジネスが優位に進むことを期待して採用される手段</p>
+              <div class="mt-3 bg-white p-3 rounded-lg">
+                <p class="text-sm text-gray-700"><strong class="text-yellow-700">「信頼の前借り」</strong>というイメージを持つと良い</p>
+              </div>
+            </div>
+
+            <!-- 右側: 特徴 -->
+            <div class="bg-white p-5 rounded-lg border-2 border-gray-300">
+              <p class="font-bold text-lg text-gray-800 mb-3">特徴</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-700 text-sm">
                 <li>法的拘束力を持つ契約</li>
                 <li>違反時の補償・ペナルティが定義される</li>
                 <li>外部に公開される（顧客向け）</li>
