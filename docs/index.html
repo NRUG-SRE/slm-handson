@@ -20,6 +20,12 @@
       <h2 class="text-3xl font-bold mb-6 text-gray-800">目次</h2>
       <ul class="space-y-3 text-lg">
         <li>
+          <a href="#codespaces-start" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
+            0. GitHub Codespacesの起動
+          </a>
+          <span class="ml-2 text-sm text-gray-500">※起動に時間がかかるため、先に実施します</span>
+        </li>
+        <li>
           <a href="#lecture" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">
             1. 座学: Service Level Management基礎 (推奨時間: 20分)
           </a>
@@ -39,6 +45,56 @@
         </li>
       </ul>
     </nav>
+
+    <!-- GitHub Codespaces起動セクション -->
+    <section id="codespaces-start" class="container mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">GitHub Codespacesの起動</h2>
+      <p class="text-sm text-gray-600 mb-6">※起動に時間がかかるため、先に実施します</p>
+
+      <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500 mb-6">
+        <p class="font-semibold text-yellow-800 mb-2">Codespacesの起動には数分かかります</p>
+        <p class="text-gray-700">起動を開始したら、次の座学セクションに進んでください。Codespacesの準備が完了する頃には座学が終わっています。</p>
+      </div>
+
+      <div class="space-y-4 text-gray-700">
+        <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+          <p class="font-semibold text-lg mb-3">開発環境の選択肢</p>
+          <ul class="list-disc list-inside space-y-2">
+            <li><strong>GitHub Codespaces（推奨）:</strong> ブラウザ上で完結する開発環境</li>
+            <li><strong>ローカル環境:</strong> Docker Desktop導入済みの場合</li>
+          </ul>
+        </div>
+
+        <h3 class="font-bold text-xl mt-6 text-gray-800">手順: GitHub Codespacesで起動</h3>
+        <ol class="list-decimal list-inside space-y-3 ml-4">
+          <li>
+            <a href="https://github.com/NRUG-SRE/slm-handson" target="_blank" class="text-blue-600 hover:underline font-semibold">
+              GitHubリポジトリ
+            </a>
+            にアクセス
+          </li>
+          <li>緑色の「Code」ボタンをクリック</li>
+          <li>「Codespaces」タブを選択</li>
+          <li>「Create codespace on main」をクリック</li>
+          <li>起動が始まったら、次の座学セクションに進んでください</li>
+        </ol>
+
+        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mt-6">
+          <p class="font-semibold text-green-800">起動完了の確認</p>
+          <p class="text-gray-700 mt-2">VS Codeのような画面がブラウザ上に表示され、ターミナルが使えるようになれば準備完了です。</p>
+        </div>
+      </div>
+
+      <!-- ナビゲーションボタン -->
+      <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+        <a href="#toc" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+          ← 目次へ戻る
+        </a>
+        <a href="#lecture" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+          次へ: 座学（起動中に進めます） →
+        </a>
+      </div>
+    </section>
 
     <!-- 座学セクション -->
     <section id="lecture" class="container mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10">
@@ -464,8 +520,8 @@
 
       <!-- セクションナビゲーションボタン -->
       <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
-        <a href="#toc" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
-          ← 目次へ戻る
+        <a href="#codespaces-start" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+          ← 前へ: Codespacesの起動
         </a>
         <a href="#setup" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
           次へ: 環境セットアップ →
@@ -483,39 +539,13 @@
         <img src="/images/architecture.svg" alt="SLMハンズオンアーキテクチャ図 - フロントエンド（Next.js）、バックエンドAPI（Go）、負荷生成（Playwright）、New Relic Service Level Management" class="max-w-4xl w-full rounded-lg shadow-lg border-2 border-gray-200"/>
       </div>
 
-      <!-- 1. GitHub Codespacesセットアップ -->
+      <!-- 1. New Relic設定 -->
       <div class="mb-10">
-        <h3 class="text-2xl font-bold mb-4 text-blue-700">1. GitHub Codespacesの起動</h3>
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">1. New Relic設定</h3>
         <div class="space-y-4 text-gray-700">
-          <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
-            <p class="font-semibold text-lg mb-3">📌 開発環境の選択肢</p>
-            <ul class="list-disc list-inside space-y-2">
-              <li><strong>GitHub Codespaces（推奨）:</strong> ブラウザ上で完結する開発環境</li>
-              <li><strong>ローカル環境:</strong> Docker Desktop導入済みの場合</li>
-            </ul>
-          </div>
 
-          <h4 class="font-bold text-lg mt-6 text-gray-800">手順: GitHub Codespacesで起動</h4>
-          <ol class="list-decimal list-inside space-y-3 ml-4">
-            <li>
-              <a href="https://github.com/NRUG-SRE/slm-handson" target="_blank" class="text-blue-600 hover:underline font-semibold">
-                GitHubリポジトリ
-              </a>
-              にアクセス
-            </li>
-            <li>緑色の「Code」ボタンをクリック</li>
-            <li>「Codespaces」タブを選択</li>
-            <li>「Create codespace on main」をクリック</li>
-            <li>数分待つとVS Code環境がブラウザ上で起動します</li>
-          </ol>
-        </div>
-      </div>
-
-      <!-- 2. New Relic設定 -->
-      <div class="mb-10">
-        <h3 class="text-2xl font-bold mb-4 text-blue-700">2. New Relic License Keyの設定</h3>
-        <div class="space-y-4 text-gray-700">
-          <h4 class="font-bold text-lg text-gray-800">手順: License Keyの取得</h4>
+          <!-- APM用License Key -->
+          <h4 class="font-bold text-lg text-gray-800">手順1: APM用 License Keyの作成</h4>
           <ol class="list-decimal list-inside space-y-3 ml-4">
             <li>
               <a href="https://one.newrelic.com" target="_blank" class="text-blue-600 hover:underline font-semibold">
@@ -523,29 +553,71 @@
               </a>
               にログイン
             </li>
-            <li>右上のユーザーアイコン → 「API Keys」をクリック</li>
-            <li>「License key」をコピー</li>
+            <li>左下のユーザーアイコン → 「API Keys」をクリック</li>
+            <li>「Create a key」ボタンをクリック</li>
+            <li>「Key type」で <strong>Ingest - License</strong> を選択</li>
+            <li>「Create a key」ボタンをクリックしてキーを作成</li>
+            <li>表示されたAPI Keyの「Copy key」をクリックしてコピー</li>
           </ol>
 
-          <h4 class="font-bold text-lg mt-6 text-gray-800">手順: .envファイルへの設定</h4>
-          <p class="text-gray-700">プロジェクトルートに<code class="bg-gray-100 px-2 py-1 rounded">.env</code>ファイルを作成し、以下を記述:</p>
+          <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500 mt-4">
+            <p class="font-semibold text-red-800">⚠️ 重要: この画面を閉じるとキーを再表示できません</p>
+            <p class="text-gray-700 mt-2">作成したキーは必ずこの時点でコピーしてください。画面を閉じた後は再度表示することができません。閉じてしまった場合は、再度キーを作成してください。</p>
+          </div>
+
+          <!-- RUM用設定 -->
+          <h4 class="font-bold text-lg mt-8 text-gray-800">手順2: RUM用設定（Browser Key、Account ID、Application ID）の取得</h4>
+          <ol class="list-decimal list-inside space-y-3 ml-4">
+            <li>New Relic UI → 左メニューから「Browser」を選択</li>
+            <li>「Add your first browser app」をクリック</li>
+            <li>「Browser monitoring」→「Place a JavaScript snippet in frontend code」を選択</li>
+            <li>アプリ名を入力（例：<code class="bg-gray-100 px-2 py-1 rounded">slm-handson-frontend</code>）して「Save and continue」</li>
+            <li>「Configure the browser agent」では、そのまま「Save and continue」</li>
+            <li>生成されたJavaScriptスニペットから以下の値を抽出</li>
+          </ol>
+
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mt-4">
+            <p class="font-semibold text-blue-800 mb-2">スニペットから抽出する値</p>
+            <pre class="rounded-lg bg-gray-900 text-gray-100 p-4 overflow-x-auto text-sm"><code class="language-javascript">// スニペット内の NREUM.loader_config から抽出
+NREUM.loader_config={
+  accountID:"9999999",        // ← NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID
+  applicationID:"111111111",  // ← NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID
+  licenseKey:"NRBR-*****"     // ← NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY
+}</code></pre>
+          </div>
+
+          <!-- .envファイルへの設定 -->
+          <h4 class="font-bold text-lg mt-8 text-gray-800">手順3: .envファイルへの設定</h4>
+          <p class="text-gray-700">プロジェクトルートに<code class="bg-gray-100 px-2 py-1 rounded">.env</code>ファイルを作成し、取得した値を設定:</p>
 
           <pre class="rounded-lg bg-gray-900 text-gray-100 p-4 overflow-x-auto"><code class="language-bash"># .envファイルを作成
 cp .env.example .env
 
 # エディタで.envファイルを開き、以下を設定
-NEW_RELIC_LICENSE_KEY=your-license-key-here</code></pre>
+
+# APM用（手順1で取得）
+NEW_RELIC_API_KEY=your-license-key-here
+
+# RUM用（手順2で取得）
+NEXT_PUBLIC_NEW_RELIC_BROWSER_KEY=NRBR-xxxxx
+NEXT_PUBLIC_NEW_RELIC_ACCOUNT_ID=9999999
+NEXT_PUBLIC_NEW_RELIC_APPLICATION_ID=111111111</code></pre>
 
           <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500 mt-4">
             <p class="font-semibold text-yellow-800">⚠️ 注意</p>
             <p class="text-gray-700 mt-2">License Keyは秘密情報です。Gitにコミットしないよう注意してください（.gitignoreに.envが登録済み）</p>
           </div>
+
+          <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500 mt-4">
+            <p class="font-semibold text-purple-800">💡 RUM設定が必要な理由</p>
+            <p class="text-gray-700 mt-2">RUM（Real User Monitoring）を有効にすることで、フロントエンドのページビュー、Ajax、エラー、Core Web Vitalsを計測し、APMと統合したエンドツーエンドの監視が可能になります。</p>
+          </div>
         </div>
       </div>
 
-      <!-- 3. Docker Compose起動 -->
+      <!-- 2. Docker Compose起動 -->
       <div class="mb-10">
-        <h3 class="text-2xl font-bold mb-4 text-blue-700">3. アプリケーションの起動</h3>
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">2. アプリケーションの起動</h3>
         <div class="space-y-4 text-gray-700">
           <p class="text-lg">Docker Composeでアプリケーション全体を起動します。</p>
 
@@ -567,10 +639,25 @@ docker compose ps</code></pre>
         </div>
       </div>
 
-      <!-- 4. アプリケーションへのアクセス -->
+      <!-- 3. アプリケーションへのアクセス -->
       <div class="mb-10">
-        <h3 class="text-2xl font-bold mb-4 text-blue-700">4. デモECサイトへのアクセス</h3>
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">3. デモECサイトへのアクセス</h3>
         <div class="space-y-4 text-gray-700">
+
+          <!-- GitHub Codespacesの場合 -->
+          <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500 mb-6">
+            <p class="font-semibold text-blue-800 mb-3">GitHub Codespacesの場合</p>
+            <p class="text-gray-700 mb-3">VS Codeの下部にある「PORTS」タブからアクセスします。</p>
+            <ol class="list-decimal list-inside space-y-2 ml-4 text-gray-700">
+              <li>VS Code下部の「PORTS」タブをクリック</li>
+              <li>ポート <strong>3000</strong>（フロントエンド）または <strong>8080</strong>（API）の行を確認</li>
+              <li>「Forwarded Address」列の地球儀アイコン（🌐）をクリック</li>
+              <li>ブラウザの新しいタブでアプリケーションが開きます</li>
+            </ol>
+          </div>
+
+          <!-- ローカル環境の場合 -->
+          <p class="font-semibold text-gray-800">ローカル環境の場合</p>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-green-50 p-6 rounded-lg border-2 border-green-300">
               <h4 class="font-bold text-lg text-green-800 mb-3">フロントエンド</h4>
@@ -610,9 +697,9 @@ docker compose ps</code></pre>
         </div>
       </div>
 
-      <!-- 5. New Relic APM/RUMデータ確認 -->
+      <!-- 4. New Relic APM/RUMデータ確認 -->
       <div class="mb-10">
-        <h3 class="text-2xl font-bold mb-4 text-blue-700">5. New RelicでAPM/RUMデータを確認</h3>
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">4. New RelicでAPM/RUMデータを確認</h3>
         <div class="space-y-4 text-gray-700">
           <p class="text-lg">アプリケーションを操作した後、New Relicでデータを確認します。</p>
 
@@ -665,9 +752,9 @@ docker compose ps</code></pre>
         </div>
       </div>
 
-      <!-- 6. トラブルシューティング -->
+      <!-- 5. トラブルシューティング -->
       <div class="mb-10">
-        <h3 class="text-2xl font-bold mb-4 text-blue-700">6. トラブルシューティング</h3>
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">5. トラブルシューティング</h3>
         <div class="space-y-4 text-gray-700">
           <p class="text-lg">エラーが発生した場合は、以下のコマンドでログを確認してください。</p>
 
@@ -768,14 +855,15 @@ docker compose up -d --build</code></pre>
           <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500 mt-4">
             <p class="font-semibold text-blue-800 mb-3">💡 ディスカッション</p>
             <p class="text-gray-700 mb-2"><strong>問:</strong> このECサイトで、最も重要なユーザージャーニーは何でしょうか？</p>
-            <p class="text-gray-700 mt-4"><strong>答:</strong> 商品購入フロー（TOPページ → 商品詳細 → カート追加 → 決済完了）</p>
+            <p class="text-gray-700 mt-4"><strong>例:</strong> 商品購入フロー（TOPページ → 商品詳細 → カート追加 → カート確認 → 決済完了）</p>
           </div>
 
           <h4 class="font-bold text-lg mt-6 text-gray-800">デモECサイトのユーザージャーニー</h4>
 
           <!-- ユーザージャーニーフロー図 -->
           <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-300">
-            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 text-center">
+            <!-- 上段: 1〜3 -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 text-center mb-4">
               <div class="bg-blue-100 p-4 rounded-lg border-2 border-blue-400">
                 <p class="font-bold text-blue-800">1. TOPページ</p>
                 <p class="text-sm text-gray-600 mt-2">商品一覧表示</p>
@@ -797,11 +885,19 @@ docker compose up -d --build</code></pre>
                 <p class="text-sm text-gray-600 mt-2">商品をカートに追加</p>
                 <p class="text-xs text-gray-500 mt-1">POST /api/cart/items</p>
               </div>
+            </div>
+            <!-- 下段: 4〜5 -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 text-center">
+              <div class="bg-orange-100 p-4 rounded-lg border-2 border-orange-400">
+                <p class="font-bold text-orange-800">4. カート確認</p>
+                <p class="text-sm text-gray-600 mt-2">カート内容確認</p>
+                <p class="text-xs text-gray-500 mt-1">GET /api/cart</p>
+              </div>
               <div class="flex items-center justify-center">
                 <span class="text-3xl text-gray-400">→</span>
               </div>
               <div class="bg-yellow-100 p-4 rounded-lg border-2 border-yellow-400">
-                <p class="font-bold text-yellow-800">4. 決済完了</p>
+                <p class="font-bold text-yellow-800">5. 決済完了</p>
                 <p class="text-sm text-gray-600 mt-2">注文確定</p>
                 <p class="text-xs text-gray-500 mt-1">POST /api/orders</p>
               </div>
@@ -909,16 +1005,79 @@ docker compose up -d --build</code></pre>
             <li>「Create」ボタンをクリックして保存</li>
           </ol>
 
-          <h4 class="font-bold text-lg mt-6 text-gray-800">具体的なSLO例</h4>
+          <h4 class="font-bold text-lg mt-6 text-gray-800">実践例: CUJ（購入フロー全体）の可用性SLO</h4>
 
-          <!-- SLO例1: 商品詳細ページの成功率 -->
-          <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-300">
-            <p class="font-bold text-lg text-blue-800 mb-3">SLO例1: 商品詳細ページの成功率</p>
-            <div class="space-y-2 text-gray-700">
+          <div class="bg-purple-50 p-6 rounded-lg border-l-4 border-purple-500 mb-6">
+            <p class="font-semibold text-xl mb-3 text-purple-800">🎯 推奨アプローチ: ユーザージャーニー全体を1つのSLOで管理</p>
+            <p class="text-gray-700 mb-3">
+              個別のエンドポイントごとではなく、<strong>購入フロー全体</strong>を1つのSLOとして設定することで、
+              ビジネス価値と直結した可用性を測定できます。
+            </p>
+            <p class="text-gray-700 text-sm">
+              <strong>対象エンドポイント:</strong>
+              商品一覧 → 商品詳細 → カート追加 → カート確認 → 注文確定
+            </p>
+          </div>
+
+          <!-- 推奨SLO: 購入フロー全体の可用性 -->
+          <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-400">
+            <p class="font-bold text-xl text-blue-800 mb-4">📊 購入フロー可用性SLO（推奨）</p>
+            <div class="space-y-3 text-gray-700">
+              <p><strong>エンティティ:</strong> slm-handson-api (APM)</p>
+              <p><strong>SLIタイプ:</strong> Success（成功率ベース）</p>
+              <p><strong>SLO目標:</strong> 99.9%</p>
+              <p><strong>Time window:</strong> 28 days（推奨）</p>
+
+              <div class="mt-4">
+                <p class="font-bold text-gray-800 mb-2">Valid events（全リクエスト）:</p>
+                <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto"><code class="language-sql">FROM Transaction
+SELECT count(*) as 'Valid'
+WHERE
+  request.uri = '/api/products'
+  OR request.uri LIKE '/api/products/%'
+  OR request.uri = '/api/cart/items'
+  OR request.uri = '/api/cart'
+  OR request.uri = '/api/orders'</code></pre>
+              </div>
+
+              <div class="mt-4">
+                <p class="font-bold text-gray-800 mb-2">Bad events（失敗リクエスト）:</p>
+                <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto"><code class="language-sql">FROM Transaction
+SELECT count(*) as 'Bad'
+WHERE
+  (request.uri = '/api/products'
+   OR request.uri LIKE '/api/products/%'
+   OR request.uri = '/api/cart/items'
+   OR request.uri = '/api/cart'
+   OR request.uri = '/api/orders')
+AND (httpResponseCode >= 500 OR error IS true)</code></pre>
+              </div>
+
+              <div class="mt-4 bg-white p-4 rounded-lg">
+                <p class="font-bold text-gray-800 mb-2">💡 このSLOの意味</p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 text-sm ml-4">
+                  <li><strong>99.9%の可用性目標:</strong> 1000回のリクエストのうち999回は成功する</li>
+                  <li><strong>5xxエラーとAPMエラーを検出:</strong> ユーザーに影響のある障害のみカウント</li>
+                  <li><strong>4xxエラーは除外:</strong> クライアント側の問題（不正なリクエスト）は含まない</li>
+                  <li><strong>ビジネス価値:</strong> 購入フロー全体の信頼性をダイレクトに測定</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <h4 class="font-bold text-lg mt-8 text-gray-800">補足: 個別エンドポイントのSLO例</h4>
+          <p class="text-gray-700 mb-4 text-sm">
+            必要に応じて、特定の重要エンドポイントやパフォーマンス指標も個別にSLOとして設定できます。
+          </p>
+
+          <!-- SLO例1: 商品詳細ページの成功率（Browser） -->
+          <div class="bg-green-50 p-6 rounded-lg border-2 border-green-300">
+            <p class="font-bold text-lg text-green-800 mb-3">例1: 商品詳細ページの成功率（Browser RUM）</p>
+            <div class="space-y-2 text-gray-700 text-sm">
               <p><strong>エンティティ:</strong> slm-handson-frontend (Browser)</p>
               <p><strong>SLIタイプ:</strong> Success</p>
               <p><strong>NRQL（成功の定義）:</strong></p>
-              <pre class="bg-gray-900 text-gray-100 p-3 rounded mt-2 text-sm overflow-x-auto"><code class="language-sql">FROM PageView
+              <pre class="bg-gray-900 text-gray-100 p-3 rounded mt-2 text-xs overflow-x-auto"><code class="language-sql">FROM PageView
 SELECT percentage(count(*), WHERE httpResponseCode = 200)
 WHERE pageUrl LIKE '%/products/%'</code></pre>
               <p><strong>SLO目標:</strong> 99.9%</p>
@@ -927,13 +1086,13 @@ WHERE pageUrl LIKE '%/products/%'</code></pre>
           </div>
 
           <!-- SLO例2: カート追加APIのレスポンスタイム -->
-          <div class="bg-green-50 p-6 rounded-lg border-2 border-green-300 mt-4">
-            <p class="font-bold text-lg text-green-800 mb-3">SLO例2: カート追加APIのレスポンスタイム</p>
-            <div class="space-y-2 text-gray-700">
+          <div class="bg-yellow-50 p-6 rounded-lg border-2 border-yellow-300 mt-4">
+            <p class="font-bold text-lg text-yellow-800 mb-3">例2: カート追加APIのレスポンスタイム</p>
+            <div class="space-y-2 text-gray-700 text-sm">
               <p><strong>エンティティ:</strong> slm-handson-api (APM)</p>
               <p><strong>SLIタイプ:</strong> Latency</p>
               <p><strong>NRQL（レイテンシの定義）:</strong></p>
-              <pre class="bg-gray-900 text-gray-100 p-3 rounded mt-2 text-sm overflow-x-auto"><code class="language-sql">FROM Transaction
+              <pre class="bg-gray-900 text-gray-100 p-3 rounded mt-2 text-xs overflow-x-auto"><code class="language-sql">FROM Transaction
 SELECT percentage(count(*), WHERE duration < 0.3)
 WHERE request.uri = '/api/cart/items' AND request.method = 'POST'</code></pre>
               <p><strong>SLO目標:</strong> 95パーセンタイル &lt; 300ms</p>
