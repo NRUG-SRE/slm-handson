@@ -9,11 +9,21 @@
   <body class="bg-gray-50 text-gray-900">
     <!-- ヘッダー -->
     <header id="header" class="bg-blue-600 text-white py-8 shadow-lg">
-      <div class="container mx-auto px-6">
-        <h1 class="text-4xl font-bold">New Relic Service Level Management ハンズオン</h1>
-        <p class="mt-3 text-xl">座学と実技で学ぶSLI/SLO設計・管理</p>
+      <div class="container mx-auto px-6 flex items-center justify-between">
+        <div>
+          <h1 class="text-4xl font-bold">New Relic Service Level Management ハンズオン</h1>
+          <p class="mt-3 text-xl">座学と実技で学ぶSLI/SLO設計・管理</p>
+        </div>
+        <img src="/images/nrug-sre.png" alt="NRUG-SRE マスコットキャラクター" class="h-24 w-auto hidden md:block"/>
       </div>
     </header>
+
+    <!-- カリキュラム概要図 -->
+    <div class="container mx-auto px-6 py-8">
+      <div class="flex justify-center">
+        <img src="/images/top.png" alt="New Relic SLM ハンズオンプロジェクト カリキュラム概要 - ハンズオンシナリオ、アプリケーションアーキテクチャ、New Relic監視統合の全体像" class="max-w-5xl w-full rounded-lg shadow-lg border border-gray-200"/>
+      </div>
+    </div>
 
     <!-- 目次 -->
     <nav id="toc" class="container mx-auto px-6 py-10">
@@ -105,9 +115,12 @@
       <div id="slide-container" class="min-h-[500px] mb-8">
         <!-- スライド1 -->
         <div class="slide" data-slide="0">
-          <h3 class="text-3xl font-bold mb-6 text-center text-blue-700">AI時代におけるService Level Management</h3>
-          <p class="text-xl text-gray-700 text-center mt-8">プロダクトオーナー、PM、SRE、開発者のための</p>
-          <p class="text-2xl font-semibold text-center text-blue-600 mt-4">実践的SLI/SLO設計ガイド</p>
+          <div class="flex flex-col items-center">
+            <img src="/images/nrug-sre.png" alt="NRUG-SRE マスコットキャラクター" class="h-32 w-auto mb-6"/>
+            <h3 class="text-3xl font-bold mb-6 text-center text-blue-700">AI時代におけるService Level Management</h3>
+            <p class="text-xl text-gray-700 text-center mt-4">プロダクトオーナー、PM、SRE、開発者のための</p>
+            <p class="text-2xl font-semibold text-center text-blue-600 mt-4">実践的SLI/SLO設計ガイド</p>
+          </div>
         </div>
 
         <!-- スライド2: 目次 -->
@@ -535,10 +548,46 @@
         <button id="prevSlideBtn" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
           ← 前へ
         </button>
-        <span id="slideCounter" class="text-lg font-semibold text-gray-700">1 / 15</span>
+        <div class="flex items-center space-x-4">
+          <span id="slideCounter" class="text-lg font-semibold text-gray-700">1 / 15</span>
+          <button id="fullscreenBtn" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition flex items-center space-x-2" title="フルスクリーン表示">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+            </svg>
+            <span>最大化</span>
+          </button>
+        </div>
         <button id="nextSlideBtn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
           次へ →
         </button>
+      </div>
+
+      <!-- フルスクリーンモーダル -->
+      <div id="fullscreenModal" class="fixed inset-0 bg-white z-50 hidden flex-col">
+        <!-- フルスクリーンヘッダー -->
+        <div class="flex justify-between items-center px-8 py-4 bg-blue-600 text-white">
+          <h2 class="text-2xl font-bold">座学: Service Level Management基礎</h2>
+          <button id="exitFullscreenBtn" class="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-gray-100 transition flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>閉じる (ESC)</span>
+          </button>
+        </div>
+        <!-- フルスクリーンコンテンツ -->
+        <div id="fullscreenContent" class="flex-1 overflow-auto p-8 flex items-center justify-center">
+          <!-- スライドコンテンツがここにコピーされる -->
+        </div>
+        <!-- フルスクリーンナビゲーション -->
+        <div class="flex justify-between items-center px-8 py-4 bg-gray-100 border-t border-gray-300">
+          <button id="fullscreenPrevBtn" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition disabled:opacity-50 disabled:cursor-not-allowed">
+            ← 前へ
+          </button>
+          <span id="fullscreenCounter" class="text-lg font-semibold text-gray-700">1 / 15</span>
+          <button id="fullscreenNextBtn" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed">
+            次へ →
+          </button>
+        </div>
       </div>
 
       <!-- セクションナビゲーションボタン -->
@@ -1489,7 +1538,8 @@ DURATION=300 ACCESS_INTERVAL=10 docker compose --profile playwright up playwrigh
 
     <!-- フッター -->
     <footer id="footer" class="bg-gray-800 text-white py-6 mt-12">
-      <div class="container mx-auto px-6 text-center">
+      <div class="container mx-auto px-6 flex items-center justify-center space-x-4">
+        <img src="/images/nrug-sre.png" alt="NRUG-SRE マスコットキャラクター" class="h-12 w-auto"/>
         <p>&copy; 2025 New Relic SLM ハンズオン | NRUG-SRE</p>
       </div>
     </footer>
