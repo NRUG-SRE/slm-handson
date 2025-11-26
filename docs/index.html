@@ -1064,24 +1064,25 @@ WHERE
               </div>
 
               <div class="mt-4">
-                <p class="font-bold text-gray-800 mb-2">Bad events（失敗リクエスト）:</p>
+                <p class="font-bold text-gray-800 mb-2">Good events（成功リクエスト）:</p>
                 <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto"><code class="language-sql">FROM Transaction
-SELECT count(*) as 'Bad'
+SELECT count(*) as 'Good'
 WHERE
   (request.uri = '/api/products'
    OR request.uri LIKE '/api/products/%'
    OR request.uri = '/api/cart/items'
    OR request.uri = '/api/cart'
    OR request.uri = '/api/orders')
-AND (httpResponseCode >= 500 OR error IS true)</code></pre>
+AND httpResponseCode &lt; 500
+AND error IS NOT true</code></pre>
               </div>
 
               <div class="mt-4 bg-white p-4 rounded-lg">
                 <p class="font-bold text-gray-800 mb-2">💡 このSLOの意味</p>
                 <ul class="list-disc list-inside space-y-1 text-gray-700 text-sm ml-4">
                   <li><strong>99.9%の可用性目標:</strong> 1000回のリクエストのうち999回は成功する</li>
-                  <li><strong>5xxエラーとAPMエラーを検出:</strong> ユーザーに影響のある障害のみカウント</li>
-                  <li><strong>4xxエラーは除外:</strong> クライアント側の問題（不正なリクエスト）は含まない</li>
+                  <li><strong>成功の定義:</strong> 5xxエラーでない、かつAPMエラーでない</li>
+                  <li><strong>4xxエラーは成功扱い:</strong> クライアント側の問題はサーバー可用性に含めない</li>
                   <li><strong>ビジネス価値:</strong> 購入フロー全体の信頼性をダイレクトに測定</li>
                 </ul>
               </div>
