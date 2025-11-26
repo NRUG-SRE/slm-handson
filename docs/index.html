@@ -1173,6 +1173,86 @@ WHERE
             </div>
           </div>
 
+          <h4 class="font-bold text-lg mt-8 text-gray-800">実践例: フロントエンド表示速度SLO（LCP）</h4>
+
+          <div class="bg-purple-50 p-6 rounded-lg border-l-4 border-purple-500 mb-6">
+            <p class="font-semibold text-xl mb-3 text-purple-800">🖼️ LCP (Largest Contentful Paint) とは</p>
+            <p class="text-gray-700 mb-3">
+              ページ内で最も大きなコンテンツ（商品画像など）が表示されるまでの時間です。
+              ECサイトでは<strong>商品画像の表示速度</strong>が第一印象を決め、離脱率に直結します。
+            </p>
+            <div class="bg-white p-4 rounded-lg mt-3">
+              <p class="font-bold text-gray-800 mb-2">Googleの推奨基準</p>
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-gray-300">
+                    <th class="text-left py-2">評価</th>
+                    <th class="text-left py-2">LCP時間</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-b border-gray-200">
+                    <td class="py-2 text-green-700 font-semibold">Good</td>
+                    <td class="py-2">2.5秒以内</td>
+                  </tr>
+                  <tr class="border-b border-gray-200">
+                    <td class="py-2 text-yellow-700 font-semibold">Needs Improvement</td>
+                    <td class="py-2">2.5〜4秒</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 text-red-700 font-semibold">Poor</td>
+                    <td class="py-2">4秒超</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SLO③: フロントエンドLCP -->
+          <div class="bg-pink-50 p-6 rounded-lg border-2 border-pink-400">
+            <p class="font-bold text-xl text-pink-800 mb-4">🖼️ フロントエンド表示速度SLO（LCP）</p>
+            <div class="space-y-3 text-gray-700">
+              <p><strong>エンティティ:</strong> slm-handson-frontend (Browser)</p>
+              <p><strong>SLIタイプ:</strong> Latency（Core Web Vitals - LCP）</p>
+              <p><strong>SLO目標:</strong> 90%</p>
+              <p><strong>Time window:</strong> 28 days（推奨）</p>
+
+              <div class="mt-4">
+                <p class="font-bold text-gray-800 mb-2">Valid events（購入フローのページビュー）:</p>
+                <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto"><code class="language-sql">FROM PageViewTiming
+SELECT count(*) as 'Valid'
+WHERE
+  pageUrl LIKE '%/products%'
+  OR pageUrl LIKE '%/cart%'
+  OR pageUrl LIKE '%/checkout%'
+  OR pageUrl RLIKE '^https?://[^/]+/?$'</code></pre>
+                <p class="text-xs text-gray-500 mt-2">※ 最後の行はTOPページ（ドメイン直下）にマッチ。localhost でも Codespaces でも動作します。</p>
+              </div>
+
+              <div class="mt-4">
+                <p class="font-bold text-gray-800 mb-2">Good events（LCP 2.5秒以内）:</p>
+                <pre class="bg-gray-900 text-gray-100 p-3 rounded text-sm overflow-x-auto"><code class="language-sql">FROM PageViewTiming
+SELECT count(*) as 'Good'
+WHERE
+  (pageUrl LIKE '%/products%'
+   OR pageUrl LIKE '%/cart%'
+   OR pageUrl LIKE '%/checkout%'
+   OR pageUrl RLIKE '^https?://[^/]+/?$')
+AND largestContentfulPaint &lt; 2500</code></pre>
+              </div>
+
+              <div class="mt-4 bg-white p-4 rounded-lg">
+                <p class="font-bold text-gray-800 mb-2">💡 このSLOの意味</p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 text-sm ml-4">
+                  <li><strong>90%のページビューがLCP 2.5秒以内:</strong> Googleの「Good」基準を満たす</li>
+                  <li><strong>フロントエンド視点:</strong> APMでは見えないブラウザ側のUXを測定</li>
+                  <li><strong>商品画像の表示速度:</strong> ECサイトの第一印象に直結</li>
+                  <li><strong>離脱率への影響:</strong> LCP改善は離脱率低下に最も効果的</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
           <!-- SLOまとめ -->
           <div class="bg-gray-50 p-6 rounded-lg border-2 border-gray-300 mt-6">
             <p class="font-bold text-xl text-gray-800 mb-4">📋 ハンズオンで作成するSLOまとめ</p>
@@ -1190,13 +1270,19 @@ WHERE
                   <td class="py-2 font-semibold text-blue-700">購入フロー可用性</td>
                   <td class="py-2">Success</td>
                   <td class="py-2">99.9%</td>
-                  <td class="py-2">全購入フローAPI</td>
+                  <td class="py-2">APM: 全購入フローAPI</td>
                 </tr>
-                <tr>
+                <tr class="border-b border-gray-200">
                   <td class="py-2 font-semibold text-green-700">購入フローレイテンシ</td>
                   <td class="py-2">Latency</td>
                   <td class="py-2">95%</td>
-                  <td class="py-2">参照系 &lt; 300ms / 更新系 &lt; 1000ms</td>
+                  <td class="py-2">APM: 参照系 &lt; 300ms / 更新系 &lt; 1000ms</td>
+                </tr>
+                <tr>
+                  <td class="py-2 font-semibold text-pink-700">フロントエンド表示速度</td>
+                  <td class="py-2">Latency (LCP)</td>
+                  <td class="py-2">90%</td>
+                  <td class="py-2">Browser: LCP &lt; 2.5秒</td>
                 </tr>
               </tbody>
             </table>
@@ -1204,7 +1290,7 @@ WHERE
 
           <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500 mt-4">
             <p class="font-semibold text-yellow-800">📝 ワークショップTips</p>
-            <p class="text-gray-700 mt-2">今回は2つのSLOを作成します。実運用でも1〜3つのSLOから始めることをお勧めします。多すぎるSLOは管理が困難になり、本質的な改善活動から遠ざかる原因になります。</p>
+            <p class="text-gray-700 mt-2">今回は3つのSLOを作成します（APM 2つ + Browser 1つ）。実運用でも1〜3つのSLOから始めることをお勧めします。多すぎるSLOは管理が困難になり、本質的な改善活動から遠ざかる原因になります。</p>
           </div>
         </div>
       </div>
