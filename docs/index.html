@@ -989,16 +989,16 @@ docker compose up -d --build</code></pre>
         <div class="space-y-4 text-gray-700">
           <p class="text-lg">ユーザージャーニーを特定したら、各ステップのSLIを設計します。</p>
 
-          <h4 class="font-bold text-lg mt-6 text-gray-800">SLI設計の2つのアプローチ</h4>
+          <h4 class="font-bold text-lg mt-6 text-gray-800">SLI設計の3つのアプローチ</h4>
 
           <!-- 成功率ベースのSLI -->
           <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
-            <p class="font-semibold text-xl mb-3 text-blue-800">📊 成功率ベースのSLI</p>
+            <p class="font-semibold text-xl mb-3 text-blue-800">📊 成功率ベースのSLI（APM）</p>
             <div class="space-y-3">
               <p><strong>計算式:</strong> 成功したリクエスト数 / 全リクエスト数</p>
-              <p><strong>対象:</strong> APIエンドポイントやページビュー</p>
+              <p><strong>対象:</strong> APIエンドポイント（バックエンド）</p>
               <div class="bg-white p-4 rounded-lg mt-3">
-                <p class="font-bold text-gray-800 mb-2">例: 商品詳細ページの成功率</p>
+                <p class="font-bold text-gray-800 mb-2">例: 商品詳細APIの成功率</p>
                 <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
                   <li>SLI: HTTPステータス200のリクエスト数 / 全リクエスト数</li>
                   <li>SLO目標: 成功率 >= 99.9%</li>
@@ -1010,10 +1010,10 @@ docker compose up -d --build</code></pre>
 
           <!-- レスポンスタイムベースのSLI -->
           <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-500 mt-6">
-            <p class="font-semibold text-xl mb-3 text-green-800">⏱️ レスポンスタイムベースのSLI</p>
+            <p class="font-semibold text-xl mb-3 text-green-800">⏱️ レスポンスタイムベースのSLI（APM）</p>
             <div class="space-y-3">
               <p><strong>計算式:</strong> 指定時間内に完了したリクエスト数 / 全リクエスト数</p>
-              <p><strong>対象:</strong> ユーザー体験に直結するパフォーマンス</p>
+              <p><strong>対象:</strong> APIエンドポイント（バックエンド）</p>
               <div class="bg-white p-4 rounded-lg mt-3">
                 <p class="font-bold text-gray-800 mb-2">例: カート追加APIのレスポンスタイム</p>
                 <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
@@ -1025,12 +1025,32 @@ docker compose up -d --build</code></pre>
             </div>
           </div>
 
+          <!-- Core Web VitalsベースのSLI -->
+          <div class="bg-pink-50 p-6 rounded-lg border-l-4 border-pink-500 mt-6">
+            <p class="font-semibold text-xl mb-3 text-pink-800">🖼️ Core Web VitalsベースのSLI（RUM / Browser）</p>
+            <div class="space-y-3">
+              <p><strong>計算式:</strong> 基準値内のページビュー数 / 全ページビュー数</p>
+              <p><strong>対象:</strong> フロントエンドのユーザー体験（ブラウザ側）</p>
+              <div class="bg-white p-4 rounded-lg mt-3">
+                <p class="font-bold text-gray-800 mb-2">例: 商品一覧ページのLCP（Largest Contentful Paint）</p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
+                  <li>SLI: LCP 2.5秒以内のページビュー数 / 全ページビュー数</li>
+                  <li>SLO目標: 90%のページビューがLCP 2.5秒以内</li>
+                  <li>意味: 商品画像が2.5秒以内に表示され、ユーザーがストレスなく閲覧できる</li>
+                </ul>
+              </div>
+              <div class="bg-pink-100 p-3 rounded-lg mt-3">
+                <p class="text-sm text-gray-700"><strong>💡 APMとの違い:</strong> APMはサーバー側の処理時間を計測しますが、RUMはブラウザ側の実際のユーザー体験（ネットワーク遅延、レンダリング時間含む）を計測します。</p>
+              </div>
+            </div>
+          </div>
+
           <!-- SLI設計のステップ -->
           <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500 mt-6">
             <p class="font-semibold text-xl mb-3 text-yellow-800">🎯 SLI設計の3ステップ</p>
             <ol class="list-decimal list-inside space-y-2 text-gray-700 ml-4">
-              <li><strong>ユーザー視点で重要な指標を選択:</strong> エラー率？レスポンスタイム？</li>
-              <li><strong>測定可能な指標に変換:</strong> 成功率？95パーセンタイル？</li>
+              <li><strong>ユーザー視点で重要な指標を選択:</strong> エラー率？レスポンスタイム？表示速度？</li>
+              <li><strong>測定可能な指標に変換:</strong> 成功率？95パーセンタイル？LCP？</li>
               <li><strong>現実的な目標値を設定:</strong> 過去のデータと組織の能力を考慮</li>
             </ol>
           </div>
@@ -1522,6 +1542,94 @@ DURATION=300 ACCESS_INTERVAL=10 docker compose --profile playwright up playwrigh
               <li>定期的にSLOを見直し、ビジネスとユーザーニーズに合わせて調整する</li>
             </ul>
           </div>
+        </div>
+      </div>
+
+      <!-- 6. Next Steps: SLOは設定してからが本番 -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">6. Next Steps: SLOは設定してからが本番</h3>
+        <div class="space-y-4 text-gray-700">
+
+          <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-300">
+            <div class="flex items-center space-x-4 mb-4">
+              <img src="/images/nrug-sre.png" alt="NRUG-SRE マスコットキャラクター" class="h-16 w-auto"/>
+              <div>
+                <p class="text-2xl font-bold text-purple-800">おめでとうございます！🎉</p>
+                <p class="text-gray-700 mt-1">SLOの設定が完了しました。でも、ここからが本当のスタートです。</p>
+              </div>
+            </div>
+            <p class="text-lg text-gray-700">
+              SLOは<strong class="text-purple-700">「設定して終わり」ではなく「設定してからが本番」</strong>です。
+              継続的な改善と運用の中で、SLOの真価が発揮されます。
+            </p>
+          </div>
+
+          <h4 class="font-bold text-lg mt-6 text-gray-800">ワークショップ後に取り組むべきこと</h4>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+            <!-- SLOの継続的改善 -->
+            <div class="bg-blue-50 p-5 rounded-lg border-l-4 border-blue-500">
+              <p class="font-bold text-lg text-blue-800 mb-3">📈 SLOの継続的改善</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-700 text-sm">
+                <li>実データに基づくSLO目標値の調整</li>
+                <li>新機能追加時のSLI/SLO見直し</li>
+                <li>ユーザーフィードバックを反映した指標の追加</li>
+                <li>定期的なSLOレビュー会議の実施</li>
+              </ul>
+            </div>
+
+            <!-- エラーバジェット活用の最適化 -->
+            <div class="bg-green-50 p-5 rounded-lg border-l-4 border-green-500">
+              <p class="font-bold text-lg text-green-800 mb-3">💰 エラーバジェット活用の最適化</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-700 text-sm">
+                <li>エラーバジェットポリシーの策定</li>
+                <li>バジェット消費時の意思決定フロー確立</li>
+                <li>チーム間でのエラーバジェット共有</li>
+                <li>バジェットを活用した「攻めの開発」</li>
+              </ul>
+            </div>
+
+            <!-- バーンレートアラート -->
+            <div class="bg-orange-50 p-5 rounded-lg border-l-4 border-orange-500">
+              <p class="font-bold text-lg text-orange-800 mb-3">🔥 バーンレートアラートの設定</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-700 text-sm">
+                <li>Fast burn / Slow burn アラートの設定</li>
+                <li>エラーバジェット消費速度の監視</li>
+                <li>予測に基づく早期警告システム</li>
+                <li>オンコール体制との連携</li>
+              </ul>
+            </div>
+
+            <!-- 組織への展開 -->
+            <div class="bg-purple-50 p-5 rounded-lg border-l-4 border-purple-500">
+              <p class="font-bold text-lg text-purple-800 mb-3">🏢 組織への展開</p>
+              <ul class="list-disc list-inside space-y-2 text-gray-700 text-sm">
+                <li>他サービスへのSLO導入</li>
+                <li>ステークホルダーへのダッシュボード共有</li>
+                <li>SLOを活用した振り返り文化の醸成</li>
+                <li>SREプラクティスの段階的導入</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500 mt-6">
+            <p class="font-semibold text-xl mb-3 text-yellow-800">🎯 覚えておいてほしいこと</p>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+              <li><strong>完璧を目指さない:</strong> 最初のSLOは仮説。運用しながら改善していく</li>
+              <li><strong>少ないSLOから始める:</strong> 3つ以下のSLOでスタートし、必要に応じて追加</li>
+              <li><strong>チーム全員で所有する:</strong> SLOはSREだけのものではなく、プロダクトチーム全体の指標</li>
+              <li><strong>定期的に振り返る:</strong> 月次/四半期でSLOの妥当性を評価し、調整する</li>
+            </ul>
+          </div>
+
+          <div class="bg-gray-800 text-white p-6 rounded-lg mt-6">
+            <p class="text-xl font-bold text-center mb-4">🚀 SLOの旅は始まったばかり</p>
+            <p class="text-center text-gray-300">
+              今日学んだことを活かして、ユーザーに価値を届け続けるサービスを目指しましょう。<br/>
+              SLOは、そのための強力な羅針盤になります。
+            </p>
+          </div>
+
         </div>
       </div>
 
