@@ -1633,6 +1633,62 @@ DURATION=300 ACCESS_INTERVAL=10 docker compose --profile playwright up playwrigh
         </div>
       </div>
 
+      <!-- 7. 後片付け -->
+      <div class="mb-10">
+        <h3 class="text-2xl font-bold mb-4 text-blue-700">7. 後片付け</h3>
+        <div class="space-y-4 text-gray-700">
+          <p class="text-lg">ハンズオン終了後は、以下の手順でリソースを削除してください。</p>
+
+          <!-- Codespacesの削除 -->
+          <div class="bg-red-50 p-6 rounded-lg border-l-4 border-red-500">
+            <p class="font-bold text-lg text-red-800 mb-3">🗑️ GitHub Codespacesの削除</p>
+            <p class="text-gray-700 mb-3">Codespacesは停止していてもストレージの無料枠を消費します。不要になったら削除しましょう。</p>
+            <ol class="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+              <li>
+                <a href="https://github.com/codespaces" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                  GitHub Codespaces管理ページ
+                </a>
+                にアクセス
+              </li>
+              <li>削除したいCodespaceの右側にある「...」メニューをクリック</li>
+              <li>「Delete」を選択</li>
+              <li>確認ダイアログで「Delete」をクリック</li>
+            </ol>
+            <div class="bg-white p-3 rounded-lg mt-4">
+              <p class="text-sm text-gray-600">💡 <strong>Tip:</strong> 無料枠（月間15GBストレージ・120コア時間）を節約するため、使わないCodespacesは早めに削除することをお勧めします。</p>
+            </div>
+          </div>
+
+          <!-- API Keyの削除 -->
+          <div class="bg-orange-50 p-6 rounded-lg border-l-4 border-orange-500 mt-6">
+            <p class="font-bold text-lg text-orange-800 mb-3">🔑 New Relic API Keyの削除</p>
+            <p class="text-gray-700 mb-3">ハンズオン用に作成したAPI Keyは、不要になったら削除してセキュリティリスクを軽減しましょう。</p>
+            <ol class="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+              <li>
+                <a href="https://one.newrelic.com" target="_blank" class="text-blue-600 hover:underline font-semibold">
+                  New Relic
+                </a>
+                にログイン
+              </li>
+              <li>左下のユーザーアイコン → 「API Keys」をクリック</li>
+              <li>削除したいキーの右側にある「...」メニューをクリック</li>
+              <li>「Delete」を選択</li>
+              <li>確認ダイアログで削除を確定</li>
+            </ol>
+            <div class="bg-white p-3 rounded-lg mt-4">
+              <p class="text-sm text-gray-600">⚠️ <strong>注意:</strong> 本番環境で使用しているキーは削除しないでください。ハンズオン用に作成したキーのみを削除します。</p>
+            </div>
+          </div>
+
+          <!-- SLOの保持について -->
+          <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mt-6">
+            <p class="font-semibold text-blue-800 mb-2">💡 作成したSLOについて</p>
+            <p class="text-gray-700">New Relicで作成したSLOは、そのまま残しておいても課金に影響はありません。学習のために残しておくか、不要であれば「Service levels」から削除できます。</p>
+          </div>
+
+        </div>
+      </div>
+
       <!-- ナビゲーションボタン -->
       <div class="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
         <a href="#setup" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
