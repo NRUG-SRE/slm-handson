@@ -1,17 +1,11 @@
 {
   "name": "New Relic SLM Handson",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "image": "ghcr.io/nrug-sre/slm-handson-devcontainer:latest",
 
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "version": "latest",
       "dockerDashComposeVersion": "v2"
-    },
-    "ghcr.io/devcontainers/features/go:1": {
-      "version": "1.21"
-    },
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "18"
     }
   },
 
@@ -44,5 +38,5 @@
     }
   },
 
-  "remoteUser": "codespace"
+  "remoteUser": "vscode"
 }
