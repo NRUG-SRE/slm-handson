@@ -1,15 +1,16 @@
-name: Build devcontainer image
+name: Build container images
 
 on:
   push:
     branches: [main]
     paths:
       - '.devcontainer/Dockerfile'
+      - 'backend/**'
+      - 'scripts/**'
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}-devcontainer
 
 jobs:
   build-and-push:
@@ -21,8 +22,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Lowercase image name
-        run: echo "IMAGE_NAME_LC=${IMAGE_NAME,,}" >> "$GITHUB_ENV"
+      - name: Lowercase repository name
+        run: echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
 
       - uses: docker/login-action@v3
         with:
@@ -30,9 +31,30 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v6
+      - name: Build and push devcontainer
+        uses: docker/build-push-action@v6
         with:
           context: .devcontainer
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LC }}:latest
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-devcontainer:latest
+
+      - name: Build and push api-server
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-api-server:latest
+
+      - name: Build and push load-generator
+        uses: docker/build-push-action@v6
+        with:
+          context: ./scripts
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-load-generator:latest
+
+      - name: Build and push playwright-generator
+        uses: docker/build-push-action@v6
+        with:
+          context: ./scripts/playwright
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-playwright-generator:latest

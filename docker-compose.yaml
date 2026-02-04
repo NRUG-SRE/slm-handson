@@ -1,9 +1,7 @@
 services:
   # APIサーバー (Go)
   api-server:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ghcr.io/nrug-sre/slm-handson-api-server:latest
     container_name: slm-api-server
     ports:
       - "8080:8080"
@@ -57,9 +55,7 @@ services:
 
   # SLOハンズオン用ユーザーアクセス生成器（Go版）
   load-generator:
-    build:
-      context: ./scripts
-      dockerfile: Dockerfile
+    image: ghcr.io/nrug-sre/slm-handson-load-generator:latest
     container_name: slm-access-generator
     environment:
       # アクセス先URL（フロントエンドを指定）
@@ -83,9 +79,7 @@ services:
 
   # Playwrightベースの負荷生成器（RUM対応・軽量版）
   playwright-generator:
-    build:
-      context: ./scripts/playwright
-      dockerfile: Dockerfile
+    image: ghcr.io/nrug-sre/slm-handson-playwright-generator:latest
     container_name: slm-playwright-generator
     environment:
       # アクセス先URL（フロントエンドを指定）
