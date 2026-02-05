@@ -33,6 +33,7 @@ services:
 
   # フロントエンドサーバー (Next.js)
   frontend:
+    image: ghcr.io/nrug-sre/slm-handson-frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile
