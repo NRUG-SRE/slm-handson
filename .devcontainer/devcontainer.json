@@ -1,6 +1,8 @@
 {
   "name": "New Relic SLM Handson",
-  "image": "ghcr.io/nrug-sre/slm-handson-devcontainer:latest",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
 
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
