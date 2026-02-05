@@ -5,7 +5,9 @@ on:
     branches: [main]
     paths:
       - '.devcontainer/Dockerfile'
+      - 'docker-compose.yaml'
       - 'backend/**'
+      - 'frontend/**'
       - 'scripts/**'
   workflow_dispatch:
 
@@ -58,3 +60,10 @@ jobs:
           context: ./scripts/playwright
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-playwright-generator:latest
+
+      - name: Build and push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LC }}-frontend:latest
