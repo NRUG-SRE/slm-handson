@@ -1,6 +1,6 @@
 # SLM Handson Backend - Go APIサーバー
 
-## 概要
+## 概要 
 
 このバックエンドアプリケーションは、New Relic Service Level Management (SLM) のハンズオン用に設計されたECサイトのAPIサーバーです。クリーンアーキテクチャの原則に従って実装され、New Relic APMと統合してサーバーサイドのパフォーマンス監視を実現しています。
 
